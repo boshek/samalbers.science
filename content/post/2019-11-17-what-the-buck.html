@@ -1,0 +1,169 @@
+---
+title: What the Buck?
+author: Sam Albers
+date: '2019-11-17'
+slug: what-the-buck
+categories:
+  - music
+  - R
+tags: []
+description: 'Buck talk'
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+
+
+<p>I recently appeared on my pal <a href="https://www.morgantams.com/">Morgan Tams’</a> radio program on <a href="https://cortesradio.ca/">Cortes Island Radio</a>. The idea is to appear weekly and talk about a single artist/band for 15 minutes. Not terribly ambitious but I thought it would be fun to explore the spotify API and generate some summaries of who we are talking about. For our first installment, Morgan and I chatted about the legendary <a href="https://en.wikipedia.org/wiki/Buck_Owens">Buck Owens</a>. Darn—I just lost 10 minutes of my life searching for Buck Owens gifs. Oh well. Here is a still of the man:</p>
+<center>
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Buck_Owens.jpg" width=400px/>
+</center>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>Thankfully there is the R package — spotifyr — that makes requesting data from the spotify API very easy. Since spotifyr is on CRAN we can install it like usual.</p>
+<pre class="r"><code>install.packages(&#39;spotifyr&#39;)</code></pre>
+<p>For this post I am also using the following packages which you will need to install.</p>
+<pre class="r"><code>install.packages(&#39;dplyr&#39;)
+install.packages(&#39;usethis&#39;)
+install.packages(&#39;ggplot2&#39;)
+install.packages(&#39;tidyr&#39;)</code></pre>
+<p>and load:</p>
+<pre class="r"><code>library(spotifyr)
+library(dplyr, warn.conflicts = FALSE)
+library(usethis)
+library(ggplot2)
+library(tidyr)</code></pre>
+<p>There is some hocus-pocus to set up your credentials to access the spotify data which does require a paid spotify account. The spotifyr developer provides some nice instructions <a href="https://github.com/charlie86/spotifyr#authentication">here</a> and the <a href="https://developer.spotify.com/documentation/web-api/quick-start/">spotify developer guide</a> provides a few more details. Probably the most important thing to note here is that you want to save your spotify credentials in your <code>.Renviron</code> file. If you’ve never dealt with environment variables in R before, <a href="(https://csgillespie.github.io/efficientR/set-up.html#r-startup)">Efficient R programming</a> provides a succinct description. In a nutshell our <code>.Renviron</code> file is a way for us to provide the value of a variable consistently across sessions and outside of a script. I always edit it with the usethis package:</p>
+<pre class="r"><code>edit_r_environ()</code></pre>
+<p>Setting up your credentials as environment variables is a one-time thing. After that, functions in the spotifyr package will just work as they all call <code>get_spotify_access_token()</code> by default. Now that I have all credential sorted out let’s try and see what we can find out about Buck from the spotify API.</p>
+<center>
+<img src="https://media.giphy.com/media/3oFzm1Q19NznHiCJPy/giphy.gif"/>
+</center>
+<pre class="r"><code>buck_raw &lt;- get_artist_audio_features(&#39;buck owens&#39;)
+
+dim(buck_raw)</code></pre>
+<pre><code>## [1] 1436   39</code></pre>
+<p>This is lots of information (39 columns just on Buck!). With these types of nested JSON data, dplyr’s <code>glimpse</code> function provides a nice clean way of looking at the data.</p>
+<pre class="r"><code>glimpse(buck_raw)</code></pre>
+<pre><code>## Observations: 1,436
+## Variables: 39
+## $ artist_name                  &lt;chr&gt; &quot;Buck Owens&quot;, &quot;Buck Owens&quot;, &quot;Buck...
+## $ artist_id                    &lt;chr&gt; &quot;2FMZn5P3WATd7Il6FgPJNu&quot;, &quot;2FMZn5...
+## $ album_id                     &lt;chr&gt; &quot;4I2eUTxQVMHYWLyb3v5loL&quot;, &quot;4I2eUT...
+## $ album_type                   &lt;chr&gt; &quot;album&quot;, &quot;album&quot;, &quot;album&quot;, &quot;album...
+## $ album_images                 &lt;list&gt; [&lt;data.frame[3 x 3]&gt;, &lt;data.fram...
+## $ album_release_date           &lt;chr&gt; &quot;2019-11-08&quot;, &quot;2019-11-08&quot;, &quot;2019...
+## $ album_release_year           &lt;dbl&gt; 2019, 2019, 2019, 2019, 2019, 201...
+## $ album_release_date_precision &lt;chr&gt; &quot;day&quot;, &quot;day&quot;, &quot;day&quot;, &quot;day&quot;, &quot;day&quot;...
+## $ danceability                 &lt;dbl&gt; 0.710, 0.555, 0.588, 0.728, 0.623...
+## $ energy                       &lt;dbl&gt; 0.473, 0.367, 0.388, 0.437, 0.636...
+## $ key                          &lt;int&gt; 5, 5, 4, 9, 9, 4, 3, 0, 9, 0, 3, ...
+## $ loudness                     &lt;dbl&gt; -8.676, -8.055, -9.248, -7.907, -...
+## $ mode                         &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+## $ speechiness                  &lt;dbl&gt; 0.0569, 0.0291, 0.0376, 0.0449, 0...
+## $ acousticness                 &lt;dbl&gt; 0.8680, 0.8730, 0.8700, 0.7740, 0...
+## $ instrumentalness             &lt;dbl&gt; 1.12e-04, 0.00e+00, 0.00e+00, 9.1...
+## $ liveness                     &lt;dbl&gt; 0.2060, 0.2350, 0.1220, 0.0274, 0...
+## $ valence                      &lt;dbl&gt; 0.878, 0.781, 0.723, 0.906, 0.611...
+## $ tempo                        &lt;dbl&gt; 138.341, 130.753, 126.781, 137.12...
+## $ track_id                     &lt;chr&gt; &quot;0XNGYgnlIu45rsA8uF5ezp&quot;, &quot;1yN9nS...
+## $ analysis_url                 &lt;chr&gt; &quot;https://api.spotify.com/v1/audio...
+## $ time_signature               &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ...
+## $ artists                      &lt;list&gt; [&lt;data.frame[1 x 6]&gt;, &lt;data.fram...
+## $ available_markets            &lt;list&gt; [&lt;&quot;AD&quot;, &quot;AE&quot;, &quot;AR&quot;, &quot;AT&quot;, &quot;BE&quot;, ...
+## $ disc_number                  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+## $ duration_ms                  &lt;int&gt; 142813, 135373, 167373, 141560, 1...
+## $ explicit                     &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE...
+## $ track_href                   &lt;chr&gt; &quot;https://api.spotify.com/v1/track...
+## $ is_local                     &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE...
+## $ track_name                   &lt;chr&gt; &quot;Down On The Corner Of Love&quot;, &quot;It...
+## $ track_preview_url            &lt;chr&gt; &quot;https://p.scdn.co/mp3-preview/f5...
+## $ track_number                 &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11...
+## $ type                         &lt;chr&gt; &quot;track&quot;, &quot;track&quot;, &quot;track&quot;, &quot;track...
+## $ track_uri                    &lt;chr&gt; &quot;spotify:track:0XNGYgnlIu45rsA8uF...
+## $ external_urls.spotify        &lt;chr&gt; &quot;https://open.spotify.com/track/0...
+## $ album_name                   &lt;chr&gt; &quot;Find Myself&quot;, &quot;Find Myself&quot;, &quot;Fi...
+## $ key_name                     &lt;chr&gt; &quot;F&quot;, &quot;F&quot;, &quot;E&quot;, &quot;A&quot;, &quot;A&quot;, &quot;E&quot;, &quot;D#...
+## $ mode_name                    &lt;chr&gt; &quot;major&quot;, &quot;major&quot;, &quot;major&quot;, &quot;major...
+## $ key_mode                     &lt;chr&gt; &quot;F major&quot;, &quot;F major&quot;, &quot;E major&quot;, ...</code></pre>
+<p>This is too many columns for now. Let’s narrow our focus to make it easier to work with.</p>
+<pre class="r"><code>buck &lt;- buck_raw %&gt;% 
+  select(album_release_date, album_release_year, danceability:tempo, time_signature, 
+         duration_ms, track_name, album_name, key_mode) </code></pre>
+</div>
+<div id="summaries-of-buck" class="section level2">
+<h2>Summaries of Buck</h2>
+<p>With this data in hand I’ll make some rapid fire summaries of Buck Owens. These summaries turned out not to be particularly compelling radio material but I’m not going to let that deter me. Taking cue from the spotifyr package, what is Buck’s most common key?</p>
+<pre class="r"><code>buck %&gt;% 
+    count(key_mode, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 22 x 2
+##    key_mode     n
+##    &lt;chr&gt;    &lt;int&gt;
+##  1 G# major   237
+##  2 A major    231
+##  3 D# major   150
+##  4 G major    121
+##  5 E major    117
+##  6 A# major    96
+##  7 F major     90
+##  8 C major     83
+##  9 D major     75
+## 10 F# major    75
+## # ... with 12 more rows</code></pre>
+<p>The man loved G#/Ab major. It is a bit of unusual key and you can readily find some speculation online about why Buck might have tuned down a half step. And not much in the minor keys. I guess country finds sadness another way. How about time signature?</p>
+<pre class="r"><code>buck %&gt;% 
+    count(time_signature, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   time_signature     n
+##            &lt;int&gt; &lt;int&gt;
+## 1              4  1269
+## 2              3   149
+## 3              5    15
+## 4              1     2
+## 5              0     1</code></pre>
+<p>A few suspect data points (zero time signature?) but overall Buck made a career of keep things pretty straight forward. Mostly 4/4 with the occasional waltz.</p>
+<p>What about Buck’s album output. Let’s plot his cumulative albums over time:</p>
+<pre class="r"><code>cumulative_albums &lt;- buck %&gt;% 
+  select(album_release_year, album_name) %&gt;% 
+  distinct(.keep_all = TRUE) %&gt;% 
+  count(album_release_year) %&gt;% 
+  arrange(album_release_year) %&gt;% 
+  mutate(albums = cumsum(n))
+
+ggplot(cumulative_albums, aes(x = album_release_year, y = albums)) +
+  geom_line()</code></pre>
+<p><img src="/post/2019-11-17-what-the-buck_files/figure-html/unnamed-chunk-11-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>Ok so this data isn’t particularly good. Likely what would be help is an <code>original_release_date</code> column. Buck was most active in the sixties while the data suggests his output was highest during the mid-nineties. Presumably these are re-issue dates. Still good to know — can’t rely on that year data.</p>
+<p>The <a href="https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/">audio features</a> available through the spotify api are very interesting numeric summaries of songs and will be fun to play around with. I won’t go into descriptions of each audio feature but we will calculate histograms of all Buck’s songs for each feature. Most features range between 0 and 1 so the distributions can give us a sense of Buck’s music tendencies.</p>
+<pre class="r"><code>buck %&gt;% 
+  select(danceability:tempo, duration_ms) %&gt;% 
+  gather() %&gt;% 
+  mutate(key = tools::toTitleCase(key)) %&gt;% 
+  ggplot() +
+  geom_histogram(aes(x = value), fill = &quot;blue&quot;) +
+  facet_wrap(~key, scales = &quot;free&quot;)</code></pre>
+<p><img src="/post/2019-11-17-what-the-buck_files/figure-html/unnamed-chunk-12-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>I really like looking at these distributions. Quite what they represent (or how they are derived) is something that I haven’t quite wrapped my brain around. However they do offer us some high level assessment of an artist’s catalogue. If the album release date info was better we could do some interesting retrospectives. In another post I’ll try to find a better example. Buck’s songs are reasonably dancy, don’t vary much in length and are very positive. This conflicts with my prior of country music being sad and is also likely an interesting hypothesis to further test in a future post.</p>
+<p>Lastly let’s have a look and see if danceability is related to tempo.</p>
+<pre class="r"><code>cor.test(buck$danceability, buck$tempo, method = &quot;spearman&quot;)</code></pre>
+<pre><code>## 
+##  Spearman&#39;s rank correlation rho
+## 
+## data:  buck$danceability and buck$tempo
+## S = 589582638, p-value = 1.005e-13
+## alternative hypothesis: true rho is not equal to 0
+## sample estimates:
+##        rho 
+## -0.1946284</code></pre>
+<pre class="r"><code>buck %&gt;% 
+  filter(danceability != 0) %&gt;% 
+  ggplot(aes(x = tempo, y = danceability)) +
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;) </code></pre>
+<p><img src="/post/2019-11-17-what-the-buck_files/figure-html/unnamed-chunk-13-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>There appears to be a very slight and negative relationship with danceability and tempo. If you are really dancing, you probably want that song to be short. We all only have so much stamina.</p>
+<p>This has been a short usecase of using the spotify API and in particular the spotifyr package. It is actually pretty exciting to have so much music info at your fingertips.</p>
+</div>

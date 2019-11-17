@@ -1,0 +1,8 @@
+.Rproj.httr-oauth
+.Rprofile
+.Rhistory
+.Rproj*
+public/
+.Rproj.user
+
+2019-11-17-what-the-buck_cache/
