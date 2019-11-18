@@ -1,4 +1,4 @@
-baseurl = "/"
+baseurl = "samalbers.science/"
 languageCode = "en-us"
 title = "sam | science"
 theme = "hugo-future-imperfect"
@@ -80,7 +80,7 @@ canonifyURLs = true
 
   paragraph = "Data science, water, music and whatever else..."
 
-  about     = "I am a data scientist working for the Province of BC. I spend most of my time in R."
+  about     = "I am a data scientist living in Victoria, BC, Canada. "
 
   # This appears at the top of the sidebar above params.intro.header.
   # A width of less than 100px is recommended from a design perspective.
