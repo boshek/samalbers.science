@@ -1,4 +1,4 @@
-baseurl = "samalbers.science/"
+baseurl = "https://samalbers.science"
 languageCode = "en-us"
 title = "sam | science"
 theme = "hugo-future-imperfect"
