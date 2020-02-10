@@ -1,0 +1,201 @@
+---
+title: A short history of me at rstudio::conf 2020
+author: Sam Albers
+date: '2020-02-09'
+slug: a-short-history-of-me-at-rstudio-conf-2020
+categories:
+  - R
+  - RStudio
+tags: []
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, eval=FALSE, include=FALSE}
+## Make the rivers data structure
+# Rivers data -------------------------------------------------------------
+library(tidyhydat)
+library(arrow)
+library(lubridate)
+
+stations <- hy_stations(prov_terr_state_loc = 'CA')
+
+dir.create("data/rivers-data")
+for (prov in unique(stations$PROV_TERR_STATE_LOC)) {
+  flows <- hy_daily_flows(prov_terr_state_loc = prov)
+  for (year in 2017:2018) {
+    for (month in 1:12) {
+      riv <-
+        flows[year(flows$Date) == year &
+                month(flows$Date) == month,]
+      if (month < 10) {
+        month <- paste0("0", month)
+      }
+      path <- file.path("data/rivers-data", prov, year, month)
+      dir.create(path, recursive = TRUE, showWarnings = FALSE)
+      write_parquet(riv, file.path(path, paste0("rivers.parquet")))
+    }
+  }
+}
+```
+
+
+
+I was recently lucky enough to attend the 2020 version of RStudio::conf. Perhaps predictably, the conference and workshops were exceptional and the quality of the work people are doing in the R community is really quite astounding. It is inspiring to see all the wonderful things that folks in the R community are working on. People are really quite clever. Before I lose everything to memory leaks, I am going to try to catalogue a few things that I learned at the conference by trying to weave them together into a single workflow.
+
+## A brief detour about where to get these packages
+Several of the packages that I am using here at development stages that aren't yet on CRAN. I'm including the installation instructions here but eventually this process should be as easy as the typical `install.packages`.
+
+Here I am using the nightly build of the `arrow` package which can be installed like this:
+
+```{r, eval=FALSE}
+install.packages('arrow', repos = 'https://dl.bintray.com/ursalabs/arrow-r')
+```
+
+And then for `ggtext` which isn't on CRAN, we install it (and the dev version of `ggplot2`) from GitHub:
+
+```{r, eval=FALSE}
+remotes::install_github('wilkelab/ggtext')
+```
+
+For other packages that I am using I'll load them here:
+
+```{r, warning=FALSE, message=FALSE}
+library(fs)
+library(purrr)
+library(dplyr)
+library(arrow)
+library(ggtext)
+library(ggplot2)
+library(lubridate)
+library(here)
+library(stringr)
+library(magrittr)
+library(glue)
+```
+## The `arrow` package
+
+One of my main goals at the conference was to find out new ways of dealing with very big flat files. I work in an environment where big flat files are sort of our only option. Adding them to a proper database is not currently possible but I was hopeful that I could learn something about the [Apache Arrow project](https://arrow.apache.org/) and the ways that it could help those of us working in R. I was not disappointed. Neil Richardson with [UrsaLabs](https://ursalabs.org/) gave a great [presentation](https://enpiar.com/talks/rstudio-conf-2020/#1) on the status of the project with a specific focus on the R package `arrow`. 
+
+Here I am mostly parroting what Neil did with his presentation replacing taxi data with hydrometric data from Canadian rivers. The real eye opener for me here was the addition of the `open_dataset()` function. We are often presented with data that is organized in a hierchical folder structure. Here at the top level we have Canadian `province`:
+
+
+```{r, echo=FALSE}
+dir_tree(path = here("data/rivers-data"), 0)
+```
+
+
+within each `province` folder we have `year`:
+  
+```{r, echo=FALSE}
+dir_tree(path = here("data/rivers-data/PE"),0)
+```
+within each `year` folder we have `month` 
+
+```{r, echo=FALSE}
+dir_tree(path = here("data/rivers-data/PE/2017"),0)
+```
+
+
+and finally within that directory you actually have your data file:
+```{r, echo=FALSE}
+dir_tree(path = here("data/rivers-data/PE/2017/01"), 0)
+```
+
+Normally in this situation my approach would be to do some sort of iterative process over each file (mind you still making use of arrow to read the parquet file):
+  
+```{r, cache = TRUE}
+df_rivs <- list.files(here("data/rivers-data/"), pattern = "*.parquet", recursive = TRUE, full.names = TRUE) %>% 
+  map_dfr(read_parquet)
+
+df_rivs %>% 
+  filter(year == 2017) %>% 
+  filter(province %in% c("BC", "YT", "AB", "SK")) %>% 
+  filter(Parameter == 'Flow') %>% 
+  group_by(STATION_NUMBER, province) %>% 
+  arrange(Date)
+```
+
+What we learned in Neil's presentation was the magic of the `open_dataset` function, specifically the ability to map hierchical directory structure to virtual columns in your data. If we read just one parquet file, it is apparent that there aren't any `province`, `year` or `month` columns:
+  
+```{r}
+read_parquet(here("data/rivers-data/AB/2017/01/rivers.parquet"))
+```
+
+Instead, if we assign partitions, using a vector, based on the directory structury, `open_dataset` can use that information to efficiently subset a large dataset. Best of all, the `select`, `filter` and `rename` dplyr verbs are implemented much like `dbplyr` and your query is executed lazily taking advantage of both the directory structure and the parquet files. 
+
+```{r}
+rivs <- open_dataset(here("data/rivers-data/"), partitioning = c("province","year", "month"))
+rivs
+
+river_data <- rivs %>% 
+  filter(year == 2017) %>% 
+  filter(province %in% c("BC", "YT", "AB", "SK")) %>% 
+  filter(Parameter == 'Flow') %>% 
+  group_by(STATION_NUMBER, province) %>% 
+  collect() %>% 
+  arrange(Date)
+```
+
+While YMMV depending on the size of your data, the Apache Arrow project and for R users the `arrow` package is proceeding very nicely and there are some very exciting developments happening. Now we have efficiently pared down our river flow data using `arrow`, the next exciting thing I want to share is some really cool developments in the `ggplot2` sphere.
+
+## The `ggtext` package
+
+The `ggtext` package by Claus Wilke provides much improved rendering support for `ggplot2`. What feels like should a simple task (e.g. colour some portion of text) is sometimes quite onerous. Though the package is still in its infancy, `ggtext` is breaking trail on making these steps much easier and by providing a mini markdown engine directly inside `ggplot2`. It already provides some support for markdown and html rendering. 
+
+<center><img src="https://media.giphy.com/media/vMEjhlxsBR7Fe/giphy.gif"/></center>
+
+So how can we use it to better visualize our river data? Because `ggtext` has some minimal html rendering that means we can actually include images right inside the ggplot. My idea was to try and see if I could include Provincial flags as axes labels in the plot. The requires a little of work to get the files, extract the province name from the file name, glue the image names with the html snippets, and create a new column in our rivers data because the provinces are labelled in the same way. I won't go through in detail but here are the steps:
+
+### Get the Data
+```{r, eval=FALSE}
+dl <- file.path(tempdir(), 'flag.zip')
+download.file('https://www.ederflag.com/images/catalog_images/canadian-province-and-territory-images.zip',
+              dest = dl)
+unzip(dl, exdir = here("data/flags"))
+```
+
+### Process the paths
+```{r}
+flag_paths <- dir_ls(here("data/flags"), glob = "*.jpg")
+
+province_full <- path_file(flag_paths) %>%
+  path_ext_remove() %>%
+  str_sub(start = 12) %>%
+  str_remove('-flag') %>%
+  str_remove('-image') %>%
+  str_replace_all('-', ' ') %>%
+  str_to_title()
+
+river_data %<>% 
+  left_join(tibble(province_full = province_full,
+                   province = c("AB", "BC", "MB", "NB", "NL", "NT",
+                                "NS", "NU", "ON", "PE", "QC", "SK", "YT")),
+            by = c('province'))
+```
+
+### Create the image tags
+```{r}
+img_tags <- glue("<img src='{flag_paths}' width='100' /><br>*{province_full}*")
+names(img_tags) <- province_full
+```
+
+After this process we have a named vector, which sources the appropriate provincial flag and is ready to render. This is accomplished by supplying the `img_tags` vector to the scale of your choice (here `x`). `ggplot2` knows to actually render via the `element_markdown` theme call. Otherwise we can simply treat this like any other ggplot.  
+```{r, cache=TRUE}
+ggplot(river_data, aes(province_full, Value, colour = province)) +
+  geom_point() +
+  coord_flip() +
+  scale_x_discrete(name = NULL, labels = img_tags) +
+  theme(axis.text.y = element_markdown(color = "black", size = 11))
+```
+
+From a visualization perspective this pre-supposes that the viewer of the plot knows the flags and is able to map 
