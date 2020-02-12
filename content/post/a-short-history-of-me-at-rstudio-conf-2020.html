@@ -1,0 +1,281 @@
+---
+title: A short history of me at rstudio::conf 2020
+author: Sam Albers
+date: '2020-02-09'
+slug: a-short-history-of-me-at-rstudio-conf-2020
+categories:
+  - R
+  - RStudio
+tags: []
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+
+
+<p>In January, I was lucky enough to attend the 2020 edition of RStudio::conf. Perhaps predictably, the conference and workshops were exceptional and to see all the wonderful things that folks in the R community are capable of was quite inspiring. People are really quite clever. Attending the tidy dev day was such a nice epilogue to the conference because after spending so much time listening to people talk about <em>their</em> code, I was pretty keen to crack open R and have at it myself. Before I lose everything from the conference to memory leaks, I am going to try to catalogue a few things that I learned at the conference by trying to weave them together into a single workflow.</p>
+<div id="a-brief-detour-about-where-to-get-these-packages" class="section level2">
+<h2>A brief detour about where to get these packages</h2>
+<p>Several of the packages that I am using here are at development stages and aren’t yet on CRAN. I’m including the installation instructions here but eventually this process should be as easy as the typical <code>install.packages</code>. Here I am using the nightly build of the <code>arrow</code> package which can be installed like this:</p>
+<pre class="r"><code>install.packages(&#39;arrow&#39;, repos = &#39;https://dl.bintray.com/ursalabs/arrow-r&#39;)</code></pre>
+<p>And then for <code>ggtext</code>, which isn’t on CRAN, we install it (and the dev version of <code>ggplot2</code>) from GitHub:</p>
+<pre class="r"><code>remotes::install_github(&#39;wilkelab/ggtext&#39;)</code></pre>
+<p>Other packages that I am using are loaded here:</p>
+<pre class="r"><code>library(fs)
+library(purrr)
+library(dplyr)
+library(arrow)
+library(ggtext)
+library(ggplot2)
+library(lubridate)
+library(here)
+library(stringr)
+library(glue)</code></pre>
+</div>
+<div id="the-arrow-package" class="section level2">
+<h2>The <code>arrow</code> package</h2>
+<p>One of my main goals at the conference was to find out new ways of dealing with very big flat files. I work in an environment where big flat files are sort of our only option. Adding them to a proper database is not currently possible but I was hopeful that maybe the <a href="https://arrow.apache.org/">Apache Arrow project</a> might offer up some solutions. I was not disappointed. Neal Richardson with <a href="https://ursalabs.org/">UrsaLabs</a> gave a great <a href="https://enpiar.com/talks/rstudio-conf-2020/#1">presentation</a> on the status of the project with a specific focus on the R package <code>arrow</code>.</p>
+<p>Here I am mostly parroting what Neal did with his presentation just replacing taxi data with Canadian hydrometric data. Whether we are provisioned data that way or create it ourselves, consider data organized in a hierarchical folder structure. Here at the top level we have Canadian <code>province</code>:</p>
+<pre><code>## C:/_dev/GitHub_repos/samalbers.science/data/rivers-data
+## +-- AB
+## +-- BC
+## +-- MB
+## +-- NB
+## +-- NL
+## +-- NS
+## +-- NT
+## +-- NU
+## +-- ON
+## +-- PE
+## +-- QC
+## +-- SK
+## \-- YT</code></pre>
+<p>within each <code>province</code> folder we have <code>year</code>:</p>
+<pre><code>## C:/_dev/GitHub_repos/samalbers.science/data/rivers-data/AB
+## +-- 2017
+## \-- 2018</code></pre>
+<p>within each <code>year</code> folder we have <code>month</code></p>
+<pre><code>## C:/_dev/GitHub_repos/samalbers.science/data/rivers-data/AB/2017
+## +-- 01
+## +-- 02
+## +-- 03
+## +-- 04
+## +-- 05
+## +-- 06
+## +-- 07
+## +-- 08
+## +-- 09
+## +-- 10
+## +-- 11
+## \-- 12</code></pre>
+<p>and finally within that directory you actually have your data file:</p>
+<pre><code>## C:/_dev/GitHub_repos/samalbers.science/data/rivers-data/AB/2017/01
+## \-- rivers.parquet</code></pre>
+<p>Normally in this situation my approach would be to do some sort of iterative process over each file (mind you still making use of <code>arrow</code> to read the parquet file):</p>
+<pre class="r"><code>df_rivs &lt;- list.files(here(&#39;data/rivers-data/&#39;), pattern = &#39;*.parquet&#39;, recursive = TRUE, full.names = TRUE) %&gt;% 
+  map_dfr(read_parquet)</code></pre>
+<p>From there we might execute some typical sequence designed to filter our data down to a more manageable size.</p>
+<pre class="r"><code>df_rivs %&gt;% 
+  filter(year(Date) == 2017) %&gt;% 
+  filter(Parameter == &#39;Flow&#39;) %&gt;% 
+  arrange(Date)</code></pre>
+<pre><code>## # A tibble: 456,448 x 5
+##    STATION_NUMBER Date       Parameter  Value Symbol
+##    &lt;chr&gt;          &lt;date&gt;     &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
+##  1 05AA008        2017-01-01 Flow       1.75  B     
+##  2 05AC003        2017-01-01 Flow       0.954 B     
+##  3 05AC012        2017-01-01 Flow       0.736 B     
+##  4 05AC941        2017-01-01 Flow       1.03  &lt;NA&gt;  
+##  5 05AD007        2017-01-01 Flow      24.6   B     
+##  6 05AE027        2017-01-01 Flow       4.81  B     
+##  7 05AG006        2017-01-01 Flow      24.7   B     
+##  8 05AH005        2017-01-01 Flow      NA     &lt;NA&gt;  
+##  9 05AH037        2017-01-01 Flow      NA     &lt;NA&gt;  
+## 10 05AH044        2017-01-01 Flow      NA     &lt;NA&gt;  
+## # ... with 456,438 more rows</code></pre>
+<p>What we learned in Neal’s presentation was the magic of the <code>open_dataset</code> function and specifically its ability to map hierarchical directory structure to virtual columns in your data. If we read just one parquet file, it is apparent that there aren’t any <code>province</code>, <code>year</code> or <code>month</code> columns:</p>
+<pre class="r"><code>read_parquet(here(&#39;data/rivers-data/AB/2017/01/rivers.parquet&#39;))</code></pre>
+<pre><code>## # A tibble: 2,263 x 5
+##    STATION_NUMBER Date       Parameter  Value Symbol
+##    &lt;chr&gt;          &lt;date&gt;     &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
+##  1 05AA008        2017-01-01 Flow       1.75  B     
+##  2 05AC003        2017-01-01 Flow       0.954 B     
+##  3 05AC012        2017-01-01 Flow       0.736 B     
+##  4 05AC941        2017-01-01 Flow       1.03  &lt;NA&gt;  
+##  5 05AD007        2017-01-01 Flow      24.6   B     
+##  6 05AE027        2017-01-01 Flow       4.81  B     
+##  7 05AG006        2017-01-01 Flow      24.7   B     
+##  8 05AH005        2017-01-01 Flow      NA     &lt;NA&gt;  
+##  9 05AH037        2017-01-01 Flow      NA     &lt;NA&gt;  
+## 10 05AH044        2017-01-01 Flow      NA     &lt;NA&gt;  
+## # ... with 2,253 more rows</code></pre>
+<p>Instead, if we assign partitions, using a vector based on the directory structure, <code>open_dataset</code> can use that information to efficiently subset a larger dataset.</p>
+<pre class="r"><code>rivs &lt;- open_dataset(here(&#39;data/rivers-data/&#39;), partitioning = c(&#39;province&#39;,&#39;year&#39;, &#39;month&#39;))
+rivs</code></pre>
+<pre><code>## Dataset
+## STATION_NUMBER: string
+## Date: date32[day]
+## Parameter: string
+## Value: double
+## Symbol: string
+## province: string
+## year: int32
+## month: int32
+## 
+## See $metadata for additional Schema metadata</code></pre>
+<p>Best of all, the <code>select</code>, <code>filter</code>, <code>group_by</code> and <code>rename</code> dplyr verbs are implemented much like <code>dbplyr</code> and your query is executed lazily taking advantage of both the directory structure and the parquet files.</p>
+<pre class="r"><code>river_data &lt;- rivs %&gt;% 
+  filter(year == 2017) %&gt;% 
+  filter(province %in% c(&#39;BC&#39;, &#39;YT&#39;, &#39;AB&#39;, &#39;SK&#39;, &#39;NL&#39;)) %&gt;% 
+  filter(Parameter == &#39;Flow&#39;) %&gt;% 
+  group_by(STATION_NUMBER, province) %&gt;% 
+  collect() %&gt;% 
+  arrange(Date)</code></pre>
+<p>While YMMV depending on the size of your data, using folder structure is a nifty way to only access the data we actually need. The Apache Arrow project, and for R users the <code>arrow</code> package, are proceeding very nicely. Now that we have efficiently pared down our river flow data, the next exciting thing I want to explore is some really cool developments in the <code>ggplot2</code> sphere.</p>
+</div>
+<div id="the-ggtext-package" class="section level2">
+<h2>The <code>ggtext</code> package</h2>
+<p>The <code>ggtext</code> package by Claus Wilke provides much improved rendering support for <code>ggplot2</code>. What feels like should a simple task (e.g. colour some portion of text) is sometimes quite onerous in <code>ggplot2</code>. Though the package is still in its infancy, <code>ggtext</code> is breaking trail on making these steps much easier by providing a mini markdown engine directly inside <code>ggplot2</code>. After audible <em>ohhs</em> and <em>ahhs</em> from the crowd while demoing <code>ggtext</code>, Claus observed “I can see this fills a need”. Already it provides some support for markdown and html rendering.</p>
+<center>
+<img src="https://media.giphy.com/media/vMEjhlxsBR7Fe/giphy.gif"/>
+</center>
+<p>So how can we use it to better visualize our river data? Because <code>ggtext</code> has some minimal html rendering, we can actually include images right inside the ggplot call. My idea was to try and see if I could include provincial flags as axes labels in the plot. This requires steps to:</p>
+<ul>
+<li>get the files</li>
+<li>extract the province name from the file name</li>
+<li>create a new column in our rivers data because the provinces aren’t labelled in the same way</li>
+<li>glue the image names with the html snippets</li>
+</ul>
+<p>I won’t go into too much detail but here are the steps:</p>
+<div id="get-the-data" class="section level3">
+<h3>Get the Data</h3>
+<pre class="r"><code>dl &lt;- file.path(tempdir(), &#39;flag.zip&#39;)
+download.file(&#39;https://www.ederflag.com/images/catalog_images/canadian-province-and-territory-images.zip&#39;,
+              dest = dl)
+unzip(dl, exdir = here(&#39;data/flags&#39;))
+unlink(dl)</code></pre>
+</div>
+<div id="extract-province" class="section level3">
+<h3>Extract Province</h3>
+<pre class="r"><code>flag_paths &lt;- dir_ls(here(&#39;data/flags&#39;), glob = &#39;*.jpg&#39;)
+
+province_full &lt;- path_file(flag_paths) %&gt;%
+  path_ext_remove() %&gt;%
+  str_sub(start = 12) %&gt;%
+  str_remove(&#39;-flag&#39;) %&gt;%
+  str_remove(&#39;-image&#39;) %&gt;%
+  str_replace_all(&#39;-&#39;, &#39; &#39;) %&gt;%
+  str_to_title()</code></pre>
+</div>
+<div id="crosswalk-province-names" class="section level3">
+<h3>Crosswalk Province Names</h3>
+<pre class="r"><code>river_data &lt;- river_data %&gt;% 
+  left_join(tibble(province_full = province_full,
+                   province = c(&#39;AB&#39;, &#39;BC&#39;, &#39;MB&#39;, &#39;NB&#39;, &#39;NL&#39;, &#39;NT&#39;,
+                                &#39;NS&#39;, &#39;NU&#39;, &#39;ON&#39;, &#39;PE&#39;, &#39;QC&#39;, &#39;SK&#39;, &#39;YT&#39;)),
+            by = c(&#39;province&#39;))</code></pre>
+</div>
+<div id="create-the-image-tags" class="section level3">
+<h3>Create the Image Tags</h3>
+<pre class="r"><code>img_tags &lt;- glue(&quot;&lt;img src=&#39;{flag_paths}&#39; width=&#39;100&#39; /&gt;&quot;)
+names(img_tags) &lt;- province_full</code></pre>
+<p>We now have a named vector, which sources the appropriate provincial flag and is ready to render. This is accomplished by supplying the <code>img_tags</code> vector to the scale of your choice (here <code>scale_x_discrete</code>). <code>ggplot2</code> knows how to actually render via <code>ggtext::element_markdown</code>. Otherwise we can simply treat this like any other ggplot. Here we are also calculating the annual sum of flows by each value of <code>STATION_NUMBER</code>.</p>
+<pre class="r"><code>annual_flow &lt;- river_data %&gt;% 
+  group_by(STATION_NUMBER, province, province_full) %&gt;%
+  summarise(annual_flow = sum(Value, na.rm = TRUE))
+
+annual_flow %&gt;% 
+  ggplot(aes(x = province_full, y = annual_flow)) +
+  geom_point() +
+  scale_x_discrete(name = NULL, labels = img_tags) +
+  theme(axis.text.x = element_markdown(color = &#39;black&#39;, size = 11))</code></pre>
+<p><img src="/post/a-short-history-of-me-at-rstudio-conf-2020_files/figure-html/unnamed-chunk-18-1.png" width="960" /></p>
+<p>So I think this is pretty cool! We have images in the axes. AFAIK, this was previously impossible. Unfortunately this isn’t a particularly informative nor a nice looking plot. The next step in the workflow is to change that.</p>
+</div>
+</div>
+<div id="design-nicer-plots" class="section level2">
+<h2>Design Nicer Plots</h2>
+<p>RStudio::conf had a thread of design thinking running through the workshops and conference. From the tidyverse’s near obsession with the design of their api to the inclusion of a live episode of Not So Standard deviation as a keynote, thinking about data science from a design perspective was a key theme that emerged for me. One example of this was <a href="https://twitter.com/W_R_Chase">Will Chase’s</a> wonderful talk on the <a href="https://www.williamrchase.com/slides/assets/player/KeynoteDHTMLPlayer.html#0">Glamour of Graphics</a>. Will presented some very thoughtful approaches to creating better visualizations. I am going to <del>butcher</del> apply some of those approaches to our plot above.</p>
+<div id="hydrologically-relevant" class="section level3">
+<h3>Hydrologically Relevant</h3>
+<p>First of our plot is rather uninformative from hydrological perspective. A reasonable goal for this plot would be to aid the user to evaluate the distribution of annual river flow by province. In the above plot, the extreme values are stretching the scale too far out so let’s limit our analysis to rivers that output less that 10,000 m<sup>3</sup>/s per year.</p>
+<pre class="r"><code>annual_flow_sub &lt;- annual_flow %&gt;%
+  filter(annual_flow &lt; 10000)</code></pre>
+<p>Also the basic point plot doesn’t give us a great way to look at the distribution. For that task, another of Claus’s packages, <code>ggridges</code> comes in handy. <code>ggridges</code> is great for visualizing distributions and also forces us to flip the axes creating a more natural information flow (at least for those of us that read left to right).</p>
+<pre class="r"><code>library(ggridges)
+
+annual_flow_sub %&gt;%
+  ggplot(aes(y = province_full, x = annual_flow)) +
+  geom_density_ridges() +
+  scale_y_discrete(name = NULL, labels = img_tags) +
+  theme(axis.text.y = element_markdown(color = &#39;black&#39;, size = 11))</code></pre>
+<p><img src="/post/a-short-history-of-me-at-rstudio-conf-2020_files/figure-html/unnamed-chunk-20-1.png" width="960" /></p>
+<p>A great line from Will’s presentation pertained to white space:</p>
+<blockquote>
+<p>White space is like garlic; take the amount you think you need, then triple it.</p>
+</blockquote>
+<p>Right then let’s create some more white space by getting rid of the classic ggplot2 grey background. Here we can also tweak the height of the ridges to better show the distributions.</p>
+<pre class="r"><code>annual_flow_sub %&gt;%
+  ggplot(aes(y = province_full, x = annual_flow)) +
+  geom_density_ridges(scale = 1) +
+  scale_y_discrete(name = NULL, labels = img_tags) +
+  theme_minimal() +
+  theme(axis.text.y = element_markdown(color = &#39;black&#39;, size = 11))</code></pre>
+<p><img src="/post/a-short-history-of-me-at-rstudio-conf-2020_files/figure-html/unnamed-chunk-21-1.png" width="960" />
+Ok looking a bit better. Another one of Will’s suggestion is to remove grid lines as much as possible. I basically agree and just keep the minor x values.</p>
+<pre class="r"><code>annual_flow_sub %&gt;%
+  ggplot(aes(y = province_full, x = annual_flow)) +
+  geom_density_ridges(scale = 1) +
+  scale_y_discrete(name = NULL, labels = img_tags) +
+  theme_minimal() +
+  theme(axis.text.y = element_markdown(color = &#39;black&#39;, size = 11),
+        panel.grid.major = element_blank(),
+        panel.grid.minor.y = element_blank())</code></pre>
+<p><img src="/post/a-short-history-of-me-at-rstudio-conf-2020_files/figure-html/unnamed-chunk-22-1.png" width="960" />
+✔️ Now we need some colour here. As Will stated colour is hard. My goal here is pretty modest. I just want to distinguish between provinces. To do that I am actually going to steal some colour from the flags and manually map those to fill in colour for the ridges. At the same time I am going to add some transparency to the ridges. I am going to deviate a little from Will’s advice here and keep the legend. I often get this way with plots and err on the side of caution. In this case I am thinking that folks won’t recognize the flags and therefore will use the legend. In general though I do like the approach of forcing legends to justify their existence - they need to earn their keep.</p>
+<pre class="r"><code>flag_cols &lt;- c(&#39;#3853a4&#39;,
+               &#39;#f3ec18&#39;,
+               &#39;#da1a33&#39;,
+               &#39;#006b35&#39;,
+               &#39;#0054a5&#39;)
+
+annual_flow_sub %&gt;%
+  ggplot(aes(y = province_full, x = annual_flow, fill = province_full)) +
+  geom_density_ridges(scale = 1, alpha = 0.5) +
+  scale_fill_manual(values = flag_cols) +
+  scale_y_discrete(name = NULL, labels = img_tags) +
+  theme_minimal() +
+  theme(axis.text.y = element_markdown(color = &#39;black&#39;, size = 11),
+        panel.grid.major = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        legend.position = &#39;bottom&#39;,
+        legend.justification=&#39;right&#39;)</code></pre>
+<p><img src="/post/a-short-history-of-me-at-rstudio-conf-2020_files/figure-html/unnamed-chunk-23-1.png" width="960" /></p>
+<p>Lastly this plot needs a title, which according to Will’s sage advice is also a great way to remove axes labels - just explain it in the title.</p>
+<pre class="r"><code>annual_flow_sub %&gt;%
+  ggplot(aes(y = province_full, x = annual_flow, fill = province_full)) +
+  geom_density_ridges(scale = 1, alpha = 0.5) +
+  scale_fill_manual(name = NULL, values = flag_cols) +
+  scale_y_discrete(name = NULL, labels = img_tags) +
+  labs(title = &#39;Smoothed distribution of annual flow of gauged rivers (m^3^ s^-1^) by province&#39;) +
+  theme_minimal() +
+  theme(axis.text.y = element_markdown(color = &#39;black&#39;, size = 11),
+        axis.title.x = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        plot.title.position = &#39;plot&#39;,
+        plot.title = element_markdown(size = 15), 
+        legend.position = &#39;bottom&#39;,
+        legend.justification=&#39;right&#39;)</code></pre>
+<p><img src="/post/a-short-history-of-me-at-rstudio-conf-2020_files/figure-html/unnamed-chunk-24-1.png" width="960" /></p>
+<p>From a visualization perspective this isn’t perfect or even great. Legends are still problematic, I don’t even know if the flags add anything and grid lines feel like an addiction. Still I think this does provide a decent overview of the types of rivers that are gauged in each province. The Yukon gauges bigger rivers while Saskatchewan gauges many smaller rivers. BC and Newfoundland gauges a wide range of rivers. Alberta gauges rivers that reflect both its mountain and prairies landscapes.</p>
+</div>
+</div>
+<div id="back-to-rstudio-conf" class="section level2">
+<h2>Back to RStudio conf</h2>
+<p>This has been a mini tour through some concept and packages I took in while attending RStudio::conf 2020. I can’t wait to spend more time with these packages as they mature and development. Every time I connect with the R community, I am grateful to be part of it. RStudio itself presents itself with class and respect all while creating a positive and inclusive space. I’m looking forward to future opportunities to connect with all you nerds!</p>
+</div>
