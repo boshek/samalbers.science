@@ -36,7 +36,7 @@ stations <- hy_stations(prov_terr_state_loc = c('BC', 'YT', 'AB', 'SK', 'NL'))
 dir.create("data/rivers-data")
 for (prov in unique(stations$PROV_TERR_STATE_LOC)) {
   flows <- hy_daily_flows(prov_terr_state_loc = prov)
-  for (year in 1981) {
+  for (year in 2017) {
     for (month in 1:12) {
       riv <-
         flows[year(flows$Date) == year &
@@ -55,11 +55,7 @@ for (prov in unique(stations$PROV_TERR_STATE_LOC)) {
 In January, I was lucky enough to attend the 2020 edition of RStudio::conf. Perhaps predictably, the conference and workshops were exceptional and to see all the wonderful things that folks in the R community are capable of was quite inspiring. People are really quite clever. Attending the tidy dev day was such a nice epilogue to the conference because after spending so much time listening to people talk about _their_ code, I was pretty keen to crack open R and have at it myself. Before I lose everything from the conference to memory leaks, I am going to try to catalogue a few things that I learned at the conference by trying to weave them together into a single workflow.
 
 ## A brief detour about where to get these packages
-Several of the packages that I am using here are at development stages and aren't yet on CRAN. I'm including the installation instructions here but eventually this process should be as easy as the typical `install.packages`. Here I am using the nightly build of the `arrow` package which can be installed like this:
-```{r, eval=FALSE}
-install.packages('arrow', repos = 'https://dl.bintray.com/ursalabs/arrow-r')
-```
-And then for `ggtext`, which isn't on CRAN, we install it (and the dev version of `ggplot2`) from GitHub:
+Several of the packages that I am using here are at development stages and aren't yet on CRAN. I'm including the installation instructions here but eventually this process should be as easy as the typical `install.packages`. For `ggtext`, which isn't on CRAN, we install it (and the dev version of `ggplot2`) from GitHub:
 ```{r, eval=FALSE}
 remotes::install_github('wilkelab/ggtext')
 ```
@@ -162,7 +158,7 @@ I won't go into too much detail but here are the steps:
 dl <- file.path(tempdir(), 'flag.zip')
 download.file('https://www.ederflag.com/images/catalog_images/canadian-province-and-territory-images.zip',
               dest = dl)
-unzip(dl, exdir = here('data/flags'))
+unzip(dl, exdir = here::here('data/flags'))
 unlink(dl)
 ```
 
@@ -213,7 +209,7 @@ So I think this is pretty cool! We have images in the axes. AFAIK, this was prev
 RStudio::conf had a thread of design thinking running through the workshops and conference. From the tidyverse's near obsession with the design of their api to the inclusion of a live episode of Not So Standard deviation as a keynote, thinking about data science from a design perspective was a key theme that emerged for me. One example of this was [Will Chase's](https://twitter.com/W_R_Chase) wonderful talk on the [Glamour of Graphics](https://www.williamrchase.com/slides/assets/player/KeynoteDHTMLPlayer.html#0). Will presented some very thoughtful approaches to creating better visualizations. I am going to ~~butcher~~ apply some of those approaches to our plot above. 
 
 ### Hydrologically Relevant
-First of our plot is rather uninformative from hydrological perspective. A reasonable goal for this plot would be to aid the user to evaluate the distribution of annual river flow by province. In the above plot, the extreme values are stretching the scale too far out so let's limit our analysis to rivers that output less that 10,000 m^3^/s per year. 
+First off, our plot is rather uninformative from hydrological perspective. A reasonable goal for this plot would be to aid the user to evaluate the distribution of annual river flow by province. In the above plot, the extreme values are stretching the scale too far out so let's limit our analysis to rivers that output less that 10,000 m^3^/s per year. 
 
 ```{r}
 annual_flow_sub <- annual_flow %>%
@@ -302,9 +298,9 @@ annual_flow_sub %>%
 
 
 
-From a visualization perspective this isn't perfect or even great. Legends are still problematic, I don't even know if the flags add anything and grid lines feel like an addiction. Still I think this does provide a decent overview of the types of rivers that are gauged in each province. The Yukon gauges bigger rivers while Saskatchewan gauges many smaller rivers. BC and Newfoundland gauges a wide range of rivers. Alberta gauges rivers that reflect both its mountain and prairies landscapes.
+From a visualization perspective this isn't perfect or even great. Legends are still problematic, I don't even know if the flags add anything and grid lines feel like an addiction. Still I think this does provide a decent overview of the types of rivers that are gauged in each province. Remembering that we previously subset all our river flow data to less than 10000, the Yukon gauges bigger rivers while Saskatchewan gauges many smaller rivers. BC and Newfoundland gauge a wide range of rivers types. Alberta gauges rivers that reflect both its mountain and prairies landscapes.
 
 ## Back to RStudio conf
 
-This has been a mini tour through some concept and packages I took in while attending RStudio::conf 2020. I can't wait to spend more time with these packages as they mature and development.  Every time I connect with the R community, I am grateful to be part of it. RStudio itself presents itself with class and respect all while creating a positive and inclusive space. I'm looking forward to future opportunities to connect with all you nerds!
+This has been a mini tour through some concept and packages I took in while attending RStudio::conf 2020. I can't wait to spend more time with these packages as they mature and development.  Every time I connect with the R community, I am grateful to be part of it. RStudio itself presents with class and respect all while creating a positive and inclusive space. I'm looking forward to future opportunities to connect with all you nerds!
 
