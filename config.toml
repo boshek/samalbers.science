@@ -78,7 +78,7 @@ canonifyURLs = true
 [params.intro]
   header    = "sam's science"
 
-  paragraph = "Data science, water, music and whatever else..."
+  paragraph = "Data science, water and music"
 
   about     = "I am a data scientist living in Victoria, BC, Canada. "
 
@@ -121,6 +121,12 @@ canonifyURLs = true
   url = "/categories/"
   identifier = "fa fa-sitemap"
   weight = 4
+  
+[[menu.main]]
+  name = "R Packages"
+  url = "/r-packages/"
+  identifier = "fa fa-sitemap"
+  weight = 5
 
 
 # Sets Social Media icons to appear and link to your account. Value should be your
