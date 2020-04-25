@@ -7,4 +7,4 @@ I am a data scientist living in Victoria, BC, Canada. I acknowledge and thank th
 
 The repository that builds this blog is located at https://github.com/boshek/samalbers.science
 
-This blog is built using the R package [blogdown](https://bookdown.org/yihui/blogdown/) via Hugo using the [hugo future imperfect theme] (https://github.com/jpescador/hugo-future-imperfect). 
+This blog is built using the R package [blogdown](https://bookdown.org/yihui/blogdown/) via Hugo using the [hugo future imperfect theme] (https://github.com/jpescador/hugo-future-imperfect) and if behaving properly uses GitHub actions to actually build the site. 
