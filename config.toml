@@ -123,8 +123,8 @@ canonifyURLs = true
   weight = 4
   
 [[menu.main]]
-  name = "R Packages"
-  url = "/r-packages/"
+  name = "rsoi"
+  url = "/rsoi/"
   identifier = "fa fa-sitemap"
   weight = 5
 
@@ -138,7 +138,7 @@ canonifyURLs = true
   twitter          = "big_bad_sam"
   stackoverflow    = "5596534"
   googlescholar    = "https://scholar.google.com/citations?user=UGXIk_cAAAAJ&hl=en"
-  orcid            = "https://orcid.org/0000-0002-9270-7884"
+  orcid            = "0000-0002-9270-7884"
   linkedin         = "https://www.linkedin.com/in/sam-albers/"
   # Email
   email            = "first name last name at gmail dot com"
