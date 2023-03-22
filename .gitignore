@@ -1,13 +1,1 @@
-.Rproj.httr-oauth
-.Rprofile
-.Rhistory
-.Rproj*
-public/
-.Rproj.user
-
-*.parquet
-/data
-mei.csv
-
-2019-11-17-what-the-buck_cache/
-a-short-history-of-me-at-rstudio-conf-2020_cache/
+/.quarto/
