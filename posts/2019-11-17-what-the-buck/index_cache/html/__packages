@@ -1,0 +1,12 @@
+base
+methods
+datasets
+utils
+grDevices
+graphics
+stats
+spotifyr
+dplyr
+usethis
+ggplot2
+tidyr

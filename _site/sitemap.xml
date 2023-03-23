@@ -2,14 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://samalbers.science/posts/welcome/index.html</loc>
-    <lastmod>2023-03-23T16:26:55.314Z</lastmod>
+    <lastmod>2023-03-23T16:41:04.784Z</lastmod>
   </url>
   <url>
     <loc>https://samalbers.science/index.html</loc>
-    <lastmod>2023-03-23T16:26:54.138Z</lastmod>
+    <lastmod>2023-03-23T16:52:10.113Z</lastmod>
   </url>
   <url>
     <loc>https://samalbers.science/about.html</loc>
     <lastmod>2023-03-23T16:27:06.845Z</lastmod>
+  </url>
+  <url>
+    <loc>https://samalbers.science/posts/post-with-code/index.html</loc>
+    <lastmod>2023-03-23T16:41:04.124Z</lastmod>
+  </url>
+  <url>
+    <loc>https://samalbers.science/posts/2019-11-17-what-the-buck/index.html</loc>
+    <lastmod>2023-03-23T16:51:01.258Z</lastmod>
   </url>
 </urlset>
