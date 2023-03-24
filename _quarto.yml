@@ -12,10 +12,13 @@ website:
         href: https://github.com/
       - icon: twitter
         href: https://twitter.com
+  twitter-card: true
+  open-graph: true
 format:
   html:
-    theme: urchin.scss
+    theme: [darkly, urchin.scss]
     css: styles.css
+    toc: true
 
 
 
