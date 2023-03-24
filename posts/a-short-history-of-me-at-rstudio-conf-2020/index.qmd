@@ -100,7 +100,7 @@ dir_tree(path = here('data/rivers-data/AB/2017/01'), 0)
 
 Normally in this situation my approach would be to do some sort of iterative process over each file (mind you still making use of `arrow` to read the parquet file):
 
-```{r, cache = TRUE}
+```{r, cache = FALSE}
 df_rivs <- list.files(here('data/rivers-data/'), pattern = '*.parquet', recursive = TRUE, full.names = TRUE) %>% 
   map_dfr(read_parquet)
 ```
@@ -155,49 +155,37 @@ I won't go into too much detail but here are the steps:
 
 ### Get the Data
 ```{r, eval=FALSE}
-dl <- file.path(tempdir(), 'flag.zip')
-download.file('https://www.ederflag.com/images/catalog_images/canadian-province-and-territory-images.zip',
-              dest = dl)
-unzip(dl, exdir = here::here('data/flags'))
-unlink(dl)
+dir.create("data/flags")
+
+download.file("https://cdn.britannica.com/40/5440-004-BE91E74F/Flag-Alberta.jpg", destfile = "data/flags/AB.jpeg")
+download.file("https://cdn.britannica.com/63/5263-004-1C2B7CDE/Flag-Yukon-Territory.jpg", destfile = "data/flags/YT.jpeg")
+download.file("https://cdn.britannica.com/18/3918-004-9D01BB0E/Flag-Saskatchewan.jpg", destfile = "data/flags/SK.jpeg")
+download.file("https://cdn.britannica.com/92/2992-004-54C721CF/Flag-Newfoundland-and-Labrador.jpg", destfile = "data/flags/NL.jpeg")
+download.file("https://cdn.britannica.com/77/6877-004-26251B48/Flag-British-Columbia.jpg", destfile = "data/flags/BC.jpeg")
+
+
 ```
 
 ### Extract Province
 ```{r}
-flag_paths <- dir_ls(here('data/flags'), glob = '*.jpg')
-
-province_full <- path_file(flag_paths) %>%
-  path_ext_remove() %>%
-  str_sub(start = 12) %>%
-  str_remove('-flag') %>%
-  str_remove('-image') %>%
-  str_replace_all('-', ' ') %>%
-  str_to_title()
+flag_paths <- dir_ls(here('data/flags'), glob = '*.jpeg')
 ```
 
-### Crosswalk Province Names
-```{r}
-river_data <- river_data %>% 
-  left_join(tibble(province_full = province_full,
-                   province = c('AB', 'BC', 'MB', 'NB', 'NL', 'NT',
-                                'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT')),
-            by = c('province'))
-```
 
 ### Create the Image Tags
 ```{r}
 img_tags <- glue("<img src='{flag_paths}' width='100' />")
-names(img_tags) <- province_full
+names(img_tags) <- basename(path_ext_remove(flag_paths))
 ```
 
 We now have a named vector, which sources the appropriate provincial flag and is ready to render. This is accomplished by supplying the `img_tags` vector to the scale of your choice (here `scale_x_discrete`). `ggplot2` knows how to actually render via `ggtext::element_markdown`. Otherwise we can simply treat this like any other ggplot. Here we are also calculating the annual sum of flows by each value of `STATION_NUMBER`.
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 annual_flow <- river_data %>% 
-  group_by(STATION_NUMBER, province, province_full) %>%
+  group_by(STATION_NUMBER, province) %>%
   summarise(annual_flow = sum(Value, na.rm = TRUE))
 
 annual_flow %>% 
-  ggplot(aes(x = province_full, y = annual_flow)) +
+  ggplot(aes(x = province, y = annual_flow)) +
   geom_point() +
   scale_x_discrete(name = NULL, labels = img_tags) +
   theme(axis.text.x = element_markdown(color = 'black', size = 11))
@@ -221,7 +209,7 @@ Also the basic point plot doesn't give us a great way to look at the distributio
 library(ggridges)
 
 annual_flow_sub %>%
-  ggplot(aes(y = province_full, x = annual_flow)) +
+  ggplot(aes(y = province, x = annual_flow)) +
   geom_density_ridges() +
   scale_y_discrete(name = NULL, labels = img_tags) +
   theme(axis.text.y = element_markdown(color = 'black', size = 11))
@@ -236,7 +224,7 @@ Right then let's create some more white space by getting rid of the classic ggpl
 
 ```{r}
 annual_flow_sub %>%
-  ggplot(aes(y = province_full, x = annual_flow)) +
+  ggplot(aes(y = province, x = annual_flow)) +
   geom_density_ridges(scale = 1) +
   scale_y_discrete(name = NULL, labels = img_tags) +
   theme_minimal() +
@@ -246,7 +234,7 @@ Ok looking a bit better. Another one of Will's suggestion is to remove grid line
  
 ```{r}
 annual_flow_sub %>%
-  ggplot(aes(y = province_full, x = annual_flow)) +
+  ggplot(aes(y = province, x = annual_flow)) +
   geom_density_ridges(scale = 1) +
   scale_y_discrete(name = NULL, labels = img_tags) +
   theme_minimal() +
@@ -263,7 +251,7 @@ flag_cols <- c('#3853a4',
                '#0054a5')
 
 annual_flow_sub %>%
-  ggplot(aes(y = province_full, x = annual_flow, fill = province_full)) +
+  ggplot(aes(y = province, x = annual_flow, fill = province)) +
   geom_density_ridges(scale = 1, alpha = 0.5) +
   scale_fill_manual(values = flag_cols) +
   scale_y_discrete(name = NULL, labels = img_tags) +
@@ -280,7 +268,7 @@ Lastly this plot needs a title, which according to Will's sage advice is also a 
 
 ```{r}
 annual_flow_sub %>%
-  ggplot(aes(y = province_full, x = annual_flow, fill = province_full)) +
+  ggplot(aes(y = province, x = annual_flow, fill = province)) +
   geom_density_ridges(scale = 1, alpha = 0.5) +
   scale_fill_manual(name = NULL, values = flag_cols) +
   scale_y_discrete(name = NULL, labels = img_tags) +
