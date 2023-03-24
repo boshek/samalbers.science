@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Sam Albers">
+<meta name="dcterms.date" content="2020-02-11">
+
+<title>sam | science - A short history of me at rstudio::conf 2020</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="sam | science - A short history of me at rstudio::conf 2020">
+<meta property="og:description" content="In January, I was lucky enough to attend the 2020 edition of RStudio::conf.">
+<meta property="og:site-name" content="sam | science">
+<meta name="twitter:title" content="sam | science - A short history of me at rstudio::conf 2020">
+<meta name="twitter:description" content="In January, I was lucky enough to attend the 2020 edition of RStudio::conf.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">sam | science</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">A short history of me at rstudio::conf 2020</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">RStudio</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Sam Albers </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 11, 2020</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#a-brief-detour-about-where-to-get-these-packages" id="toc-a-brief-detour-about-where-to-get-these-packages" class="nav-link active" data-scroll-target="#a-brief-detour-about-where-to-get-these-packages">A brief detour about where to get these packages</a></li>
+  <li><a href="#the-arrow-package" id="toc-the-arrow-package" class="nav-link" data-scroll-target="#the-arrow-package">The <code>arrow</code> package</a></li>
+  <li><a href="#the-ggtext-package" id="toc-the-ggtext-package" class="nav-link" data-scroll-target="#the-ggtext-package">The <code>ggtext</code> package</a>
+  <ul class="collapse">
+  <li><a href="#get-the-data" id="toc-get-the-data" class="nav-link" data-scroll-target="#get-the-data">Get the Data</a></li>
+  <li><a href="#extract-province" id="toc-extract-province" class="nav-link" data-scroll-target="#extract-province">Extract Province</a></li>
+  <li><a href="#create-the-image-tags" id="toc-create-the-image-tags" class="nav-link" data-scroll-target="#create-the-image-tags">Create the Image Tags</a></li>
+  </ul></li>
+  <li><a href="#design-nicer-plots" id="toc-design-nicer-plots" class="nav-link" data-scroll-target="#design-nicer-plots">Design Nicer Plots</a>
+  <ul class="collapse">
+  <li><a href="#hydrologically-relevant" id="toc-hydrologically-relevant" class="nav-link" data-scroll-target="#hydrologically-relevant">Hydrologically Relevant</a></li>
+  </ul></li>
+  <li><a href="#back-to-rstudio-conf" id="toc-back-to-rstudio-conf" class="nav-link" data-scroll-target="#back-to-rstudio-conf">Back to RStudio conf</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>In January, I was lucky enough to attend the 2020 edition of RStudio::conf. Perhaps predictably, the conference and workshops were exceptional and to see all the wonderful things that folks in the R community are capable of was quite inspiring. People are really quite clever. Attending the tidy dev day was such a nice epilogue to the conference because after spending so much time listening to people talk about <em>their</em> code, I was pretty keen to crack open R and have at it myself. Before I lose everything from the conference to memory leaks, I am going to try to catalogue a few things that I learned at the conference by trying to weave them together into a single workflow.</p>
+<section id="a-brief-detour-about-where-to-get-these-packages" class="level2">
+<h2 class="anchored" data-anchor-id="a-brief-detour-about-where-to-get-these-packages">A brief detour about where to get these packages</h2>
+<p>Several of the packages that I am using here are at development stages and aren’t yet on CRAN. I’m including the installation instructions here but eventually this process should be as easy as the typical <code>install.packages</code>. For <code>ggtext</code>, which isn’t on CRAN, we install it (and the dev version of <code>ggplot2</code>) from GitHub:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">'wilkelab/ggtext'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Other packages that I am using are loaded here:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fs)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtext)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="the-arrow-package" class="level2">
+<h2 class="anchored" data-anchor-id="the-arrow-package">The <code>arrow</code> package</h2>
+<p>One of my main goals at the conference was to find out new ways of dealing with very big flat files. I work in an environment where big flat files are sort of our only option. Adding them to a proper database is not currently possible but I was hopeful that maybe the <a href="https://arrow.apache.org/">Apache Arrow project</a> might offer up some solutions. I was not disappointed. Neal Richardson with <a href="https://ursalabs.org/">UrsaLabs</a> gave a great <a href="https://enpiar.com/talks/rstudio-conf-2020/#1">presentation</a> on the status of the project with a specific focus on the R package <code>arrow</code>.</p>
+<p>Here I am mostly parroting what Neal did with his presentation just replacing taxi data with Canadian hydrometric data. Whether we are provisioned data that way or create it ourselves, consider data organized in a hierarchical folder structure. Here at the top level we have Canadian <code>province</code>:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>/Users/samalbers/_dev/gh_repos/samalbers.science/data/rivers-data
+├── AB
+├── BC
+├── NL
+├── SK
+└── YT</code></pre>
+</div>
+</div>
+<p>within each <code>province</code> folder we have <code>year</code>:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>/Users/samalbers/_dev/gh_repos/samalbers.science/data/rivers-data/AB
+└── 2017</code></pre>
+</div>
+</div>
+<p>within each <code>year</code> folder we have <code>month</code></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>/Users/samalbers/_dev/gh_repos/samalbers.science/data/rivers-data/AB/2017
+├── 01
+├── 02
+├── 03
+├── 04
+├── 05
+├── 06
+├── 07
+├── 08
+├── 09
+├── 10
+├── 11
+└── 12</code></pre>
+</div>
+</div>
+<p>and finally within that directory you actually have your data file:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>/Users/samalbers/_dev/gh_repos/samalbers.science/data/rivers-data/AB/2017/01
+└── rivers.parquet</code></pre>
+</div>
+</div>
+<p>Normally in this situation my approach would be to do some sort of iterative process over each file (mind you still making use of <code>arrow</code> to read the parquet file):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_rivs <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="fu">here</span>(<span class="st">'data/rivers-data/'</span>), <span class="at">pattern =</span> <span class="st">'*.parquet'</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(read_parquet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From there we might execute some typical sequence designed to filter our data down to a more manageable size.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df_rivs <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(Date) <span class="sc">==</span> <span class="dv">2017</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Parameter <span class="sc">==</span> <span class="st">'Flow'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 309,314 × 5
+   STATION_NUMBER Date       Parameter  Value Symbol
+   &lt;chr&gt;          &lt;date&gt;     &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
+ 1 05AA008        2017-01-01 Flow       1.75  B     
+ 2 05AA024        2017-01-01 Flow       8.67  &lt;NA&gt;  
+ 3 05AA035        2017-01-01 Flow       1.56  B     
+ 4 05AC003        2017-01-01 Flow       0.954 B     
+ 5 05AC012        2017-01-01 Flow       0.736 B     
+ 6 05AC941        2017-01-01 Flow       1.03  &lt;NA&gt;  
+ 7 05AD003        2017-01-01 Flow       3.77  B     
+ 8 05AD007        2017-01-01 Flow      24.6   B     
+ 9 05AE027        2017-01-01 Flow       4.81  B     
+10 05AG006        2017-01-01 Flow      24.7   B     
+# … with 309,304 more rows</code></pre>
+</div>
+</div>
+<p>What we learned in Neal’s presentation was the magic of the <code>open_dataset</code> function and specifically its ability to map hierarchical directory structure to virtual columns in your data. If we read just one parquet file, it is apparent that there aren’t any <code>province</code>, <code>year</code> or <code>month</code> columns:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_parquet</span>(<span class="fu">here</span>(<span class="st">'data/rivers-data/AB/2017/01/rivers.parquet'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3,131 × 5
+   STATION_NUMBER Date       Parameter  Value Symbol
+ * &lt;chr&gt;          &lt;date&gt;     &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
+ 1 05AA008        2017-01-01 Flow       1.75  B     
+ 2 05AA024        2017-01-01 Flow       8.67  &lt;NA&gt;  
+ 3 05AA035        2017-01-01 Flow       1.56  B     
+ 4 05AC003        2017-01-01 Flow       0.954 B     
+ 5 05AC012        2017-01-01 Flow       0.736 B     
+ 6 05AC941        2017-01-01 Flow       1.03  &lt;NA&gt;  
+ 7 05AD003        2017-01-01 Flow       3.77  B     
+ 8 05AD007        2017-01-01 Flow      24.6   B     
+ 9 05AE027        2017-01-01 Flow       4.81  B     
+10 05AG006        2017-01-01 Flow      24.7   B     
+# … with 3,121 more rows</code></pre>
+</div>
+</div>
+<p>Instead, if we assign partitions, using a vector based on the directory structure, <code>open_dataset</code> can use that information to efficiently subset a larger dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rivs <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(<span class="fu">here</span>(<span class="st">'data/rivers-data/'</span>), <span class="at">partitioning =</span> <span class="fu">c</span>(<span class="st">'province'</span>,<span class="st">'year'</span>, <span class="st">'month'</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>rivs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>FileSystemDataset with 60 Parquet files
+STATION_NUMBER: string
+Date: date32[day]
+Parameter: string
+Value: double
+Symbol: string
+province: string
+year: int32
+month: int32
+
+See $metadata for additional Schema metadata</code></pre>
+</div>
+</div>
+<p>Best of all, the <code>select</code>, <code>filter</code>, <code>group_by</code> and <code>rename</code> dplyr verbs are implemented much like <code>dbplyr</code> and your query is executed lazily taking advantage of both the directory structure and the parquet files.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>river_data <span class="ot">&lt;-</span> rivs <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2017</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(province <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'BC'</span>, <span class="st">'YT'</span>, <span class="st">'AB'</span>, <span class="st">'SK'</span>, <span class="st">'NL'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Parameter <span class="sc">==</span> <span class="st">'Flow'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(STATION_NUMBER, province) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>While YMMV depending on the size of your data, using folder structure is a nifty way to only access the data we actually need. The Apache Arrow project, and for R users the <code>arrow</code> package, are proceeding very nicely. Now that we have efficiently pared down our river flow data, the next exciting thing I want to explore is some really cool developments in the <code>ggplot2</code> sphere.</p>
+</section>
+<section id="the-ggtext-package" class="level2">
+<h2 class="anchored" data-anchor-id="the-ggtext-package">The <code>ggtext</code> package</h2>
+<p>The <code>ggtext</code> package by Claus Wilke provides much improved rendering support for <code>ggplot2</code>. What feels like should a simple task (e.g.&nbsp;colour some portion of text) is sometimes quite onerous in <code>ggplot2</code>. Though the package is still in its infancy, <code>ggtext</code> is breaking trail on making these steps much easier by providing a mini markdown engine directly inside <code>ggplot2</code>. After audible <em>ohhs</em> and <em>ahhs</em> from the crowd while demoing <code>ggtext</code>, Claus observed “I can see this fills a need”. Already it provides some support for markdown and html rendering.</p>
+<center>
+<img src="https://media.giphy.com/media/vMEjhlxsBR7Fe/giphy.gif">
+</center>
+<p>So how can we use it to better visualize our river data? Because <code>ggtext</code> has some minimal html rendering, we can actually include images right inside the ggplot call. My idea was to try and see if I could include provincial flags as axes labels in the plot. This requires steps to:</p>
+<ul>
+<li>get the files</li>
+<li>extract the province name from the file name</li>
+<li>create a new column in our rivers data because the provinces aren’t labelled in the same way</li>
+<li>glue the image names with the html snippets</li>
+</ul>
+<p>I won’t go into too much detail but here are the steps:</p>
+<section id="get-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="get-the-data">Get the Data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"data/flags"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">"https://cdn.britannica.com/40/5440-004-BE91E74F/Flag-Alberta.jpg"</span>, <span class="at">destfile =</span> <span class="st">"data/flags/AB.jpeg"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">"https://cdn.britannica.com/63/5263-004-1C2B7CDE/Flag-Yukon-Territory.jpg"</span>, <span class="at">destfile =</span> <span class="st">"data/flags/YT.jpeg"</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">"https://cdn.britannica.com/18/3918-004-9D01BB0E/Flag-Saskatchewan.jpg"</span>, <span class="at">destfile =</span> <span class="st">"data/flags/SK.jpeg"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">"https://cdn.britannica.com/92/2992-004-54C721CF/Flag-Newfoundland-and-Labrador.jpg"</span>, <span class="at">destfile =</span> <span class="st">"data/flags/NL.jpeg"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">"https://cdn.britannica.com/77/6877-004-26251B48/Flag-British-Columbia.jpg"</span>, <span class="at">destfile =</span> <span class="st">"data/flags/BC.jpeg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="extract-province" class="level3">
+<h3 class="anchored" data-anchor-id="extract-province">Extract Province</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>flag_paths <span class="ot">&lt;-</span> <span class="fu">dir_ls</span>(<span class="fu">here</span>(<span class="st">'data/flags'</span>), <span class="at">glob =</span> <span class="st">'*.jpeg'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-the-image-tags" class="level3">
+<h3 class="anchored" data-anchor-id="create-the-image-tags">Create the Image Tags</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>img_tags <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">"&lt;img src='{flag_paths}' width='100' /&gt;"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(img_tags) <span class="ot">&lt;-</span> <span class="fu">basename</span>(<span class="fu">path_ext_remove</span>(flag_paths))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now have a named vector, which sources the appropriate provincial flag and is ready to render. This is accomplished by supplying the <code>img_tags</code> vector to the scale of your choice (here <code>scale_x_discrete</code>). <code>ggplot2</code> knows how to actually render via <code>ggtext::element_markdown</code>. Otherwise we can simply treat this like any other ggplot. Here we are also calculating the annual sum of flows by each value of <code>STATION_NUMBER</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>annual_flow <span class="ot">&lt;-</span> river_data <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(STATION_NUMBER, province) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">annual_flow =</span> <span class="fu">sum</span>(Value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>annual_flow <span class="sc">%&gt;%</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> province, <span class="at">y =</span> annual_flow)) <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> img_tags) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_markdown</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="dv">11</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>So I think this is pretty cool! We have images in the axes. AFAIK, this was previously impossible. Unfortunately this isn’t a particularly informative nor a nice looking plot. The next step in the workflow is to change that.</p>
+</section>
+</section>
+<section id="design-nicer-plots" class="level2">
+<h2 class="anchored" data-anchor-id="design-nicer-plots">Design Nicer Plots</h2>
+<p>RStudio::conf had a thread of design thinking running through the workshops and conference. From the tidyverse’s near obsession with the design of their api to the inclusion of a live episode of Not So Standard deviation as a keynote, thinking about data science from a design perspective was a key theme that emerged for me. One example of this was <a href="https://twitter.com/W_R_Chase">Will Chase’s</a> wonderful talk on the <a href="https://www.williamrchase.com/slides/assets/player/KeynoteDHTMLPlayer.html#0">Glamour of Graphics</a>. Will presented some very thoughtful approaches to creating better visualizations. I am going to <del>butcher</del> apply some of those approaches to our plot above.</p>
+<section id="hydrologically-relevant" class="level3">
+<h3 class="anchored" data-anchor-id="hydrologically-relevant">Hydrologically Relevant</h3>
+<p>First off, our plot is rather uninformative from hydrological perspective. A reasonable goal for this plot would be to aid the user to evaluate the distribution of annual river flow by province. In the above plot, the extreme values are stretching the scale too far out so let’s limit our analysis to rivers that output less that 10,000 m<sup>3</sup>/s per year.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>annual_flow_sub <span class="ot">&lt;-</span> annual_flow <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(annual_flow <span class="sc">&lt;</span> <span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Also the basic point plot doesn’t give us a great way to look at the distribution. For that task, another of Claus’s packages, <code>ggridges</code> comes in handy. <code>ggridges</code> is great for visualizing distributions and also forces us to flip the axes creating a more natural information flow (at least for those of us that read left to right).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>annual_flow_sub <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> province, <span class="at">x =</span> annual_flow)) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>() <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> img_tags) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_markdown</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="dv">11</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>A great line from Will’s presentation pertained to white space:</p>
+<blockquote class="blockquote">
+<p>White space is like garlic; take the amount you think you need, then triple it.</p>
+</blockquote>
+<p>Right then let’s create some more white space by getting rid of the classic ggplot2 grey background. Here we can also tweak the height of the ridges to better show the distributions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>annual_flow_sub <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> province, <span class="at">x =</span> annual_flow)) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">scale =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> img_tags) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_markdown</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="dv">11</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>Ok looking a bit better. Another one of Will’s suggestion is to remove grid lines as much as possible. I basically agree and just keep the minor x values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>annual_flow_sub <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> province, <span class="at">x =</span> annual_flow)) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">scale =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> img_tags) <span class="sc">+</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_markdown</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor.y =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>✔️ Now we need some colour here. As Will stated colour is hard. My goal here is pretty modest. I just want to distinguish between provinces. To do that I am actually going to steal some colour from the flags and manually map those to fill in colour for the ridges. At the same time I am going to add some transparency to the ridges. I am going to deviate a little from Will’s advice here and keep the legend. I often get this way with plots and err on the side of caution. In this case I am thinking that folks won’t recognize the flags and therefore will use the legend. In general though I do like the approach of forcing legends to justify their existence - they need to earn their keep.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>flag_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'#3853a4'</span>,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">'#f3ec18'</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">'#da1a33'</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">'#006b35'</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">'#0054a5'</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>annual_flow_sub <span class="sc">%&gt;%</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> province, <span class="at">x =</span> annual_flow, <span class="at">fill =</span> province)) <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">scale =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> flag_cols) <span class="sc">+</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> img_tags) <span class="sc">+</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_markdown</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">'bottom'</span>,</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.justification=</span><span class="st">'right'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>Lastly this plot needs a title, which according to Will’s sage advice is also a great way to remove axes labels - just explain it in the title.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>annual_flow_sub <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> province, <span class="at">x =</span> annual_flow, <span class="at">fill =</span> province)) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">scale =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">values =</span> flag_cols) <span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> img_tags) <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Smoothed distribution of annual flow of gauged rivers (m^3^ s^-1^) by province'</span>) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_markdown</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title.position =</span> <span class="st">'plot'</span>,</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_markdown</span>(<span class="at">size =</span> <span class="dv">15</span>), </span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">'bottom'</span>,</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.justification=</span><span class="st">'right'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From a visualization perspective this isn’t perfect or even great. Legends are still problematic, I don’t even know if the flags add anything and grid lines feel like an addiction. Still I think this does provide a decent overview of the types of rivers that are gauged in each province. Remembering that we previously subset all our river flow data to less than 10000, the Yukon gauges bigger rivers while Saskatchewan gauges many smaller rivers. BC and Newfoundland gauge a wide range of rivers types. Alberta gauges rivers that reflect both its mountain and prairies landscapes.</p>
+</section>
+</section>
+<section id="back-to-rstudio-conf" class="level2">
+<h2 class="anchored" data-anchor-id="back-to-rstudio-conf">Back to RStudio conf</h2>
+<p>This has been a mini tour through some concept and packages I took in while attending RStudio::conf 2020. I can’t wait to spend more time with these packages as they mature and development. Every time I connect with the R community, I am grateful to be part of it. RStudio itself presents with class and respect all while creating a positive and inclusive space. I’m looking forward to future opportunities to connect with all you nerds!</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

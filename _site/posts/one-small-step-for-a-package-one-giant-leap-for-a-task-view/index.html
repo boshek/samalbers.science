@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Sam Albers">
+<meta name="dcterms.date" content="2020-01-19">
+
+<title>sam | science - One small step for a package, one giant leap for a task view</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">sam | science</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About Sam</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">One small step for a package, one giant leap for a task view</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">hydrology</div>
+                <div class="quarto-category">task-view</div>
+                <div class="quarto-category">R</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Sam Albers </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 19, 2020</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell">
+
+</div>
+<p>This is a bit of a grandiose title for a blog post. But it is important to have ambition right? In 2003, after releasing <a href="https://pitchfork.com/reviews/albums/7510-greetings-from-michigan-the-great-lakes-state/">Michigan</a>, Sufjan Stevens announced his intention to release one album as an ode to each of the fifty American states, appropriately named the <em>Fifty States Project</em>. Despite only completing two albums (the other being <a href="https://pitchfork.com/reviews/albums/7514-illinois/">Illinois</a>) I appreciate his ambition, and desire to be thorough (and also those wacky costumes).</p>
+<center>
+<img src="https://media.giphy.com/media/3o72EWCB8SHcAdEFEs/giphy.gif" width="400px/">
+</center>
+<p>It is that thoroughness which resonates with me and what I’d like to apply to the <a href="https://CRAN.R-project.org/view=Hydrology">Hydrology CRAN Task View</a>. Myself, along with Sam Zipper and Ilaria Prosdocimi, maintain the Hydrology task view with the express goal of creating a comprehensive and high–quality list of R packages related to the field of Hydrology. We introduced the task view, at a very high level, over at the <a href="https://ropensci.org/blog/2019/04/02/hydrology-task-view/">rOpenSci blog</a> last year. This post is the first in a series where I try some aspect of every package included in the task view. If Stevens’ can declared his <em>Fifty States Project</em> why can’t I take on the <em>Hydrology Task View Project</em>? My first foray into this is not terribly ambitious as I am going to discuss one of my own packages, <a href="https://CRAN.R-project.org/package=rsoi">rsoi</a>, which was recently updated on CRAN with a new version.</p>
+<section id="rsoi" class="level2">
+<h2 class="anchored" data-anchor-id="rsoi">rsoi</h2>
+<p>rsoi started out as a package to acquire El Niño-Southern Oscillation (ENSO) data and import it into R. This is the data that climate scientists use to determine which phase of the oscillation we are currently experiencing. Since that initial version, rsoi has gained several datasets and now functions more generally as simple R interface to as many climate indices as we can collect. All the raw data that rsoi accesses is directly from the US government’s National Oceanic and Atmospehric Administration (NOAA). Packages like rsoi facilitate reproducible workflows by providing convenient functions to access data stored on the web. (Sidebar: the most comprehensive package for accessing all manner of NOAA data is the <a href="https://docs.ropensci.org/rnoaa/">rnoaa</a> package by Scott Chamberlain which is also in the Hydrology task view 😉). As of version 0.5.1 rsoi provides access to these data (with the corresponding rsoi function in parentheses):</p>
+<ul>
+<li>Southern Oscillation Index (<code>download_soi</code>)</li>
+<li>Oceanic Nino Index (<code>download_oni</code>)</li>
+<li>North Pacific Gyre Oscillation (<code>download_npgo</code>)</li>
+<li>North Atlantic Oscillation (<code>download_nao</code>)</li>
+<li>Arctic Oscillation (<code>download_ao</code>)</li>
+<li>Antarctic Oscillation (<code>download_aao</code>)</li>
+<li>Multivariate ENSO Index Version 2 (<code>download_mei</code>)</li>
+</ul>
+<p>rsoi is on CRAN so installation proceeds typically:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"rsoi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The usage of a rsoi revolves around the <code>download_*</code> functions. For example if you want to read in the Oceanic Nino Index data you can run this code:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsoi)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>oni <span class="ot">&lt;-</span> <span class="fu">download_oni</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(oni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 7
+   Year Month Date       dSST3.4   ONI ONI_month_window phase             
+  &lt;int&gt; &lt;ord&gt; &lt;date&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;            &lt;fct&gt;             
+1  1950 Jan   1950-01-01   -1.62 NA    &lt;NA&gt;             &lt;NA&gt;              
+2  1950 Feb   1950-02-01   -1.32 -1.34 JFM              Cool Phase/La Nina
+3  1950 Mar   1950-03-01   -1.07 -1.17 FMA              Cool Phase/La Nina
+4  1950 Apr   1950-04-01   -1.11 -1.18 MAM              Cool Phase/La Nina
+5  1950 May   1950-05-01   -1.37 -1.07 AMJ              Cool Phase/La Nina
+6  1950 Jun   1950-06-01   -0.74 -0.85 MJJ              Cool Phase/La Nina</code></pre>
+</div>
+</div>
+<p>Each climate index in rsoi is accessed by functions of the format <code>download_[index abbreviation]</code>. A quick plot of the ONI data demonstrates that we are currently in the Neutral ENSO phase (as of 19/01/2020).</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This is the basic usage of rsoi that has been in place since it was first published to CRAN. Luckily Elio Campitelli found rsoi and made it better:</p>
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+Me: "I've been downloading and reshaping ENSO data often. Maybe I should build an <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> package to do it. "<br>Also me: "Mh.. I wonder if someone else has already done it"<br>The internets: "Here you go"<a href="https://t.co/CC7hVFXEjY">https://t.co/CC7hVFXEjY</a>
+</p>
+— Elio Campitelli (<span class="citation" data-cites="d_olivaw">@d_olivaw</span>) <a href="https://twitter.com/d_olivaw/status/1184840158623027205?ref_src=twsrc%5Etfw">October 17, 2019</a>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>As of version 0.5.1, thanks to several <a href="https://github.com/boshek/rsoi/pull/22">contributions</a> by Elio, rsoi now will optionally use a cache so that data are downloaded only once per R session. Not only this is more polite to NOAA as the data provider, this also provides some optimization for processes that repeateadly call rsoi functions. You can either use this cache in memory:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tictoc)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## accessing from the web</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tic</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>soi <span class="ot">&lt;-</span> <span class="fu">download_soi</span>(<span class="at">use_cache =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1.028 sec elapsed</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">##same session, accessing from the memory cache</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tic</span>()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>soi <span class="ot">&lt;-</span> <span class="fu">download_soi</span>(<span class="at">use_cache =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.006 sec elapsed</code></pre>
+</div>
+</div>
+<p>Or you can save it locally:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mei <span class="ot">&lt;-</span> <span class="fu">download_mei</span>(<span class="at">use_cache =</span> <span class="cn">TRUE</span>, <span class="at">file =</span> <span class="st">"mei.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Subsequent calls of <code>download_mei</code> that have the <code>use_cache</code> argument set to <code>TRUE</code>, will automatically import that data stored on disk rather than access it from the web. This works for each function in rsoi. This is a really nice contribution from Elio.</p>
+<p>A knock on CRAN Task Views, meritted or not, that I have heard is that they are simply an unvetted collection of packages. To a certain extent this is true as there is no formal process whereby a package gains acceptance to a task view. Rather package maintainers usually simply ask to be added and they are. This series of blog posts (<code>n</code> currently equalling 1) is designed to provide some additional exploration of packages in the Hydrology task view. Like Sufjan Stevens, this is an ambitious goal. However, writing a blog is much easier than making an album (have you heard Illinois?) so maybe I have a better chance.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
