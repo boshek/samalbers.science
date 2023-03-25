@@ -6,7 +6,6 @@ website:
   site-url: https://samalbers.science
   repo-url: https://github.com/boshek/samalbers.science
   navbar:
-    background: "#b3fffe3c"
     right:
       - about.qmd
       - icon: github
@@ -18,8 +17,8 @@ website:
 format:
   html:
     theme:
+      dark: [darkly, urchin-black.scss]
       light: [flatly, urchin.scss]
-      dark: [darkly, urchin.scss]
     css: styles.css
     toc: true
 
