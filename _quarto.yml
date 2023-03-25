@@ -17,7 +17,9 @@ website:
   open-graph: true
 format:
   html:
-    theme: [darkly, urchin.scss]
+    theme:
+      light: [flatly, urchin.scss]
+      dark: [darkly, urchin.scss]
     css: styles.css
     toc: true
 
