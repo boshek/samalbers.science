@@ -1,0 +1,79 @@
+---
+title: The return of the webservice
+author: Sam Albers
+date: '2023-04-25'
+slug: eccc-webservice
+categories:
+  - R
+  - hydrology
+  - tidyhydat
+tags: []
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.width = 10,
+  fig.height = 7,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r}
+library(tidyhydat)
+library(gt)
+library(dplyr)
+```
+
+The most common question I get about the tidyhydat package goes something like this: 
+
+> how do I get realtime data longer the 30 days available in the datamart via [`realtime_dd`](https://docs.ropensci.org/tidyhydat/reference/realtime_dd.html)?
+
+Previously the answer was... you can't. The Hydat database is a historical database. It is not updated in realtime. Now, however, Environment and Climate Change Canada (ECCC) does have a [webservice](https://wateroffice.ec.gc.ca/services/links_e.html) that provides realtime data which extends back 18 months. This is enormously useful and it usually spans the gap to get data into HYDAT. And since tidyhydat version 0.6.0 you can now access this data via the `realtime_ws` function. This blog is a quick introduction to some of the usage of that webservice. 
+
+## Getting realtime hydrometric data
+
+The `realtime_ws` function operates in a similar way to the `realtime_dd` function. You can get data for a single station or for a list of stations and the function returns a tibble. 
+
+```{r}
+realtime_ws(station_number = "08MF005")
+```
+
+
+## New Parameters
+
+Removing the French parameters simply for brevity here. This is no slight to French. 
+
+```{r}
+#| results: asis
+
+param_id %>%
+  select(-matches("_Fr")) %>% 
+  gt() %>% 
+  tab_options(
+    table.font.color = "white",
+    table.background.color = "#231409", 
+    table.font.size = px(12L)
+    ) %>% 
+  opt_table_font(stack = "monospace-code") 
+```
+
+So once you chosen your measure you can see if your station has data for that measure. So a good first step is to grab all the stations that are also reporting in realtime
+
+```{r}
+stations <- realtime_stations()
+stations
+```
+
+Ok so `r nrow(stations)` stations are reporting in realtime. There is no direct way to see 
+```{r}
+
+```

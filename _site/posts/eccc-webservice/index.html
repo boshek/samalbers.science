@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Sam Albers">
+<meta name="dcterms.date" content="2023-04-25">
 
-<title>sam | science</title>
+<title>sam | science - The return of the webservice</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +22,69 @@ width: 0.8em;
 margin: 0 0.8em 0.2em -1.6em;
 vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 
 
@@ -1397,253 +1462,7 @@ function fuseSearch(query, fuse, fuseOptions) {
   });
 }
 </script>
-<meta name="quarto:offset" content="./">
-<script>var List;List=function(){var t={"./src/add-async.js":function(t){t.exports=function(t){return function e(r,n,s){var i=r.splice(0,50);s=(s=s||[]).concat(t.add(i)),r.length>0?setTimeout((function(){e(r,n,s)}),1):(t.update(),n(s))}}},"./src/filter.js":function(t){t.exports=function(t){return t.handlers.filterStart=t.handlers.filterStart||[],t.handlers.filterComplete=t.handlers.filterComplete||[],function(e){if(t.trigger("filterStart"),t.i=1,t.reset.filter(),void 0===e)t.filtered=!1;else{t.filtered=!0;for(var r=t.items,n=0,s=r.length;n<s;n++){var i=r[n];e(i)?i.filtered=!0:i.filtered=!1}}return t.update(),t.trigger("filterComplete"),t.visibleItems}}},"./src/fuzzy-search.js":function(t,e,r){r("./src/utils/classes.js");var n=r("./src/utils/events.js"),s=r("./src/utils/extend.js"),i=r("./src/utils/to-string.js"),a=r("./src/utils/get-by-class.js"),o=r("./src/utils/fuzzy.js");t.exports=function(t,e){e=s({location:0,distance:100,threshold:.4,multiSearch:!0,searchClass:"fuzzy-search"},e=e||{});var r={search:function(n,s){for(var i=e.multiSearch?n.replace(/ +$/,"").split(/ +/):[n],a=0,o=t.items.length;a<o;a++)r.item(t.items[a],s,i)},item:function(t,e,n){for(var s=!0,i=0;i<n.length;i++){for(var a=!1,o=0,l=e.length;o<l;o++)r.values(t.values(),e[o],n[i])&&(a=!0);a||(s=!1)}t.found=s},values:function(t,r,n){if(t.hasOwnProperty(r)){var s=i(t[r]).toLowerCase();if(o(s,n,e))return!0}return!1}};return n.bind(a(t.listContainer,e.searchClass),"keyup",t.utils.events.debounce((function(e){var n=e.target||e.srcElement;t.search(n.value,r.search)}),t.searchDelay)),function(e,n){t.search(e,n,r.search)}}},"./src/index.js":function(t,e,r){var n=r("./node_modules/string-natural-compare/natural-compare.js"),s=r("./src/utils/get-by-class.js"),i=r("./src/utils/extend.js"),a=r("./src/utils/index-of.js"),o=r("./src/utils/events.js"),l=r("./src/utils/to-string.js"),u=r("./src/utils/classes.js"),c=r("./src/utils/get-attribute.js"),f=r("./src/utils/to-array.js");t.exports=function(t,e,h){var d,v=this,g=r("./src/item.js")(v),m=r("./src/add-async.js")(v),p=r("./src/pagination.js")(v);d={start:function(){v.listClass="list",v.searchClass="search",v.sortClass="sort",v.page=1e4,v.i=1,v.items=[],v.visibleItems=[],v.matchingItems=[],v.searched=!1,v.filtered=!1,v.searchColumns=void 0,v.searchDelay=0,v.handlers={updated:[]},v.valueNames=[],v.utils={getByClass:s,extend:i,indexOf:a,events:o,toString:l,naturalSort:n,classes:u,getAttribute:c,toArray:f},v.utils.extend(v,e),v.listContainer="string"==typeof t?document.getElementById(t):t,v.listContainer&&(v.list=s(v.listContainer,v.listClass,!0),v.parse=r("./src/parse.js")(v),v.templater=r("./src/templater.js")(v),v.search=r("./src/search.js")(v),v.filter=r("./src/filter.js")(v),v.sort=r("./src/sort.js")(v),v.fuzzySearch=r("./src/fuzzy-search.js")(v,e.fuzzySearch),this.handlers(),this.items(),this.pagination(),v.update())},handlers:function(){for(var t in v.handlers)v[t]&&v.handlers.hasOwnProperty(t)&&v.on(t,v[t])},items:function(){v.parse(v.list),void 0!==h&&v.add(h)},pagination:function(){if(void 0!==e.pagination){!0===e.pagination&&(e.pagination=[{}]),void 0===e.pagination[0]&&(e.pagination=[e.pagination]);for(var t=0,r=e.pagination.length;t<r;t++)p(e.pagination[t])}}},this.reIndex=function(){v.items=[],v.visibleItems=[],v.matchingItems=[],v.searched=!1,v.filtered=!1,v.parse(v.list)},this.toJSON=function(){for(var t=[],e=0,r=v.items.length;e<r;e++)t.push(v.items[e].values());return t},this.add=function(t,e){if(0!==t.length){if(!e){var r=[],n=!1;void 0===t[0]&&(t=[t]);for(var s=0,i=t.length;s<i;s++){var a;n=v.items.length>v.page,a=new g(t[s],void 0,n),v.items.push(a),r.push(a)}return v.update(),r}m(t.slice(0),e)}},this.show=function(t,e){return this.i=t,this.page=e,v.update(),v},this.remove=function(t,e,r){for(var n=0,s=0,i=v.items.length;s<i;s++)v.items[s].values()[t]==e&&(v.templater.remove(v.items[s],r),v.items.splice(s,1),i--,s--,n++);return v.update(),n},this.get=function(t,e){for(var r=[],n=0,s=v.items.length;n<s;n++){var i=v.items[n];i.values()[t]==e&&r.push(i)}return r},this.size=function(){return v.items.length},this.clear=function(){return v.templater.clear(),v.items=[],v},this.on=function(t,e){return v.handlers[t].push(e),v},this.off=function(t,e){var r=v.handlers[t],n=a(r,e);return n>-1&&r.splice(n,1),v},this.trigger=function(t){for(var e=v.handlers[t].length;e--;)v.handlers[t][e](v);return v},this.reset={filter:function(){for(var t=v.items,e=t.length;e--;)t[e].filtered=!1;return v},search:function(){for(var t=v.items,e=t.length;e--;)t[e].found=!1;return v}},this.update=function(){var t=v.items,e=t.length;v.visibleItems=[],v.matchingItems=[],v.templater.clear();for(var r=0;r<e;r++)t[r].matching()&&v.matchingItems.length+1>=v.i&&v.visibleItems.length<v.page?(t[r].show(),v.visibleItems.push(t[r]),v.matchingItems.push(t[r])):t[r].matching()?(v.matchingItems.push(t[r]),t[r].hide()):t[r].hide();return v.trigger("updated"),v},d.start()}},"./src/item.js":function(t){t.exports=function(t){return function(e,r,n){var s=this;this._values={},this.found=!1,this.filtered=!1;this.values=function(e,r){if(void 0===e)return s._values;for(var n in e)s._values[n]=e[n];!0!==r&&t.templater.set(s,s.values())},this.show=function(){t.templater.show(s)},this.hide=function(){t.templater.hide(s)},this.matching=function(){return t.filtered&&t.searched&&s.found&&s.filtered||t.filtered&&!t.searched&&s.filtered||!t.filtered&&t.searched&&s.found||!t.filtered&&!t.searched},this.visible=function(){return!(!s.elm||s.elm.parentNode!=t.list)},function(e,r,n){if(void 0===r)n?s.values(e,n):s.values(e);else{s.elm=r;var i=t.templater.get(s,e);s.values(i)}}(e,r,n)}}},"./src/pagination.js":function(t,e,r){var n=r("./src/utils/classes.js"),s=r("./src/utils/events.js"),i=r("./src/index.js");t.exports=function(t){var e=!1,r=function(r,s){if(t.page<1)return t.listContainer.style.display="none",void(e=!0);e&&(t.listContainer.style.display="block");var i,o=t.matchingItems.length,l=t.i,u=t.page,c=Math.ceil(o/u),f=Math.ceil(l/u),h=s.innerWindow||2,d=s.left||s.outerWindow||0,v=s.right||s.outerWindow||0;v=c-v,r.clear();for(var g=1;g<=c;g++){var m=f===g?"active":"";a.number(g,d,v,f,h)?(i=r.add({page:g,dotted:!1})[0],m&&n(i.elm).add(m),i.elm.firstChild.setAttribute("data-i",g),i.elm.firstChild.setAttribute("data-page",u)):a.dotted(r,g,d,v,f,h,r.size())&&(i=r.add({page:"...",dotted:!0})[0],n(i.elm).add("disabled"))}},a={number:function(t,e,r,n,s){return this.left(t,e)||this.right(t,r)||this.innerWindow(t,n,s)},left:function(t,e){return t<=e},right:function(t,e){return t>e},innerWindow:function(t,e,r){return t>=e-r&&t<=e+r},dotted:function(t,e,r,n,s,i,a){return this.dottedLeft(t,e,r,n,s,i)||this.dottedRight(t,e,r,n,s,i,a)},dottedLeft:function(t,e,r,n,s,i){return e==r+1&&!this.innerWindow(e,s,i)&&!this.right(e,n)},dottedRight:function(t,e,r,n,s,i,a){return!t.items[a-1].values().dotted&&(e==n&&!this.innerWindow(e,s,i)&&!this.right(e,n))}};return function(e){var n=new i(t.listContainer.id,{listClass:e.paginationClass||"pagination",item:e.item||"<li><a class='page' href='#'></a></li>",valueNames:["page","dotted"],searchClass:"pagination-search-that-is-not-supposed-to-exist",sortClass:"pagination-sort-that-is-not-supposed-to-exist"});s.bind(n.listContainer,"click",(function(e){var r=e.target||e.srcElement,n=t.utils.getAttribute(r,"data-page"),s=t.utils.getAttribute(r,"data-i");s&&t.show((s-1)*n+1,n)})),t.on("updated",(function(){r(n,e)})),r(n,e)}}},"./src/parse.js":function(t,e,r){t.exports=function(t){var e=r("./src/item.js")(t),n=function(r,n){for(var s=0,i=r.length;s<i;s++)t.items.push(new e(n,r[s]))},s=function e(r,s){var i=r.splice(0,50);n(i,s),r.length>0?setTimeout((function(){e(r,s)}),1):(t.update(),t.trigger("parseComplete"))};return t.handlers.parseComplete=t.handlers.parseComplete||[],function(){var e=function(t){for(var e=t.childNodes,r=[],n=0,s=e.length;n<s;n++)void 0===e[n].data&&r.push(e[n]);return r}(t.list),r=t.valueNames;t.indexAsync?s(e,r):n(e,r)}}},"./src/search.js":function(t){t.exports=function(t){var e,r,n,s={resetList:function(){t.i=1,t.templater.clear(),n=void 0},setOptions:function(t){2==t.length&&t[1]instanceof Array?e=t[1]:2==t.length&&"function"==typeof t[1]?(e=void 0,n=t[1]):3==t.length?(e=t[1],n=t[2]):e=void 0},setColumns:function(){0!==t.items.length&&void 0===e&&(e=void 0===t.searchColumns?s.toArray(t.items[0].values()):t.searchColumns)},setSearchString:function(e){e=(e=t.utils.toString(e).toLowerCase()).replace(/[-[\]{}()*+?.,\\^$|#]/g,"\\$&"),r=e},toArray:function(t){var e=[];for(var r in t)e.push(r);return e}},i=function(){for(var n,s=[],i=r;null!==(n=i.match(/"([^"]+)"/));)s.push(n[1]),i=i.substring(0,n.index)+i.substring(n.index+n[0].length);(i=i.trim()).length&&(s=s.concat(i.split(/\s+/)));for(var a=0,o=t.items.length;a<o;a++){var l=t.items[a];if(l.found=!1,s.length){for(var u=0,c=s.length;u<c;u++){for(var f=!1,h=0,d=e.length;h<d;h++){var v=l.values(),g=e[h];if(v.hasOwnProperty(g)&&void 0!==v[g]&&null!==v[g])if(-1!==("string"!=typeof v[g]?v[g].toString():v[g]).toLowerCase().indexOf(s[u])){f=!0;break}}if(!f)break}l.found=f}}},a=function(){t.reset.search(),t.searched=!1},o=function(o){return t.trigger("searchStart"),s.resetList(),s.setSearchString(o),s.setOptions(arguments),s.setColumns(),""===r?a():(t.searched=!0,n?n(r,e):i()),t.update(),t.trigger("searchComplete"),t.visibleItems};return t.handlers.searchStart=t.handlers.searchStart||[],t.handlers.searchComplete=t.handlers.searchComplete||[],t.utils.events.bind(t.utils.getByClass(t.listContainer,t.searchClass),"keyup",t.utils.events.debounce((function(e){var r=e.target||e.srcElement;""===r.value&&!t.searched||o(r.value)}),t.searchDelay)),t.utils.events.bind(t.utils.getByClass(t.listContainer,t.searchClass),"input",(function(t){""===(t.target||t.srcElement).value&&o("")})),o}},"./src/sort.js":function(t){t.exports=function(t){var e={els:void 0,clear:function(){for(var r=0,n=e.els.length;r<n;r++)t.utils.classes(e.els[r]).remove("asc"),t.utils.classes(e.els[r]).remove("desc")},getOrder:function(e){var r=t.utils.getAttribute(e,"data-order");return"asc"==r||"desc"==r?r:t.utils.classes(e).has("desc")?"asc":t.utils.classes(e).has("asc")?"desc":"asc"},getInSensitive:function(e,r){var n=t.utils.getAttribute(e,"data-insensitive");r.insensitive="false"!==n},setOrder:function(r){for(var n=0,s=e.els.length;n<s;n++){var i=e.els[n];if(t.utils.getAttribute(i,"data-sort")===r.valueName){var a=t.utils.getAttribute(i,"data-order");"asc"==a||"desc"==a?a==r.order&&t.utils.classes(i).add(r.order):t.utils.classes(i).add(r.order)}}}},r=function(){t.trigger("sortStart");var r={},n=arguments[0].currentTarget||arguments[0].srcElement||void 0;n?(r.valueName=t.utils.getAttribute(n,"data-sort"),e.getInSensitive(n,r),r.order=e.getOrder(n)):((r=arguments[1]||r).valueName=arguments[0],r.order=r.order||"asc",r.insensitive=void 0===r.insensitive||r.insensitive),e.clear(),e.setOrder(r);var s,i=r.sortFunction||t.sortFunction||null,a="desc"===r.order?-1:1;s=i?function(t,e){return i(t,e,r)*a}:function(e,n){var s=t.utils.naturalSort;return s.alphabet=t.alphabet||r.alphabet||void 0,!s.alphabet&&r.insensitive&&(s=t.utils.naturalSort.caseInsensitive),s(e.values()[r.valueName],n.values()[r.valueName])*a},t.items.sort(s),t.update(),t.trigger("sortComplete")};return t.handlers.sortStart=t.handlers.sortStart||[],t.handlers.sortComplete=t.handlers.sortComplete||[],e.els=t.utils.getByClass(t.listContainer,t.sortClass),t.utils.events.bind(e.els,"click",r),t.on("searchStart",e.clear),t.on("filterStart",e.clear),r}},"./src/templater.js":function(t){var e=function(t){var e,r=this,n=function(e,r){var n=e.cloneNode(!0);n.removeAttribute("id");for(var s=0,i=r.length;s<i;s++){var a=void 0,o=r[s];if(o.data)for(var l=0,u=o.data.length;l<u;l++)n.setAttribute("data-"+o.data[l],"");else o.attr&&o.name?(a=t.utils.getByClass(n,o.name,!0))&&a.setAttribute(o.attr,""):(a=t.utils.getByClass(n,o,!0))&&(a.innerHTML="")}return n},s=function(){for(var e=t.list.childNodes,r=0,n=e.length;r<n;r++)if(void 0===e[r].data)return e[r].cloneNode(!0)},i=function(t){if("string"==typeof t){if(/<tr[\s>]/g.exec(t)){var e=document.createElement("tbody");return e.innerHTML=t,e.firstElementChild}if(-1!==t.indexOf("<")){var r=document.createElement("div");return r.innerHTML=t,r.firstElementChild}}},a=function(e,r,n){var s=void 0,i=function(e){for(var r=0,n=t.valueNames.length;r<n;r++){var s=t.valueNames[r];if(s.data){for(var i=s.data,a=0,o=i.length;a<o;a++)if(i[a]===e)return{data:e}}else{if(s.attr&&s.name&&s.name==e)return s;if(s===e)return e}}}(r);i&&(i.data?e.elm.setAttribute("data-"+i.data,n):i.attr&&i.name?(s=t.utils.getByClass(e.elm,i.name,!0))&&s.setAttribute(i.attr,n):(s=t.utils.getByClass(e.elm,i,!0))&&(s.innerHTML=n))};this.get=function(e,n){r.create(e);for(var s={},i=0,a=n.length;i<a;i++){var o=void 0,l=n[i];if(l.data)for(var u=0,c=l.data.length;u<c;u++)s[l.data[u]]=t.utils.getAttribute(e.elm,"data-"+l.data[u]);else l.attr&&l.name?(o=t.utils.getByClass(e.elm,l.name,!0),s[l.name]=o?t.utils.getAttribute(o,l.attr):""):(o=t.utils.getByClass(e.elm,l,!0),s[l]=o?o.innerHTML:"")}return s},this.set=function(t,e){if(!r.create(t))for(var n in e)e.hasOwnProperty(n)&&a(t,n,e[n])},this.create=function(t){return void 0===t.elm&&(t.elm=e(t.values()),r.set(t,t.values()),!0)},this.remove=function(e){e.elm.parentNode===t.list&&t.list.removeChild(e.elm)},this.show=function(e){r.create(e),t.list.appendChild(e.elm)},this.hide=function(e){void 0!==e.elm&&e.elm.parentNode===t.list&&t.list.removeChild(e.elm)},this.clear=function(){if(t.list.hasChildNodes())for(;t.list.childNodes.length>=1;)t.list.removeChild(t.list.firstChild)},function(){var r;if("function"!=typeof t.item){if(!(r="string"==typeof t.item?-1===t.item.indexOf("<")?document.getElementById(t.item):i(t.item):s()))throw new Error("The list needs to have at least one item on init otherwise you'll have to add a template.");r=n(r,t.valueNames),e=function(){return r.cloneNode(!0)}}else e=function(e){var r=t.item(e);return i(r)}}()};t.exports=function(t){return new e(t)}},"./src/utils/classes.js":function(t,e,r){var n=r("./src/utils/index-of.js"),s=/\s+/;Object.prototype.toString;function i(t){if(!t||!t.nodeType)throw new Error("A DOM element reference is required");this.el=t,this.list=t.classList}t.exports=function(t){return new i(t)},i.prototype.add=function(t){if(this.list)return this.list.add(t),this;var e=this.array();return~n(e,t)||e.push(t),this.el.className=e.join(" "),this},i.prototype.remove=function(t){if(this.list)return this.list.remove(t),this;var e=this.array(),r=n(e,t);return~r&&e.splice(r,1),this.el.className=e.join(" "),this},i.prototype.toggle=function(t,e){return this.list?(void 0!==e?e!==this.list.toggle(t,e)&&this.list.toggle(t):this.list.toggle(t),this):(void 0!==e?e?this.add(t):this.remove(t):this.has(t)?this.remove(t):this.add(t),this)},i.prototype.array=function(){var t=(this.el.getAttribute("class")||"").replace(/^\s+|\s+$/g,"").split(s);return""===t[0]&&t.shift(),t},i.prototype.has=i.prototype.contains=function(t){return this.list?this.list.contains(t):!!~n(this.array(),t)}},"./src/utils/events.js":function(t,e,r){var n=window.addEventListener?"addEventListener":"attachEvent",s=window.removeEventListener?"removeEventListener":"detachEvent",i="addEventListener"!==n?"on":"",a=r("./src/utils/to-array.js");e.bind=function(t,e,r,s){for(var o=0,l=(t=a(t)).length;o<l;o++)t[o][n](i+e,r,s||!1)},e.unbind=function(t,e,r,n){for(var o=0,l=(t=a(t)).length;o<l;o++)t[o][s](i+e,r,n||!1)},e.debounce=function(t,e,r){var n;return e?function(){var s=this,i=arguments,a=function(){n=null,r||t.apply(s,i)},o=r&&!n;clearTimeout(n),n=setTimeout(a,e),o&&t.apply(s,i)}:t}},"./src/utils/extend.js":function(t){t.exports=function(t){for(var e,r=Array.prototype.slice.call(arguments,1),n=0;e=r[n];n++)if(e)for(var s in e)t[s]=e[s];return t}},"./src/utils/fuzzy.js":function(t){t.exports=function(t,e,r){var n=r.location||0,s=r.distance||100,i=r.threshold||.4;if(e===t)return!0;if(e.length>32)return!1;var a=n,o=function(){var t,r={};for(t=0;t<e.length;t++)r[e.charAt(t)]=0;for(t=0;t<e.length;t++)r[e.charAt(t)]|=1<<e.length-t-1;return r}();function l(t,r){var n=t/e.length,i=Math.abs(a-r);return s?n+i/s:i?1:n}var u=i,c=t.indexOf(e,a);-1!=c&&(u=Math.min(l(0,c),u),-1!=(c=t.lastIndexOf(e,a+e.length))&&(u=Math.min(l(0,c),u)));var f,h,d=1<<e.length-1;c=-1;for(var v,g=e.length+t.length,m=0;m<e.length;m++){for(f=0,h=g;f<h;)l(m,a+h)<=u?f=h:g=h,h=Math.floor((g-f)/2+f);g=h;var p=Math.max(1,a-h+1),y=Math.min(a+h,t.length)+e.length,C=Array(y+2);C[y+1]=(1<<m)-1;for(var b=y;b>=p;b--){var j=o[t.charAt(b-1)];if(C[b]=0===m?(C[b+1]<<1|1)&j:(C[b+1]<<1|1)&j|(v[b+1]|v[b])<<1|1|v[b+1],C[b]&d){var x=l(m,b-1);if(x<=u){if(u=x,!((c=b-1)>a))break;p=Math.max(1,2*a-c)}}}if(l(m+1,a)>u)break;v=C}return!(c<0)}},"./src/utils/get-attribute.js":function(t){t.exports=function(t,e){var r=t.getAttribute&&t.getAttribute(e)||null;if(!r)for(var n=t.attributes,s=n.length,i=0;i<s;i++)void 0!==n[i]&&n[i].nodeName===e&&(r=n[i].nodeValue);return r}},"./src/utils/get-by-class.js":function(t){t.exports=function(t,e,r,n){return(n=n||{}).test&&n.getElementsByClassName||!n.test&&document.getElementsByClassName?function(t,e,r){return r?t.getElementsByClassName(e)[0]:t.getElementsByClassName(e)}(t,e,r):n.test&&n.querySelector||!n.test&&document.querySelector?function(t,e,r){return e="."+e,r?t.querySelector(e):t.querySelectorAll(e)}(t,e,r):function(t,e,r){for(var n=[],s=t.getElementsByTagName("*"),i=s.length,a=new RegExp("(^|\\s)"+e+"(\\s|$)"),o=0,l=0;o<i;o++)if(a.test(s[o].className)){if(r)return s[o];n[l]=s[o],l++}return n}(t,e,r)}},"./src/utils/index-of.js":function(t){var e=[].indexOf;t.exports=function(t,r){if(e)return t.indexOf(r);for(var n=0,s=t.length;n<s;++n)if(t[n]===r)return n;return-1}},"./src/utils/to-array.js":function(t){t.exports=function(t){if(void 0===t)return[];if(null===t)return[null];if(t===window)return[window];if("string"==typeof t)return[t];if(function(t){return"[object Array]"===Object.prototype.toString.call(t)}(t))return t;if("number"!=typeof t.length)return[t];if("function"==typeof t&&t instanceof Function)return[t];for(var e=[],r=0,n=t.length;r<n;r++)(Object.prototype.hasOwnProperty.call(t,r)||r in t)&&e.push(t[r]);return e.length?e:[]}},"./src/utils/to-string.js":function(t){t.exports=function(t){return t=(t=null===(t=void 0===t?"":t)?"":t).toString()}},"./node_modules/string-natural-compare/natural-compare.js":function(t){"use strict";var e,r,n=0;function s(t){return t>=48&&t<=57}function i(t,e){for(var i=(t+="").length,a=(e+="").length,o=0,l=0;o<i&&l<a;){var u=t.charCodeAt(o),c=e.charCodeAt(l);if(s(u)){if(!s(c))return u-c;for(var f=o,h=l;48===u&&++f<i;)u=t.charCodeAt(f);for(;48===c&&++h<a;)c=e.charCodeAt(h);for(var d=f,v=h;d<i&&s(t.charCodeAt(d));)++d;for(;v<a&&s(e.charCodeAt(v));)++v;var g=d-f-v+h;if(g)return g;for(;f<d;)if(g=t.charCodeAt(f++)-e.charCodeAt(h++))return g;o=d,l=v}else{if(u!==c)return u<n&&c<n&&-1!==r[u]&&-1!==r[c]?r[u]-r[c]:u-c;++o,++l}}return o>=i&&l<a&&i>=a?-1:l>=a&&o<i&&a>=i?1:i-a}i.caseInsensitive=i.i=function(t,e){return i((""+t).toLowerCase(),(""+e).toLowerCase())},Object.defineProperties(i,{alphabet:{get:function(){return e},set:function(t){r=[];var s=0;if(e=t)for(;s<e.length;s++)r[e.charCodeAt(s)]=s;for(n=r.length,s=0;s<n;s++)void 0===r[s]&&(r[s]=-1)}}}),t.exports=i}},e={};return function r(n){if(e[n])return e[n].exports;var s=e[n]={exports:{}};return t[n](s,s.exports,r),s.exports}("./src/index.js")}();
-//# sourceMappingURL=list.min.js.map</script>
-<script>const kProgressiveAttr = "data-src";
-let categoriesLoaded = false;
-
-window.quartoListingCategory = (category) => {
-  if (categoriesLoaded) {
-    activateCategory(category);
-    setCategoryHash(category);
-  }
-};
-
-window["quarto-listing-loaded"] = () => {
-  // Process any existing hash
-  const hash = getHash();
-
-  if (hash) {
-    // If there is a category, switch to that
-    if (hash.category) {
-      activateCategory(hash.category);
-    }
-    // Paginate a specific listing
-    const listingIds = Object.keys(window["quarto-listings"]);
-    for (const listingId of listingIds) {
-      const page = hash[getListingPageKey(listingId)];
-      if (page) {
-        showPage(listingId, page);
-      }
-    }
-  }
-
-  const listingIds = Object.keys(window["quarto-listings"]);
-  for (const listingId of listingIds) {
-    // The actual list
-    const list = window["quarto-listings"][listingId];
-
-    // Update the handlers for pagination events
-    refreshPaginationHandlers(listingId);
-
-    // Render any visible items that need it
-    renderVisibleProgressiveImages(list);
-
-    // Whenever the list is updated, we also need to
-    // attach handlers to the new pagination elements
-    // and refresh any newly visible items.
-    list.on("updated", function () {
-      renderVisibleProgressiveImages(list);
-      setTimeout(() => refreshPaginationHandlers(listingId));
-
-      // Show or hide the no matching message
-      toggleNoMatchingMessage(list);
-    });
-  }
-};
-
-window.document.addEventListener("DOMContentLoaded", function (_event) {
-  // Attach click handlers to categories
-  const categoryEls = window.document.querySelectorAll(
-    ".quarto-listing-category .category"
-  );
-
-  for (const categoryEl of categoryEls) {
-    const category = categoryEl.getAttribute("data-category");
-    categoryEl.onclick = () => {
-      activateCategory(category);
-      setCategoryHash(category);
-    };
-  }
-
-  // Attach a click handler to the category title
-  // (there should be only one, but since it is a class name, handle N)
-  const categoryTitleEls = window.document.querySelectorAll(
-    ".quarto-listing-category-title"
-  );
-  for (const categoryTitleEl of categoryTitleEls) {
-    categoryTitleEl.onclick = () => {
-      activateCategory("");
-      setCategoryHash("");
-    };
-  }
-
-  categoriesLoaded = true;
-});
-
-function toggleNoMatchingMessage(list) {
-  const selector = `#${list.listContainer.id} .listing-no-matching`;
-  const noMatchingEl = window.document.querySelector(selector);
-  if (noMatchingEl) {
-    if (list.visibleItems.length === 0) {
-      noMatchingEl.classList.remove("d-none");
-    } else {
-      if (!noMatchingEl.classList.contains("d-none")) {
-        noMatchingEl.classList.add("d-none");
-      }
-    }
-  }
-}
-
-function setCategoryHash(category) {
-  setHash({ category });
-}
-
-function setPageHash(listingId, page) {
-  const currentHash = getHash() || {};
-  currentHash[getListingPageKey(listingId)] = page;
-  setHash(currentHash);
-}
-
-function getListingPageKey(listingId) {
-  return `${listingId}-page`;
-}
-
-function refreshPaginationHandlers(listingId) {
-  const listingEl = window.document.getElementById(listingId);
-  const paginationEls = listingEl.querySelectorAll(
-    ".pagination li.page-item:not(.disabled) .page.page-link"
-  );
-  for (const paginationEl of paginationEls) {
-    paginationEl.onclick = (sender) => {
-      setPageHash(listingId, sender.target.getAttribute("data-i"));
-      showPage(listingId, sender.target.getAttribute("data-i"));
-      return false;
-    };
-  }
-}
-
-function renderVisibleProgressiveImages(list) {
-  // Run through the visible items and render any progressive images
-  for (const item of list.visibleItems) {
-    const itemEl = item.elm;
-    if (itemEl) {
-      const progressiveImgs = itemEl.querySelectorAll(
-        `img[${kProgressiveAttr}]`
-      );
-      for (const progressiveImg of progressiveImgs) {
-        const srcValue = progressiveImg.getAttribute(kProgressiveAttr);
-        if (srcValue) {
-          progressiveImg.setAttribute("src", srcValue);
-        }
-        progressiveImg.removeAttribute(kProgressiveAttr);
-      }
-    }
-  }
-}
-
-function getHash() {
-  // Hashes are of the form
-  // #name:value|name1:value1|name2:value2
-  const currentUrl = new URL(window.location);
-  const hashRaw = currentUrl.hash ? currentUrl.hash.slice(1) : undefined;
-  return parseHash(hashRaw);
-}
-
-const kAnd = "&";
-const kEquals = "=";
-
-function parseHash(hash) {
-  if (!hash) {
-    return undefined;
-  }
-  const hasValuesStrs = hash.split(kAnd);
-  const hashValues = hasValuesStrs
-    .map((hashValueStr) => {
-      const vals = hashValueStr.split(kEquals);
-      if (vals.length === 2) {
-        return { name: vals[0], value: vals[1] };
-      } else {
-        return undefined;
-      }
-    })
-    .filter((value) => {
-      return value !== undefined;
-    });
-
-  const hashObj = {};
-  hashValues.forEach((hashValue) => {
-    hashObj[hashValue.name] = decodeURIComponent(hashValue.value);
-  });
-  return hashObj;
-}
-
-function makeHash(obj) {
-  return Object.keys(obj)
-    .map((key) => {
-      return `${key}${kEquals}${obj[key]}`;
-    })
-    .join(kAnd);
-}
-
-function setHash(obj) {
-  const hash = makeHash(obj);
-  window.history.pushState(null, null, `#${hash}`);
-}
-
-function showPage(listingId, page) {
-  const list = window["quarto-listings"][listingId];
-  if (list) {
-    list.show((page - 1) * list.page + 1, list.page);
-  }
-}
-
-function activateCategory(category) {
-  // Deactivate existing categories
-  const activeEls = window.document.querySelectorAll(
-    ".quarto-listing-category .category.active"
-  );
-  for (const activeEl of activeEls) {
-    activeEl.classList.remove("active");
-  }
-
-  // Activate this category
-  const categoryEl = window.document.querySelector(
-    `.quarto-listing-category .category[data-category='${category}'`
-  );
-  if (categoryEl) {
-    categoryEl.classList.add("active");
-  }
-
-  // Filter the listings to this category
-  filterListingCategory(category);
-}
-
-function filterListingCategory(category) {
-  const listingIds = Object.keys(window["quarto-listings"]);
-  for (const listingId of listingIds) {
-    const list = window["quarto-listings"][listingId];
-    if (list) {
-      if (category === "") {
-        // resets the filter
-        list.filter();
-      } else {
-        // filter to this category
-        list.filter(function (item) {
-          const itemValues = item.values();
-          if (itemValues.categories !== null) {
-            const categories = itemValues.categories.split(",");
-            return categories.includes(category);
-          } else {
-            return false;
-          }
-        });
-      }
-    }
-  }
-}
-</script>
+<meta name="quarto:offset" content="../../">
 <script>const sectionChanged = new CustomEvent("quarto-sectionChanged", {
   detail: {},
   bubbles: true,
@@ -4157,52 +3976,15 @@ vertical-align: -.125em;
     "search-submit-button-title": "Submit"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  
-  <script>
-    (function () {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src  = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js";
-      document.getElementsByTagName("head")[0].appendChild(script);
-    })();
-  </script>
 
 
 <style type="text/css">
 </style>
-<meta property="og:title" content>
+<meta property="og:title" content="sam | science - The return of the webservice">
+<meta property="og:description" content="The most common question I get about the tidyhydat package goes something like this:">
 <meta property="og:site-name" content="sam | science">
-<meta name="twitter:title" content>
+<meta name="twitter:title" content="sam | science - The return of the webservice">
+<meta name="twitter:description" content="The most common question I get about the tidyhydat package goes something like this:">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -4213,7 +3995,7 @@ vertical-align: -.125em;
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">sam | science</span>
     </a>
   </div>
@@ -4223,7 +4005,7 @@ vertical-align: -.125em;
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html">About</a>
+    <a class="nav-link" href="../../about.html">About</a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
@@ -4245,174 +4027,752 @@ vertical-align: -.125em;
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">The return of the webservice</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">hydrology</div>
+                <div class="quarto-category">tidyhydat</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Sam Albers </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 25, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category>All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(4)</span></div><div class="category" data-category="RStudio">RStudio <span class="quarto-category-count">(1)</span></div><div class="category" data-category="hydrology">hydrology <span class="quarto-category-count">(2)</span></div><div class="category" data-category="music">music <span class="quarto-category-count">(1)</span></div><div class="category" data-category="task-view">task-view <span class="quarto-category-count">(1)</span></div><div class="category" data-category="tidyhydat">tidyhydat <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#getting-realtime-hydrometric-data" id="toc-getting-realtime-hydrometric-data" class="nav-link active" data-scroll-target="#getting-realtime-hydrometric-data">Getting realtime hydrometric data</a></li>
+  <li><a href="#new-parameters" id="toc-new-parameters" class="nav-link" data-scroll-target="#new-parameters">New Parameters</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyhydat)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The most common question I get about the tidyhydat package goes something like this:</p>
+<blockquote class="blockquote">
+<p>how do I get realtime data longer the 30 days available in the datamart via <a href="https://docs.ropensci.org/tidyhydat/reference/realtime_dd.html"><code>realtime_dd</code></a>?</p>
+</blockquote>
+<p>Previously the answer was… you can’t. The Hydat database is a historical database. It is not updated in realtime. Now, however, Environment and Climate Change Canada (ECCC) does have a <a href="https://wateroffice.ec.gc.ca/services/links_e.html">webservice</a> that provides realtime data which extends back 18 months. This is enormously useful and it usually spans the gap to get data into HYDAT. And since tidyhydat version 0.6.0 you can now access this data via the <code>realtime_ws</code> function. This blog is a quick introduction to some of the usage of that webservice.</p>
+<section id="getting-realtime-hydrometric-data" class="level2">
+<h2 class="anchored" data-anchor-id="getting-realtime-hydrometric-data">Getting realtime hydrometric data</h2>
+<p>The <code>realtime_ws</code> function operates in a similar way to the <code>realtime_dd</code> function. You can get data for a single station or for a list of stations and the function returns a tibble.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">realtime_ws</span>(<span class="at">station_number =</span> <span class="st">&quot;08MF005&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 18,081 × 10
+   STATION_NUMBER Date                Name_En  Value Unit  Grade Symbol Approval
+   &lt;chr&gt;          &lt;dttm&gt;              &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     &lt;int&gt;
+ 1 08MF005        2023-03-27 00:00:00 Water t…  5.05 °C    -1    &lt;NA&gt;         NA
+ 2 08MF005        2023-03-27 01:00:00 Water t…  4.32 °C    -1    &lt;NA&gt;         NA
+ 3 08MF005        2023-03-27 02:00:00 Water t…  4.03 °C    -1    &lt;NA&gt;         NA
+ 4 08MF005        2023-03-27 03:00:00 Water t…  4.01 °C    -1    &lt;NA&gt;         NA
+ 5 08MF005        2023-03-27 04:00:00 Water t…  3.81 °C    -1    &lt;NA&gt;         NA
+ 6 08MF005        2023-03-27 05:00:00 Water t…  3.65 °C    -1    &lt;NA&gt;         NA
+ 7 08MF005        2023-03-27 06:00:00 Water t…  3.6  °C    -1    &lt;NA&gt;         NA
+ 8 08MF005        2023-03-27 07:00:00 Water t…  3.37 °C    -1    &lt;NA&gt;         NA
+ 9 08MF005        2023-03-27 08:00:00 Water t…  3.3  °C    -1    &lt;NA&gt;         NA
+10 08MF005        2023-03-27 09:00:00 Water t…  3.24 °C    -1    &lt;NA&gt;         NA
+# ℹ 18,071 more rows
+# ℹ 2 more variables: Parameter &lt;dbl&gt;, Code &lt;chr&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="new-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="new-parameters">New Parameters</h2>
+<p>Removing the French parameters simply for brevity here. This is no slight to French.</p>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>param_id <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">matches</span>(<span class="st">&quot;_Fr&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.color =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.background.color =</span> <span class="st">&quot;#231409&quot;</span>, </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="fu">px</span>(12L)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_font</span>(<span class="at">stack =</span> <span class="st">&quot;monospace-code&quot;</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="dghympltwh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dghympltwh table {
+font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+#dghympltwh thead, #dghympltwh tbody, #dghympltwh tfoot, #dghympltwh tr, #dghympltwh td, #dghympltwh th {
+border-style: none;
+}
+#dghympltwh p {
+margin: 0;
+padding: 0;
+}
+#dghympltwh .gt_table {
+display: table;
+border-collapse: collapse;
+line-height: normal;
+margin-left: auto;
+margin-right: auto;
+color: #FFFFFF;
+font-size: 12px;
+font-weight: normal;
+font-style: normal;
+background-color: #231409;
+width: auto;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #A8A8A8;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #A8A8A8;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+}
+#dghympltwh .gt_caption {
+padding-top: 4px;
+padding-bottom: 4px;
+}
+#dghympltwh .gt_title {
+color: #FFFFFF;
+font-size: 125%;
+font-weight: initial;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-color: #231409;
+border-bottom-width: 0;
+}
+#dghympltwh .gt_subtitle {
+color: #FFFFFF;
+font-size: 85%;
+font-weight: initial;
+padding-top: 3px;
+padding-bottom: 5px;
+padding-left: 5px;
+padding-right: 5px;
+border-top-color: #231409;
+border-top-width: 0;
+}
+#dghympltwh .gt_heading {
+background-color: #231409;
+text-align: center;
+border-bottom-color: #231409;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+}
+#dghympltwh .gt_bottom_border {
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#dghympltwh .gt_col_headings {
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+}
+#dghympltwh .gt_col_heading {
+color: #FFFFFF;
+background-color: #231409;
+font-size: 100%;
+font-weight: normal;
+text-transform: inherit;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: bottom;
+padding-top: 5px;
+padding-bottom: 6px;
+padding-left: 5px;
+padding-right: 5px;
+overflow-x: hidden;
+}
+#dghympltwh .gt_column_spanner_outer {
+color: #FFFFFF;
+background-color: #231409;
+font-size: 100%;
+font-weight: normal;
+text-transform: inherit;
+padding-top: 0;
+padding-bottom: 0;
+padding-left: 4px;
+padding-right: 4px;
+}
+#dghympltwh .gt_column_spanner_outer:first-child {
+padding-left: 0;
+}
+#dghympltwh .gt_column_spanner_outer:last-child {
+padding-right: 0;
+}
+#dghympltwh .gt_column_spanner {
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+vertical-align: bottom;
+padding-top: 5px;
+padding-bottom: 5px;
+overflow-x: hidden;
+display: inline-block;
+width: 100%;
+}
+#dghympltwh .gt_spanner_row {
+border-bottom-style: hidden;
+}
+#dghympltwh .gt_group_heading {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+color: #FFFFFF;
+background-color: #231409;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: middle;
+text-align: left;
+}
+#dghympltwh .gt_empty_group_heading {
+padding: 0.5px;
+color: #FFFFFF;
+background-color: #231409;
+font-size: 100%;
+font-weight: initial;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+vertical-align: middle;
+}
+#dghympltwh .gt_from_md > :first-child {
+margin-top: 0;
+}
+#dghympltwh .gt_from_md > :last-child {
+margin-bottom: 0;
+}
+#dghympltwh .gt_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+margin: 10px;
+border-top-style: solid;
+border-top-width: 1px;
+border-top-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: middle;
+overflow-x: hidden;
+}
+#dghympltwh .gt_stub {
+color: #FFFFFF;
+background-color: #231409;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-right-style: solid;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+padding-left: 5px;
+padding-right: 5px;
+}
+#dghympltwh .gt_stub_row_group {
+color: #FFFFFF;
+background-color: #231409;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-right-style: solid;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+padding-left: 5px;
+padding-right: 5px;
+vertical-align: top;
+}
+#dghympltwh .gt_row_group_first td {
+border-top-width: 2px;
+}
+#dghympltwh .gt_row_group_first th {
+border-top-width: 2px;
+}
+#dghympltwh .gt_summary_row {
+color: #FFFFFF;
+background-color: #231409;
+text-transform: inherit;
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#dghympltwh .gt_first_summary_row {
+border-top-style: solid;
+border-top-color: #D3D3D3;
+}
+#dghympltwh .gt_first_summary_row.thick {
+border-top-width: 2px;
+}
+#dghympltwh .gt_last_summary_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#dghympltwh .gt_grand_summary_row {
+color: #FFFFFF;
+background-color: #231409;
+text-transform: inherit;
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#dghympltwh .gt_first_grand_summary_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-top-style: double;
+border-top-width: 6px;
+border-top-color: #D3D3D3;
+}
+#dghympltwh .gt_last_grand_summary_row_top {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-style: double;
+border-bottom-width: 6px;
+border-bottom-color: #D3D3D3;
+}
+#dghympltwh .gt_striped {
+background-color: rgba(128, 128, 128, 0.05);
+}
+#dghympltwh .gt_table_body {
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#dghympltwh .gt_footnotes {
+color: #FFFFFF;
+background-color: #231409;
+border-bottom-style: none;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+}
+#dghympltwh .gt_footnote {
+margin: 0px;
+font-size: 90%;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#dghympltwh .gt_sourcenotes {
+color: #FFFFFF;
+background-color: #231409;
+border-bottom-style: none;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+}
+#dghympltwh .gt_sourcenote {
+font-size: 90%;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#dghympltwh .gt_left {
+text-align: left;
+}
+#dghympltwh .gt_center {
+text-align: center;
+}
+#dghympltwh .gt_right {
+text-align: right;
+font-variant-numeric: tabular-nums;
+}
+#dghympltwh .gt_font_normal {
+font-weight: normal;
+}
+#dghympltwh .gt_font_bold {
+font-weight: bold;
+}
+#dghympltwh .gt_font_italic {
+font-style: italic;
+}
+#dghympltwh .gt_super {
+font-size: 65%;
+}
+#dghympltwh .gt_footnote_marks {
+font-size: 75%;
+vertical-align: 0.4em;
+position: initial;
+}
+#dghympltwh .gt_asterisk {
+font-size: 100%;
+vertical-align: 0;
+}
+#dghympltwh .gt_indent_1 {
+text-indent: 5px;
+}
+#dghympltwh .gt_indent_2 {
+text-indent: 10px;
+}
+#dghympltwh .gt_indent_3 {
+text-indent: 15px;
+}
+#dghympltwh .gt_indent_4 {
+text-indent: 20px;
+}
+#dghympltwh .gt_indent_5 {
+text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Code">Code</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Unit">Unit</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Name_En">Name_En</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Description_En">Description_En</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Parameter" class="gt_row gt_right">46</td>
+<td headers="Code" class="gt_row gt_left">HG</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Water level (primary sensor)</td>
+<td headers="Description_En" class="gt_row gt_left">Height, stage, elevation of the water surface at a specified station above some arbitrary zero datum</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">16</td>
+<td headers="Code" class="gt_row gt_left">HG2</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Water level (secondary sensor, telemetry)</td>
+<td headers="Description_En" class="gt_row gt_left">Height, stage, additional secondary water level reading at the specified station, telemetry signal</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">11</td>
+<td headers="Code" class="gt_row gt_left">HG22</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Water level (secondary sensor)</td>
+<td headers="Description_En" class="gt_row gt_left">Height, stage, additional secondary water level reading at the specified station</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">52</td>
+<td headers="Code" class="gt_row gt_left">HG3</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Water level (tertiary sensor, telemetry)</td>
+<td headers="Description_En" class="gt_row gt_left">Height, stage, additional tertiary water level reading at the specified station, telemetry signal</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">13</td>
+<td headers="Code" class="gt_row gt_left">HG33</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Water level (tertiary sensor)</td>
+<td headers="Description_En" class="gt_row gt_left">Height, stage, additional tertiary water level reading at the specified station</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">3</td>
+<td headers="Code" class="gt_row gt_left">HGD</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Water level (daily mean)</td>
+<td headers="Description_En" class="gt_row gt_left">Provisional Daily Water Level</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">39</td>
+<td headers="Code" class="gt_row gt_left">HGH</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Water level (hourly mean)</td>
+<td headers="Description_En" class="gt_row gt_left">Provisional hourly water level</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">14</td>
+<td headers="Code" class="gt_row gt_left">HL</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Elevation, natural lake</td>
+<td headers="Description_En" class="gt_row gt_left">Elevation, natural lake</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">42</td>
+<td headers="Code" class="gt_row gt_left">HR</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Elevation, lake or reservoir rule curve</td>
+<td headers="Description_En" class="gt_row gt_left">Elevation, lake or reservoir rule curve</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">17</td>
+<td headers="Code" class="gt_row gt_left">PA</td>
+<td headers="Unit" class="gt_row gt_left">kPa</td>
+<td headers="Name_En" class="gt_row gt_left">Atmospheric pressure</td>
+<td headers="Description_En" class="gt_row gt_left">Pressure, atmospheric</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">18</td>
+<td headers="Code" class="gt_row gt_left">PC</td>
+<td headers="Unit" class="gt_row gt_left">mm</td>
+<td headers="Name_En" class="gt_row gt_left">Accumulated precipitation</td>
+<td headers="Description_En" class="gt_row gt_left">Precipitation, accumulator - summation of precipitation collected beginning at a specified date</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">19</td>
+<td headers="Code" class="gt_row gt_left">PP</td>
+<td headers="Unit" class="gt_row gt_left">mm</td>
+<td headers="Name_En" class="gt_row gt_left">Incremental precipitation</td>
+<td headers="Description_En" class="gt_row gt_left">Precipitation, actual increment - discrete increase in precipitation amount over a specified duration (includes liquid amount of new snowfall)</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">47</td>
+<td headers="Code" class="gt_row gt_left">QR</td>
+<td headers="Unit" class="gt_row gt_left">m3/s</td>
+<td headers="Name_En" class="gt_row gt_left">Discharge (primary sensor derived)</td>
+<td headers="Description_En" class="gt_row gt_left">Discharge - flow measured at points along a stream</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">7</td>
+<td headers="Code" class="gt_row gt_left">QR2</td>
+<td headers="Unit" class="gt_row gt_left">m3/s</td>
+<td headers="Name_En" class="gt_row gt_left">Discharge (secondary sensor derived)</td>
+<td headers="Description_En" class="gt_row gt_left">Discharge, derived from secondary water level</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">10</td>
+<td headers="Code" class="gt_row gt_left">QR3</td>
+<td headers="Unit" class="gt_row gt_left">m3/s</td>
+<td headers="Name_En" class="gt_row gt_left">Discharge (tertiary sensor derived)</td>
+<td headers="Description_En" class="gt_row gt_left">Discharge, derived from tertiary water level</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">6</td>
+<td headers="Code" class="gt_row gt_left">QRD</td>
+<td headers="Unit" class="gt_row gt_left">m3/s</td>
+<td headers="Name_En" class="gt_row gt_left">Discharge (daily mean)</td>
+<td headers="Description_En" class="gt_row gt_left">Provisional Daily Water Level</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">40</td>
+<td headers="Code" class="gt_row gt_left">QRH</td>
+<td headers="Unit" class="gt_row gt_left">m3/s</td>
+<td headers="Name_En" class="gt_row gt_left">Discharge (hourly mean)</td>
+<td headers="Description_En" class="gt_row gt_left">Provisional Hourly Discharge</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">8</td>
+<td headers="Code" class="gt_row gt_left">QRS</td>
+<td headers="Unit" class="gt_row gt_left">m3/s</td>
+<td headers="Name_En" class="gt_row gt_left">Discharge (sensor)</td>
+<td headers="Description_En" class="gt_row gt_left">Discharge measured by sensor</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">50</td>
+<td headers="Code" class="gt_row gt_left">SD</td>
+<td headers="Unit" class="gt_row gt_left">cm</td>
+<td headers="Name_En" class="gt_row gt_left">Snow depth</td>
+<td headers="Description_En" class="gt_row gt_left">Snow, depth - actual depth of snow on the ground at any instant during a storm, or after any single snowstorm or series of storms</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">51</td>
+<td headers="Code" class="gt_row gt_left">SF</td>
+<td headers="Unit" class="gt_row gt_left">cm</td>
+<td headers="Name_En" class="gt_row gt_left">Snow depth, new snowfall</td>
+<td headers="Description_En" class="gt_row gt_left">Snow, depth, new snowfall - incremental depth of snow on the ground at any instant since last snow depth observation</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">1</td>
+<td headers="Code" class="gt_row gt_left">TA</td>
+<td headers="Unit" class="gt_row gt_left">°C</td>
+<td headers="Name_En" class="gt_row gt_left">Air temperature</td>
+<td headers="Description_En" class="gt_row gt_left">Temperature, air, wet bulb</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">5</td>
+<td headers="Code" class="gt_row gt_left">TW</td>
+<td headers="Unit" class="gt_row gt_left">°C</td>
+<td headers="Name_En" class="gt_row gt_left">Water temperature</td>
+<td headers="Description_En" class="gt_row gt_left">Temperature, temperature of water at a specified depth</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">41</td>
+<td headers="Code" class="gt_row gt_left">TW2</td>
+<td headers="Unit" class="gt_row gt_left">°C</td>
+<td headers="Name_En" class="gt_row gt_left">Secondary water temperature</td>
+<td headers="Description_En" class="gt_row gt_left">Temperature, additional secondary water temperature reading at the specified station</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">34</td>
+<td headers="Code" class="gt_row gt_left">UD</td>
+<td headers="Unit" class="gt_row gt_left">deg</td>
+<td headers="Name_En" class="gt_row gt_left">Wind direction</td>
+<td headers="Description_En" class="gt_row gt_left">Wind, direction - direction most frequently observed during a given period</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">35</td>
+<td headers="Code" class="gt_row gt_left">US</td>
+<td headers="Unit" class="gt_row gt_left">m/s</td>
+<td headers="Name_En" class="gt_row gt_left">Wind speed</td>
+<td headers="Description_En" class="gt_row gt_left">Wind, speed - velocity of air in motion relative to the surface of the earth</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">2</td>
+<td headers="Code" class="gt_row gt_left">VB</td>
+<td headers="Unit" class="gt_row gt_left">V</td>
+<td headers="Name_En" class="gt_row gt_left">Battery voltage</td>
+<td headers="Description_En" class="gt_row gt_left">Battery voltage</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">20</td>
+<td headers="Code" class="gt_row gt_left">WB</td>
+<td headers="Unit" class="gt_row gt_left">RFU</td>
+<td headers="Name_En" class="gt_row gt_left">Blue-green algae</td>
+<td headers="Description_En" class="gt_row gt_left">Water, blue-green algae</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">21</td>
+<td headers="Code" class="gt_row gt_left">WC</td>
+<td headers="Unit" class="gt_row gt_left">S</td>
+<td headers="Name_En" class="gt_row gt_left">Conductance</td>
+<td headers="Description_En" class="gt_row gt_left">Water, conductance</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">26</td>
+<td headers="Code" class="gt_row gt_left">WLA</td>
+<td headers="Unit" class="gt_row gt_left">mg/l</td>
+<td headers="Name_En" class="gt_row gt_left">Total dissolved solids</td>
+<td headers="Description_En" class="gt_row gt_left">Water, total dissolved solids</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">43</td>
+<td headers="Code" class="gt_row gt_left">WNB</td>
+<td headers="Unit" class="gt_row gt_left">mg/l</td>
+<td headers="Name_En" class="gt_row gt_left">Dissolved nitrate</td>
+<td headers="Description_En" class="gt_row gt_left">Water, dissolved nitrate (NO3-)</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">22</td>
+<td headers="Code" class="gt_row gt_left">WO</td>
+<td headers="Unit" class="gt_row gt_left">mg/l</td>
+<td headers="Name_En" class="gt_row gt_left">Dissolved oxygen</td>
+<td headers="Description_En" class="gt_row gt_left">Water, dissolved oxygen - amount of oxygen dissolved in water</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">24</td>
+<td headers="Code" class="gt_row gt_left">WP</td>
+<td headers="Unit" class="gt_row gt_left">NA</td>
+<td headers="Name_En" class="gt_row gt_left">pH</td>
+<td headers="Description_En" class="gt_row gt_left">Water, pH</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">25</td>
+<td headers="Code" class="gt_row gt_left">WT</td>
+<td headers="Unit" class="gt_row gt_left">NTU</td>
+<td headers="Name_En" class="gt_row gt_left">Turbidity</td>
+<td headers="Description_En" class="gt_row gt_left">Water, turbidity</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">9</td>
+<td headers="Code" class="gt_row gt_left">WV</td>
+<td headers="Unit" class="gt_row gt_left">m/s</td>
+<td headers="Name_En" class="gt_row gt_left">Water velocity</td>
+<td headers="Description_En" class="gt_row gt_left">Water, velocity - velocity of particles of water in a stream</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">37</td>
+<td headers="Code" class="gt_row gt_left">WVX</td>
+<td headers="Unit" class="gt_row gt_left">m/s</td>
+<td headers="Name_En" class="gt_row gt_left">Water velocity, x</td>
+<td headers="Description_En" class="gt_row gt_left">Water, velocity - velocity of particles of water in the x vector component</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">38</td>
+<td headers="Code" class="gt_row gt_left">WVY</td>
+<td headers="Unit" class="gt_row gt_left">m/s</td>
+<td headers="Name_En" class="gt_row gt_left">Water velocity, y</td>
+<td headers="Description_En" class="gt_row gt_left">Water, velocity of particles of water in the y vector component</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">23</td>
+<td headers="Code" class="gt_row gt_left">WX</td>
+<td headers="Unit" class="gt_row gt_left">%</td>
+<td headers="Name_En" class="gt_row gt_left">Oxygen saturation</td>
+<td headers="Description_En" class="gt_row gt_left">Water, dissolved oxygen</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">49</td>
+<td headers="Code" class="gt_row gt_left">WY</td>
+<td headers="Unit" class="gt_row gt_left">ug/L</td>
+<td headers="Name_En" class="gt_row gt_left">Chlorophyll</td>
+<td headers="Description_En" class="gt_row gt_left">Water, chlorophyll</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">28</td>
+<td headers="Code" class="gt_row gt_left">XR</td>
+<td headers="Unit" class="gt_row gt_left">%</td>
+<td headers="Name_En" class="gt_row gt_left">Relative humidity</td>
+<td headers="Description_En" class="gt_row gt_left">Humidity, relative - ratio of the actual vapor pressure of the air to the saturation vapor pressure expressed in percent</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">36</td>
+<td headers="Code" class="gt_row gt_left">YE</td>
+<td headers="Unit" class="gt_row gt_left">m</td>
+<td headers="Name_En" class="gt_row gt_left">Cell end</td>
+<td headers="Description_En" class="gt_row gt_left">Distance, cell end</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">4</td>
+<td headers="Code" class="gt_row gt_left">YI</td>
+<td headers="Unit" class="gt_row gt_left">°C</td>
+<td headers="Name_En" class="gt_row gt_left">Internal equipment temperature</td>
+<td headers="Description_En" class="gt_row gt_left">Internal equipment temperature</td></tr>
+    <tr><td headers="Parameter" class="gt_row gt_right">12</td>
+<td headers="Code" class="gt_row gt_left">YP</td>
+<td headers="Unit" class="gt_row gt_left">psi</td>
+<td headers="Name_En" class="gt_row gt_left">Tank pressure</td>
+<td headers="Description_En" class="gt_row gt_left">Tank pressure</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+<p>So once you chosen your measure you can see if your station has data for that measure. So a good first step is to grab all the stations that are also reporting in realtime</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>stations <span class="ot">&lt;-</span> <span class="fu">realtime_stations</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>stations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,054 × 6
+   STATION_NUMBER STATION_NAME   LATITUDE LONGITUDE PROV_TERR_STATE_LOC TIMEZONE
+   &lt;chr&gt;          &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;   
+ 1 01AD003        ST. FRANCIS R…     47.2     -69.0 NB                  UTC-04:…
+ 2 01AD004        SAINT JOHN RI…     47.4     -68.3 NB                  UTC-04:…
+ 3 01AF002        SAINT JOHN RI…     47.0     -67.7 NB                  UTC-04:…
+ 4 01AF007        GRANDE RIVIER…     47.2     -67.9 NB                  UTC-04:…
+ 5 01AF009        IROQUOIS RIVE…     47.5     -68.4 NB                  UTC-04:…
+ 6 01AG003        AROOSTOOK RIV…     46.8     -67.8 NB                  UTC-04:…
+ 7 01AH002        TOBIQUE RIVER…     47.2     -67.2 NB                  UTC-04:…
+ 8 01AJ003        MEDUXNEKEAG R…     46.2     -67.7 NB                  UTC-04:…
+ 9 01AJ004        BIG PRESQUE I…     46.4     -67.7 NB                  UTC-04:…
+10 01AJ010        BECAGUIMEC ST…     46.3     -67.5 NB                  UTC-04:…
+# ℹ 2,044 more rows</code></pre>
+</div>
+</div>
+<p>Ok so 2054 stations are reporting in realtime. There is no direct way to see</p>
+<div class="cell">
+
+</div>
 
 
+</section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R,hydrology,tidyhydat" data-listing-date-sort="1682406000000" data-listing-file-modified-sort="1682519641303" data-listing-reading-time-sort="1.405">
-<div class="body">
-<a href="./posts/eccc-webservice/index.html">
-<h3 class="no-anchor listing-title">
-The return of the webservice
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;R&#39;); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;hydrology&#39;); return false;">
-hydrology
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;tidyhydat&#39;); return false;">
-tidyhydat
-</div>
-</div>
-<a href="./posts/eccc-webservice/index.html">
-<div class="listing-description">
-The most common question I get about the tidyhydat package goes something like this:
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/eccc-webservice/index.html">
-<div class="listing-date">
-Apr 25, 2023
-</div>
-<div class="listing-author">
-Sam Albers
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="R,RStudio" data-listing-date-sort="1581408000000" data-listing-file-modified-sort="1682481102853" data-listing-reading-time-sort="11.605">
-<div class="body">
-<a href="./posts/a-short-history-of-me-at-rstudio-conf-2020/index.html">
-<h3 class="no-anchor listing-title">
-A short history of me at rstudio::conf 2020
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;R&#39;); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;RStudio&#39;); return false;">
-RStudio
-</div>
-</div>
-<a href="./posts/a-short-history-of-me-at-rstudio-conf-2020/index.html">
-<div class="listing-description">
-In January, I was lucky enough to attend the 2020 edition of RStudio::conf. Perhaps predictably, the conference and workshops were exceptional and to see all the wonderful things that folks in the R community are capable of was quite inspiring. People are really quite clever. Attending the tidy dev day was such a nice epilogue to the conference because after spending so much time listening to people talk about <em>their</em> code, I was pretty keen to crack open R and have at it myself. Before I lose everything from the conference to memory leaks, I am going to try to catalogue a few things that I learned at the conference by trying to weave them together into a single workflow.
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/a-short-history-of-me-at-rstudio-conf-2020/index.html">
-<div class="listing-date">
-Feb 11, 2020
-</div>
-<div class="listing-author">
-Sam Albers
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="hydrology,task-view,R" data-listing-date-sort="1579420800000" data-listing-file-modified-sort="1682481102853" data-listing-reading-time-sort="4.365">
-<div class="body">
-<a href="./posts/one-small-step-for-a-package-one-giant-leap-for-a-task-view/index.html">
-<h3 class="no-anchor listing-title">
-One small step for a package, one giant leap for a task view
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;hydrology&#39;); return false;">
-hydrology
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;task-view&#39;); return false;">
-task-view
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;R&#39;); return false;">
-R
-</div>
-</div>
-<a href="./posts/one-small-step-for-a-package-one-giant-leap-for-a-task-view/index.html">
-<div class="listing-description">
-This is a bit of a grandiose title for a blog post. But it is important to have ambition right? In 2003, after releasing Michigan, Sufjan Stevens announced his intention to release one album as an ode to each of the fifty American states, appropriately named the <em>Fifty States Project</em>. Despite only completing two albums (the other being Illinois) I appreciate his ambition, and desire to be thorough (and also those wacky costumes).
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/one-small-step-for-a-package-one-giant-leap-for-a-task-view/index.html">
-<div class="listing-date">
-Jan 19, 2020
-</div>
-<div class="listing-author">
-Sam Albers
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="music,R" data-listing-date-sort="1573977600000" data-listing-file-modified-sort="1682481102850" data-listing-reading-time-sort="4.85">
-<div class="body">
-<a href="./posts/2019-11-17-what-the-buck/index.html">
-<h3 class="no-anchor listing-title">
-What the Buck?
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;music&#39;); return false;">
-music
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory(&#39;R&#39;); return false;">
-R
-</div>
-</div>
-<a href="./posts/2019-11-17-what-the-buck/index.html">
-<div class="listing-description">
-<p>Buck talk</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/2019-11-17-what-the-buck/index.html">
-<div class="listing-date">
-Nov 17, 2019
-</div>
-<div class="listing-author">
-Sam Albers
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

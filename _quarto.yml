@@ -16,6 +16,7 @@ website:
   open-graph: true
 format:
   html:
+    self-contained: true
     theme:
       dark: [darkly, urchin-black.scss]
       light: [flatly, urchin.scss]
