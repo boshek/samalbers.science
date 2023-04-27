@@ -27,36 +27,43 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+The most common question I get about the tidyhydat package goes something like this: 
+
+> How do I get realtime data longer than the 30 days available in the datamart via [`realtime_dd`](https://docs.ropensci.org/tidyhydat/reference/realtime_dd.html)?
+
+Previously the answer was... you can't. The HYDAT database is a historical database. Data are validated and entered into HYDAT periodically. It is not updated in realtime. At the same time realtime data is only available for 30 days from the datamart. 
+
+Now, however, Environment and Climate Change Canada (ECCC) provided a [webservice](https://wateroffice.ec.gc.ca/services/links_e.html) that provides realtime data for stations which extends back to about 18 months. This usually spans the gap to get data into HYDAT. And since tidyhydat version 0.6.0 you can now access this data in R via the `realtime_ws` function. This lost is a quick introduction to some of the usage of that webservice from tidyhydat. 
+
+Let's load a few packages to help illustrate this.
+
 ```{r}
 library(tidyhydat)
 library(gt)
 library(dplyr)
+library(lubridate)
 ```
-
-The most common question I get about the tidyhydat package goes something like this: 
-
-> how do I get realtime data longer the 30 days available in the datamart via [`realtime_dd`](https://docs.ropensci.org/tidyhydat/reference/realtime_dd.html)?
-
-Previously the answer was... you can't. The Hydat database is a historical database. It is not updated in realtime. Now, however, Environment and Climate Change Canada (ECCC) does have a [webservice](https://wateroffice.ec.gc.ca/services/links_e.html) that provides realtime data which extends back 18 months. This is enormously useful and it usually spans the gap to get data into HYDAT. And since tidyhydat version 0.6.0 you can now access this data via the `realtime_ws` function. This blog is a quick introduction to some of the usage of that webservice. 
 
 ## Getting realtime hydrometric data
 
-The `realtime_ws` function operates in a similar way to the `realtime_dd` function. You can get data for a single station or for a list of stations and the function returns a tibble. 
+The `realtime_ws` function operates in a similar way to the `realtime_dd` function. You can get data for a single station or for a list of stations and the function returns a tibble. Here I am assuming that you know which station you and know its number. For an introduction to tidyhydat see [this vignette](https://docs.ropensci.org/tidyhydat/articles/tidyhydat_an_introduction.html). 
 
 ```{r}
-realtime_ws(station_number = "08MF005")
+ws <- realtime_ws(
+  station_number = "02JE032"
+)
+glimpse(ws)
 ```
-
-
-## New Parameters
-
-Removing the French parameters simply for brevity here. This is no slight to French. 
 
 ```{r}
 #| results: asis
+#| column: margin
+#| echo: false
 
 param_id %>%
-  select(-matches("_Fr")) %>% 
+  select(Parameter, Name_En) %>%
+  # select(-matches("_Fr")) %>% 
   gt() %>% 
   tab_options(
     table.font.color = "white",
@@ -65,6 +72,56 @@ param_id %>%
     ) %>% 
   opt_table_font(stack = "monospace-code") 
 ```
+
+Immediately you can see that the data returned is different than the data returned by `realtime_dd`. In particular notice the `Name_En`, `Parameter` and `Code` columns. These columns are used to identify the parameters we are interested in. Turns out off that you can access more than just hydrometric data via the webservice (more on that later!). But for now let's just focus on hydrometric data by supplying 47 to the parameter argument to get discharge. Why did I choose 47? I used the `param_id` internal table which tells me that 47 is the parameter code for discharge. In the margin you can see all the other parameters available.
+
+```{r}
+ws_discharge <- realtime_ws(
+  station_number = "02JE032",
+  parameter = 46
+)
+```
+
+So how many months back does this data go?
+
+```{r}
+range(ws_discharge$Date)
+```
+
+Wait - I told you that this would extend back 18 months. What gives? Well the default data range for `realtime_ws` is 30 days. You can change this by supplying a `start_date` and `end_date` argument. 
+
+```{r}
+ws_discharge <- realtime_ws(
+  station_number = "02JE032",
+  parameter = c(46, 5),
+  start_date = Sys.Date() - months(18),
+  end_date = Sys.Date()
+)
+
+range(ws_discharge$Date)
+```
+
+Now that's much better. From here you can make beautiful plots, tables and summaries of that glorious 18 months of data. 
+
+## Other Parameters
+
+I did however promise that I would mention something about the other parameters available. The long table to the right lists all the possible parameters. In the water office, you can see, sort of, which parameters are available for a given station. However it is lots of clicking. I currently don't know of an _easy_ way to determine which parameters are available for a given station other than just by checking. So for that I'd recommend a workflow like this:
+
+Query a station for a short duration:
+```{r}
+other_params <- realtime_ws(
+  station_number = "08MF005",
+  start_date = Sys.Date() - days(1),
+)
+
+param_id[param_id$Parameter %in% unique(other_params$Parameter),]
+```
+
+Then you can see which parameters are available for that station. 
+
+```{r}
+```
+
 
 So once you chosen your measure you can see if your station has data for that measure. So a good first step is to grab all the stations that are also reporting in realtime
 

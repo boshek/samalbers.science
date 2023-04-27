@@ -17,11 +17,14 @@ website:
 format:
   html:
     self-contained: true
+    link-external-newwindow: true
     theme:
       dark: [darkly, urchin-black.scss]
       light: [flatly, urchin.scss]
     css: styles.css
     toc: true
+execute: 
+  freeze: true
 
 
 

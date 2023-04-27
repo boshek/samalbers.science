@@ -4068,78 +4068,70 @@ vertical-align: -.125em;
    
   <ul>
   <li><a href="#getting-realtime-hydrometric-data" id="toc-getting-realtime-hydrometric-data" class="nav-link active" data-scroll-target="#getting-realtime-hydrometric-data">Getting realtime hydrometric data</a></li>
-  <li><a href="#new-parameters" id="toc-new-parameters" class="nav-link" data-scroll-target="#new-parameters">New Parameters</a></li>
+  <li><a href="#other-parameters" id="toc-other-parameters" class="nav-link" data-scroll-target="#other-parameters">Other Parameters</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
 
 
 
 
+<p>The most common question I get about the tidyhydat package goes something like this:</p>
+<blockquote class="blockquote">
+<p>How do I get realtime data longer than the 30 days available in the datamart via <a href="https://docs.ropensci.org/tidyhydat/reference/realtime_dd.html"><code>realtime_dd</code></a>?</p>
+</blockquote>
+<p>Previously the answer was… you can’t. The HYDAT database is a historical database. Data are validated and entered into HYDAT periodically. It is not updated in realtime. At the same time realtime data is only available for 30 days from the datamart.</p>
+<p>Now, however, Environment and Climate Change Canada (ECCC) provided a <a href="https://wateroffice.ec.gc.ca/services/links_e.html">webservice</a> that provides realtime data for stations which extends back to about 18 months. This usually spans the gap to get data into HYDAT. And since tidyhydat version 0.6.0 you can now access this data in R via the <code>realtime_ws</code> function. This lost is a quick introduction to some of the usage of that webservice from tidyhydat.</p>
+<p>Let’s load a few packages to help illustrate this.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyhydat)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The most common question I get about the tidyhydat package goes something like this:</p>
-<blockquote class="blockquote">
-<p>how do I get realtime data longer the 30 days available in the datamart via <a href="https://docs.ropensci.org/tidyhydat/reference/realtime_dd.html"><code>realtime_dd</code></a>?</p>
-</blockquote>
-<p>Previously the answer was… you can’t. The Hydat database is a historical database. It is not updated in realtime. Now, however, Environment and Climate Change Canada (ECCC) does have a <a href="https://wateroffice.ec.gc.ca/services/links_e.html">webservice</a> that provides realtime data which extends back 18 months. This is enormously useful and it usually spans the gap to get data into HYDAT. And since tidyhydat version 0.6.0 you can now access this data via the <code>realtime_ws</code> function. This blog is a quick introduction to some of the usage of that webservice.</p>
-<section id="getting-realtime-hydrometric-data" class="level2">
+<section id="getting-realtime-hydrometric-data" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="getting-realtime-hydrometric-data">Getting realtime hydrometric data</h2>
-<p>The <code>realtime_ws</code> function operates in a similar way to the <code>realtime_dd</code> function. You can get data for a single station or for a list of stations and the function returns a tibble.</p>
+<p>The <code>realtime_ws</code> function operates in a similar way to the <code>realtime_dd</code> function. You can get data for a single station or for a list of stations and the function returns a tibble. Here I am assuming that you know which station you and know its number. For an introduction to tidyhydat see <a href="https://docs.ropensci.org/tidyhydat/articles/tidyhydat_an_introduction.html">this vignette</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">realtime_ws</span>(<span class="at">station_number =</span> <span class="st">&quot;08MF005&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ws <span class="ot">&lt;-</span> <span class="fu">realtime_ws</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">station_number =</span> <span class="st">&quot;02JE032&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(ws)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 18,081 × 10
-   STATION_NUMBER Date                Name_En  Value Unit  Grade Symbol Approval
-   &lt;chr&gt;          &lt;dttm&gt;              &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     &lt;int&gt;
- 1 08MF005        2023-03-27 00:00:00 Water t…  5.05 °C    -1    &lt;NA&gt;         NA
- 2 08MF005        2023-03-27 01:00:00 Water t…  4.32 °C    -1    &lt;NA&gt;         NA
- 3 08MF005        2023-03-27 02:00:00 Water t…  4.03 °C    -1    &lt;NA&gt;         NA
- 4 08MF005        2023-03-27 03:00:00 Water t…  4.01 °C    -1    &lt;NA&gt;         NA
- 5 08MF005        2023-03-27 04:00:00 Water t…  3.81 °C    -1    &lt;NA&gt;         NA
- 6 08MF005        2023-03-27 05:00:00 Water t…  3.65 °C    -1    &lt;NA&gt;         NA
- 7 08MF005        2023-03-27 06:00:00 Water t…  3.6  °C    -1    &lt;NA&gt;         NA
- 8 08MF005        2023-03-27 07:00:00 Water t…  3.37 °C    -1    &lt;NA&gt;         NA
- 9 08MF005        2023-03-27 08:00:00 Water t…  3.3  °C    -1    &lt;NA&gt;         NA
-10 08MF005        2023-03-27 09:00:00 Water t…  3.24 °C    -1    &lt;NA&gt;         NA
-# ℹ 18,071 more rows
-# ℹ 2 more variables: Parameter &lt;dbl&gt;, Code &lt;chr&gt;</code></pre>
+<pre><code>Rows: 8,784
+Columns: 10
+$ STATION_NUMBER &lt;chr&gt; &quot;02JE032&quot;, &quot;02JE032&quot;, &quot;02JE032&quot;, &quot;02JE032&quot;, &quot;02JE032&quot;, …
+$ Date           &lt;dttm&gt; 2023-03-27 00:00:00, 2023-03-27 00:05:00, 2023-03-27 0…
+$ Name_En        &lt;chr&gt; &quot;Water level (primary sensor)&quot;, &quot;Water level (primary s…
+$ Value          &lt;dbl&gt; 6.556, 6.556, 6.553, 6.553, 6.551, 6.550, 6.549, 6.550,…
+$ Unit           &lt;chr&gt; &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, …
+$ Grade          &lt;chr&gt; &quot;-1&quot;, &quot;-1&quot;, &quot;-1&quot;, &quot;-1&quot;, &quot;-1&quot;, &quot;-1&quot;, &quot;-1&quot;, &quot;-1&quot;, &quot;-1&quot;, &quot;…
+$ Symbol         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ Approval       &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ Parameter      &lt;dbl&gt; 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46,…
+$ Code           &lt;chr&gt; &quot;HG&quot;, &quot;HG&quot;, &quot;HG&quot;, &quot;HG&quot;, &quot;HG&quot;, &quot;HG&quot;, &quot;HG&quot;, &quot;HG&quot;, &quot;HG&quot;, &quot;…</code></pre>
 </div>
 </div>
-</section>
-<section id="new-parameters" class="level2">
-<h2 class="anchored" data-anchor-id="new-parameters">New Parameters</h2>
-<p>Removing the French parameters simply for brevity here. This is no slight to French.</p>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>param_id <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">matches</span>(<span class="st">&quot;_Fr&quot;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.color =</span> <span class="st">&quot;white&quot;</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.background.color =</span> <span class="st">&quot;#231409&quot;</span>, </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="fu">px</span>(12L)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_font</span>(<span class="at">stack =</span> <span class="st">&quot;monospace-code&quot;</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<div class="cell page-columns page-full">
 
-<div id="dghympltwh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dghympltwh table {
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+
+<div id="kdxfcvgabt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kdxfcvgabt table {
 font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#dghympltwh thead, #dghympltwh tbody, #dghympltwh tfoot, #dghympltwh tr, #dghympltwh td, #dghympltwh th {
+#kdxfcvgabt thead, #kdxfcvgabt tbody, #kdxfcvgabt tfoot, #kdxfcvgabt tr, #kdxfcvgabt td, #kdxfcvgabt th {
 border-style: none;
 }
-#dghympltwh p {
+#kdxfcvgabt p {
 margin: 0;
 padding: 0;
 }
-#dghympltwh .gt_table {
+#kdxfcvgabt .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -4164,11 +4156,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#dghympltwh .gt_caption {
+#kdxfcvgabt .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#dghympltwh .gt_title {
+#kdxfcvgabt .gt_title {
 color: #FFFFFF;
 font-size: 125%;
 font-weight: initial;
@@ -4179,7 +4171,7 @@ padding-right: 5px;
 border-bottom-color: #231409;
 border-bottom-width: 0;
 }
-#dghympltwh .gt_subtitle {
+#kdxfcvgabt .gt_subtitle {
 color: #FFFFFF;
 font-size: 85%;
 font-weight: initial;
@@ -4190,7 +4182,7 @@ padding-right: 5px;
 border-top-color: #231409;
 border-top-width: 0;
 }
-#dghympltwh .gt_heading {
+#kdxfcvgabt .gt_heading {
 background-color: #231409;
 text-align: center;
 border-bottom-color: #231409;
@@ -4201,12 +4193,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#dghympltwh .gt_bottom_border {
+#kdxfcvgabt .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#dghympltwh .gt_col_headings {
+#kdxfcvgabt .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -4220,7 +4212,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#dghympltwh .gt_col_heading {
+#kdxfcvgabt .gt_col_heading {
 color: #FFFFFF;
 background-color: #231409;
 font-size: 100%;
@@ -4239,7 +4231,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#dghympltwh .gt_column_spanner_outer {
+#kdxfcvgabt .gt_column_spanner_outer {
 color: #FFFFFF;
 background-color: #231409;
 font-size: 100%;
@@ -4250,13 +4242,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#dghympltwh .gt_column_spanner_outer:first-child {
+#kdxfcvgabt .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#dghympltwh .gt_column_spanner_outer:last-child {
+#kdxfcvgabt .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#dghympltwh .gt_column_spanner {
+#kdxfcvgabt .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -4267,10 +4259,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#dghympltwh .gt_spanner_row {
+#kdxfcvgabt .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#dghympltwh .gt_group_heading {
+#kdxfcvgabt .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4295,7 +4287,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#dghympltwh .gt_empty_group_heading {
+#kdxfcvgabt .gt_empty_group_heading {
 padding: 0.5px;
 color: #FFFFFF;
 background-color: #231409;
@@ -4309,13 +4301,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#dghympltwh .gt_from_md > :first-child {
+#kdxfcvgabt .gt_from_md > :first-child {
 margin-top: 0;
 }
-#dghympltwh .gt_from_md > :last-child {
+#kdxfcvgabt .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#dghympltwh .gt_row {
+#kdxfcvgabt .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4333,7 +4325,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#dghympltwh .gt_stub {
+#kdxfcvgabt .gt_stub {
 color: #FFFFFF;
 background-color: #231409;
 font-size: 100%;
@@ -4345,7 +4337,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dghympltwh .gt_stub_row_group {
+#kdxfcvgabt .gt_stub_row_group {
 color: #FFFFFF;
 background-color: #231409;
 font-size: 100%;
@@ -4358,13 +4350,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#dghympltwh .gt_row_group_first td {
+#kdxfcvgabt .gt_row_group_first td {
 border-top-width: 2px;
 }
-#dghympltwh .gt_row_group_first th {
+#kdxfcvgabt .gt_row_group_first th {
 border-top-width: 2px;
 }
-#dghympltwh .gt_summary_row {
+#kdxfcvgabt .gt_summary_row {
 color: #FFFFFF;
 background-color: #231409;
 text-transform: inherit;
@@ -4373,14 +4365,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dghympltwh .gt_first_summary_row {
+#kdxfcvgabt .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#dghympltwh .gt_first_summary_row.thick {
+#kdxfcvgabt .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#dghympltwh .gt_last_summary_row {
+#kdxfcvgabt .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4389,7 +4381,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#dghympltwh .gt_grand_summary_row {
+#kdxfcvgabt .gt_grand_summary_row {
 color: #FFFFFF;
 background-color: #231409;
 text-transform: inherit;
@@ -4398,7 +4390,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dghympltwh .gt_first_grand_summary_row {
+#kdxfcvgabt .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4407,7 +4399,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#dghympltwh .gt_last_grand_summary_row_top {
+#kdxfcvgabt .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4416,10 +4408,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#dghympltwh .gt_striped {
+#kdxfcvgabt .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#dghympltwh .gt_table_body {
+#kdxfcvgabt .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -4427,7 +4419,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#dghympltwh .gt_footnotes {
+#kdxfcvgabt .gt_footnotes {
 color: #FFFFFF;
 background-color: #231409;
 border-bottom-style: none;
@@ -4440,7 +4432,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#dghympltwh .gt_footnote {
+#kdxfcvgabt .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -4448,7 +4440,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dghympltwh .gt_sourcenotes {
+#kdxfcvgabt .gt_sourcenotes {
 color: #FFFFFF;
 background-color: #231409;
 border-bottom-style: none;
@@ -4461,57 +4453,57 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#dghympltwh .gt_sourcenote {
+#kdxfcvgabt .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dghympltwh .gt_left {
+#kdxfcvgabt .gt_left {
 text-align: left;
 }
-#dghympltwh .gt_center {
+#kdxfcvgabt .gt_center {
 text-align: center;
 }
-#dghympltwh .gt_right {
+#kdxfcvgabt .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#dghympltwh .gt_font_normal {
+#kdxfcvgabt .gt_font_normal {
 font-weight: normal;
 }
-#dghympltwh .gt_font_bold {
+#kdxfcvgabt .gt_font_bold {
 font-weight: bold;
 }
-#dghympltwh .gt_font_italic {
+#kdxfcvgabt .gt_font_italic {
 font-style: italic;
 }
-#dghympltwh .gt_super {
+#kdxfcvgabt .gt_super {
 font-size: 65%;
 }
-#dghympltwh .gt_footnote_marks {
+#kdxfcvgabt .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#dghympltwh .gt_asterisk {
+#kdxfcvgabt .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#dghympltwh .gt_indent_1 {
+#kdxfcvgabt .gt_indent_1 {
 text-indent: 5px;
 }
-#dghympltwh .gt_indent_2 {
+#kdxfcvgabt .gt_indent_2 {
 text-indent: 10px;
 }
-#dghympltwh .gt_indent_3 {
+#kdxfcvgabt .gt_indent_3 {
 text-indent: 15px;
 }
-#dghympltwh .gt_indent_4 {
+#kdxfcvgabt .gt_indent_4 {
 text-indent: 20px;
 }
-#dghympltwh .gt_indent_5 {
+#kdxfcvgabt .gt_indent_5 {
 text-indent: 25px;
 }
 </style>
@@ -4520,235 +4512,160 @@ text-indent: 25px;
     
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Code">Code</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Unit">Unit</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Name_En">Name_En</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Description_En">Description_En</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="Parameter" class="gt_row gt_right">46</td>
-<td headers="Code" class="gt_row gt_left">HG</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Water level (primary sensor)</td>
-<td headers="Description_En" class="gt_row gt_left">Height, stage, elevation of the water surface at a specified station above some arbitrary zero datum</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water level (primary sensor)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">16</td>
-<td headers="Code" class="gt_row gt_left">HG2</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Water level (secondary sensor, telemetry)</td>
-<td headers="Description_En" class="gt_row gt_left">Height, stage, additional secondary water level reading at the specified station, telemetry signal</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water level (secondary sensor, telemetry)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">11</td>
-<td headers="Code" class="gt_row gt_left">HG22</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Water level (secondary sensor)</td>
-<td headers="Description_En" class="gt_row gt_left">Height, stage, additional secondary water level reading at the specified station</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water level (secondary sensor)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">52</td>
-<td headers="Code" class="gt_row gt_left">HG3</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Water level (tertiary sensor, telemetry)</td>
-<td headers="Description_En" class="gt_row gt_left">Height, stage, additional tertiary water level reading at the specified station, telemetry signal</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water level (tertiary sensor, telemetry)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">13</td>
-<td headers="Code" class="gt_row gt_left">HG33</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Water level (tertiary sensor)</td>
-<td headers="Description_En" class="gt_row gt_left">Height, stage, additional tertiary water level reading at the specified station</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water level (tertiary sensor)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">3</td>
-<td headers="Code" class="gt_row gt_left">HGD</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Water level (daily mean)</td>
-<td headers="Description_En" class="gt_row gt_left">Provisional Daily Water Level</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water level (daily mean)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">39</td>
-<td headers="Code" class="gt_row gt_left">HGH</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Water level (hourly mean)</td>
-<td headers="Description_En" class="gt_row gt_left">Provisional hourly water level</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water level (hourly mean)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">14</td>
-<td headers="Code" class="gt_row gt_left">HL</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Elevation, natural lake</td>
-<td headers="Description_En" class="gt_row gt_left">Elevation, natural lake</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Elevation, natural lake</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">42</td>
-<td headers="Code" class="gt_row gt_left">HR</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Elevation, lake or reservoir rule curve</td>
-<td headers="Description_En" class="gt_row gt_left">Elevation, lake or reservoir rule curve</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Elevation, lake or reservoir rule curve</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">17</td>
-<td headers="Code" class="gt_row gt_left">PA</td>
-<td headers="Unit" class="gt_row gt_left">kPa</td>
-<td headers="Name_En" class="gt_row gt_left">Atmospheric pressure</td>
-<td headers="Description_En" class="gt_row gt_left">Pressure, atmospheric</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Atmospheric pressure</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">18</td>
-<td headers="Code" class="gt_row gt_left">PC</td>
-<td headers="Unit" class="gt_row gt_left">mm</td>
-<td headers="Name_En" class="gt_row gt_left">Accumulated precipitation</td>
-<td headers="Description_En" class="gt_row gt_left">Precipitation, accumulator - summation of precipitation collected beginning at a specified date</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Accumulated precipitation</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">19</td>
-<td headers="Code" class="gt_row gt_left">PP</td>
-<td headers="Unit" class="gt_row gt_left">mm</td>
-<td headers="Name_En" class="gt_row gt_left">Incremental precipitation</td>
-<td headers="Description_En" class="gt_row gt_left">Precipitation, actual increment - discrete increase in precipitation amount over a specified duration (includes liquid amount of new snowfall)</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Incremental precipitation</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">47</td>
-<td headers="Code" class="gt_row gt_left">QR</td>
-<td headers="Unit" class="gt_row gt_left">m3/s</td>
-<td headers="Name_En" class="gt_row gt_left">Discharge (primary sensor derived)</td>
-<td headers="Description_En" class="gt_row gt_left">Discharge - flow measured at points along a stream</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Discharge (primary sensor derived)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">7</td>
-<td headers="Code" class="gt_row gt_left">QR2</td>
-<td headers="Unit" class="gt_row gt_left">m3/s</td>
-<td headers="Name_En" class="gt_row gt_left">Discharge (secondary sensor derived)</td>
-<td headers="Description_En" class="gt_row gt_left">Discharge, derived from secondary water level</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Discharge (secondary sensor derived)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">10</td>
-<td headers="Code" class="gt_row gt_left">QR3</td>
-<td headers="Unit" class="gt_row gt_left">m3/s</td>
-<td headers="Name_En" class="gt_row gt_left">Discharge (tertiary sensor derived)</td>
-<td headers="Description_En" class="gt_row gt_left">Discharge, derived from tertiary water level</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Discharge (tertiary sensor derived)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">6</td>
-<td headers="Code" class="gt_row gt_left">QRD</td>
-<td headers="Unit" class="gt_row gt_left">m3/s</td>
-<td headers="Name_En" class="gt_row gt_left">Discharge (daily mean)</td>
-<td headers="Description_En" class="gt_row gt_left">Provisional Daily Water Level</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Discharge (daily mean)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">40</td>
-<td headers="Code" class="gt_row gt_left">QRH</td>
-<td headers="Unit" class="gt_row gt_left">m3/s</td>
-<td headers="Name_En" class="gt_row gt_left">Discharge (hourly mean)</td>
-<td headers="Description_En" class="gt_row gt_left">Provisional Hourly Discharge</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Discharge (hourly mean)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">8</td>
-<td headers="Code" class="gt_row gt_left">QRS</td>
-<td headers="Unit" class="gt_row gt_left">m3/s</td>
-<td headers="Name_En" class="gt_row gt_left">Discharge (sensor)</td>
-<td headers="Description_En" class="gt_row gt_left">Discharge measured by sensor</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Discharge (sensor)</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">50</td>
-<td headers="Code" class="gt_row gt_left">SD</td>
-<td headers="Unit" class="gt_row gt_left">cm</td>
-<td headers="Name_En" class="gt_row gt_left">Snow depth</td>
-<td headers="Description_En" class="gt_row gt_left">Snow, depth - actual depth of snow on the ground at any instant during a storm, or after any single snowstorm or series of storms</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Snow depth</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">51</td>
-<td headers="Code" class="gt_row gt_left">SF</td>
-<td headers="Unit" class="gt_row gt_left">cm</td>
-<td headers="Name_En" class="gt_row gt_left">Snow depth, new snowfall</td>
-<td headers="Description_En" class="gt_row gt_left">Snow, depth, new snowfall - incremental depth of snow on the ground at any instant since last snow depth observation</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Snow depth, new snowfall</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">1</td>
-<td headers="Code" class="gt_row gt_left">TA</td>
-<td headers="Unit" class="gt_row gt_left">°C</td>
-<td headers="Name_En" class="gt_row gt_left">Air temperature</td>
-<td headers="Description_En" class="gt_row gt_left">Temperature, air, wet bulb</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Air temperature</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">5</td>
-<td headers="Code" class="gt_row gt_left">TW</td>
-<td headers="Unit" class="gt_row gt_left">°C</td>
-<td headers="Name_En" class="gt_row gt_left">Water temperature</td>
-<td headers="Description_En" class="gt_row gt_left">Temperature, temperature of water at a specified depth</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water temperature</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">41</td>
-<td headers="Code" class="gt_row gt_left">TW2</td>
-<td headers="Unit" class="gt_row gt_left">°C</td>
-<td headers="Name_En" class="gt_row gt_left">Secondary water temperature</td>
-<td headers="Description_En" class="gt_row gt_left">Temperature, additional secondary water temperature reading at the specified station</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Secondary water temperature</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">34</td>
-<td headers="Code" class="gt_row gt_left">UD</td>
-<td headers="Unit" class="gt_row gt_left">deg</td>
-<td headers="Name_En" class="gt_row gt_left">Wind direction</td>
-<td headers="Description_En" class="gt_row gt_left">Wind, direction - direction most frequently observed during a given period</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Wind direction</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">35</td>
-<td headers="Code" class="gt_row gt_left">US</td>
-<td headers="Unit" class="gt_row gt_left">m/s</td>
-<td headers="Name_En" class="gt_row gt_left">Wind speed</td>
-<td headers="Description_En" class="gt_row gt_left">Wind, speed - velocity of air in motion relative to the surface of the earth</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Wind speed</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">2</td>
-<td headers="Code" class="gt_row gt_left">VB</td>
-<td headers="Unit" class="gt_row gt_left">V</td>
-<td headers="Name_En" class="gt_row gt_left">Battery voltage</td>
-<td headers="Description_En" class="gt_row gt_left">Battery voltage</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Battery voltage</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">20</td>
-<td headers="Code" class="gt_row gt_left">WB</td>
-<td headers="Unit" class="gt_row gt_left">RFU</td>
-<td headers="Name_En" class="gt_row gt_left">Blue-green algae</td>
-<td headers="Description_En" class="gt_row gt_left">Water, blue-green algae</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Blue-green algae</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">21</td>
-<td headers="Code" class="gt_row gt_left">WC</td>
-<td headers="Unit" class="gt_row gt_left">S</td>
-<td headers="Name_En" class="gt_row gt_left">Conductance</td>
-<td headers="Description_En" class="gt_row gt_left">Water, conductance</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Conductance</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">26</td>
-<td headers="Code" class="gt_row gt_left">WLA</td>
-<td headers="Unit" class="gt_row gt_left">mg/l</td>
-<td headers="Name_En" class="gt_row gt_left">Total dissolved solids</td>
-<td headers="Description_En" class="gt_row gt_left">Water, total dissolved solids</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Total dissolved solids</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">43</td>
-<td headers="Code" class="gt_row gt_left">WNB</td>
-<td headers="Unit" class="gt_row gt_left">mg/l</td>
-<td headers="Name_En" class="gt_row gt_left">Dissolved nitrate</td>
-<td headers="Description_En" class="gt_row gt_left">Water, dissolved nitrate (NO3-)</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Dissolved nitrate</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">22</td>
-<td headers="Code" class="gt_row gt_left">WO</td>
-<td headers="Unit" class="gt_row gt_left">mg/l</td>
-<td headers="Name_En" class="gt_row gt_left">Dissolved oxygen</td>
-<td headers="Description_En" class="gt_row gt_left">Water, dissolved oxygen - amount of oxygen dissolved in water</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Dissolved oxygen</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">24</td>
-<td headers="Code" class="gt_row gt_left">WP</td>
-<td headers="Unit" class="gt_row gt_left">NA</td>
-<td headers="Name_En" class="gt_row gt_left">pH</td>
-<td headers="Description_En" class="gt_row gt_left">Water, pH</td></tr>
+<td headers="Name_En" class="gt_row gt_left">pH</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">25</td>
-<td headers="Code" class="gt_row gt_left">WT</td>
-<td headers="Unit" class="gt_row gt_left">NTU</td>
-<td headers="Name_En" class="gt_row gt_left">Turbidity</td>
-<td headers="Description_En" class="gt_row gt_left">Water, turbidity</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Turbidity</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">9</td>
-<td headers="Code" class="gt_row gt_left">WV</td>
-<td headers="Unit" class="gt_row gt_left">m/s</td>
-<td headers="Name_En" class="gt_row gt_left">Water velocity</td>
-<td headers="Description_En" class="gt_row gt_left">Water, velocity - velocity of particles of water in a stream</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water velocity</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">37</td>
-<td headers="Code" class="gt_row gt_left">WVX</td>
-<td headers="Unit" class="gt_row gt_left">m/s</td>
-<td headers="Name_En" class="gt_row gt_left">Water velocity, x</td>
-<td headers="Description_En" class="gt_row gt_left">Water, velocity - velocity of particles of water in the x vector component</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water velocity, x</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">38</td>
-<td headers="Code" class="gt_row gt_left">WVY</td>
-<td headers="Unit" class="gt_row gt_left">m/s</td>
-<td headers="Name_En" class="gt_row gt_left">Water velocity, y</td>
-<td headers="Description_En" class="gt_row gt_left">Water, velocity of particles of water in the y vector component</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Water velocity, y</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">23</td>
-<td headers="Code" class="gt_row gt_left">WX</td>
-<td headers="Unit" class="gt_row gt_left">%</td>
-<td headers="Name_En" class="gt_row gt_left">Oxygen saturation</td>
-<td headers="Description_En" class="gt_row gt_left">Water, dissolved oxygen</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Oxygen saturation</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">49</td>
-<td headers="Code" class="gt_row gt_left">WY</td>
-<td headers="Unit" class="gt_row gt_left">ug/L</td>
-<td headers="Name_En" class="gt_row gt_left">Chlorophyll</td>
-<td headers="Description_En" class="gt_row gt_left">Water, chlorophyll</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Chlorophyll</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">28</td>
-<td headers="Code" class="gt_row gt_left">XR</td>
-<td headers="Unit" class="gt_row gt_left">%</td>
-<td headers="Name_En" class="gt_row gt_left">Relative humidity</td>
-<td headers="Description_En" class="gt_row gt_left">Humidity, relative - ratio of the actual vapor pressure of the air to the saturation vapor pressure expressed in percent</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Relative humidity</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">36</td>
-<td headers="Code" class="gt_row gt_left">YE</td>
-<td headers="Unit" class="gt_row gt_left">m</td>
-<td headers="Name_En" class="gt_row gt_left">Cell end</td>
-<td headers="Description_En" class="gt_row gt_left">Distance, cell end</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Cell end</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">4</td>
-<td headers="Code" class="gt_row gt_left">YI</td>
-<td headers="Unit" class="gt_row gt_left">°C</td>
-<td headers="Name_En" class="gt_row gt_left">Internal equipment temperature</td>
-<td headers="Description_En" class="gt_row gt_left">Internal equipment temperature</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Internal equipment temperature</td></tr>
     <tr><td headers="Parameter" class="gt_row gt_right">12</td>
-<td headers="Code" class="gt_row gt_left">YP</td>
-<td headers="Unit" class="gt_row gt_left">psi</td>
-<td headers="Name_En" class="gt_row gt_left">Tank pressure</td>
-<td headers="Description_En" class="gt_row gt_left">Tank pressure</td></tr>
+<td headers="Name_En" class="gt_row gt_left">Tank pressure</td></tr>
   </tbody>
   
   
 </table>
 </div>
+</div></div></div>
+<p>Immediately you can see that the data returned is different than the data returned by <code>realtime_dd</code>. In particular notice the <code>Name_En</code>, <code>Parameter</code> and <code>Code</code> columns. These columns are used to identify the parameters we are interested in. Turns out off that you can access more than just hydrometric data via the webservice (more on that later!). But for now let’s just focus on hydrometric data by supplying 47 to the parameter argument to get discharge. Why did I choose 47? I used the <code>param_id</code> internal table which tells me that 47 is the parameter code for discharge. In the margin you can see all the other parameters available.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ws_discharge <span class="ot">&lt;-</span> <span class="fu">realtime_ws</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">station_number =</span> <span class="st">&quot;02JE032&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameter =</span> <span class="dv">46</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So how many months back does this data go?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(ws_discharge<span class="sc">$</span>Date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;2023-03-27 00:00:00 UTC&quot; &quot;2023-04-26 23:55:00 UTC&quot;</code></pre>
+</div>
+</div>
+<p>Wait - I told you that this would extend back 18 months. What gives? Well the default data range for <code>realtime_ws</code> is 30 days. You can change this by supplying a <code>start_date</code> and <code>end_date</code> argument.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ws_discharge <span class="ot">&lt;-</span> <span class="fu">realtime_ws</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">station_number =</span> <span class="st">&quot;02JE032&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameter =</span> <span class="fu">c</span>(<span class="dv">46</span>, <span class="dv">5</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> <span class="fu">Sys.Date</span>() <span class="sc">-</span> <span class="fu">months</span>(<span class="dv">18</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date =</span> <span class="fu">Sys.Date</span>()</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(ws_discharge<span class="sc">$</span>Date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;2021-10-26 00:00:00 UTC&quot; &quot;2023-04-26 23:55:00 UTC&quot;</code></pre>
+</div>
+</div>
+<p>Now that’s much better. From here you can make beautiful plots, tables and summaries of that glorious 18 months of data.</p>
+</section>
+<section id="other-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="other-parameters">Other Parameters</h2>
+<p>I did however promise that I would mention something about the other parameters available. The long table to the right lists all the possible parameters. In the water office, you can see, sort of, which parameters are available for a given station. However it is lots of clicking. I currently don’t know of an <em>easy</em> way to determine which parameters are available for a given station other than just by checking. So for that I’d recommend a workflow like this:</p>
+<p>Query a station for a short duration:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>other_params <span class="ot">&lt;-</span> <span class="fu">realtime_ws</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">station_number =</span> <span class="st">&quot;08MF005&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> <span class="fu">Sys.Date</span>() <span class="sc">-</span> <span class="fu">days</span>(<span class="dv">1</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>param_id[param_id<span class="sc">$</span>Parameter <span class="sc">%in%</span> <span class="fu">unique</span>(other_params<span class="sc">$</span>Parameter),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 7
+  Parameter Code  Unit  Name_En            Name_Fr Description_En Description_Fr
+      &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;         
+1        46 HG    m     Water level (prim… Niveau… Height, stage… Hauteur, nive…
+2        47 QR    m3/s  Discharge (primar… Debit … Discharge - f… Débit - écoul…
+3         5 TW    °C    Water temperature  Tempér… Temperature, … Température, …</code></pre>
+</div>
+</div>
+<p>Then you can see which parameters are available for that station.</p>
+<div class="cell">
+
 </div>
 <p>So once you chosen your measure you can see if your station has data for that measure. So a good first step is to grab all the stations that are also reporting in realtime</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>stations <span class="ot">&lt;-</span> <span class="fu">realtime_stations</span>()</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>stations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>stations <span class="ot">&lt;-</span> <span class="fu">realtime_stations</span>()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>stations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2,054 × 6
+<pre><code># A tibble: 2,061 × 6
    STATION_NUMBER STATION_NAME   LATITUDE LONGITUDE PROV_TERR_STATE_LOC TIMEZONE
    &lt;chr&gt;          &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;   
  1 01AD003        ST. FRANCIS R…     47.2     -69.0 NB                  UTC-04:…
@@ -4761,10 +4678,10 @@ text-indent: 25px;
  8 01AJ003        MEDUXNEKEAG R…     46.2     -67.7 NB                  UTC-04:…
  9 01AJ004        BIG PRESQUE I…     46.4     -67.7 NB                  UTC-04:…
 10 01AJ010        BECAGUIMEC ST…     46.3     -67.5 NB                  UTC-04:…
-# ℹ 2,044 more rows</code></pre>
+# ℹ 2,051 more rows</code></pre>
 </div>
 </div>
-<p>Ok so 2054 stations are reporting in realtime. There is no direct way to see</p>
+<p>Ok so 2061 stations are reporting in realtime. There is no direct way to see</p>
 <div class="cell">
 
 </div>
@@ -4982,6 +4899,20 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return popup.innerHTML;
     });
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp(/https:\/\/samalbers\.science/);
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
 });
 </script>
 </div> <!-- /content -->

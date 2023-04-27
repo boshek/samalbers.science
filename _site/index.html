@@ -4262,7 +4262,7 @@ vertical-align: -.125em;
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R,hydrology,tidyhydat" data-listing-date-sort="1682406000000" data-listing-file-modified-sort="1682519641303" data-listing-reading-time-sort="1.405">
+<div class="quarto-post image-right" data-index="0" data-categories="R,hydrology,tidyhydat" data-listing-date-sort="1682406000000" data-listing-file-modified-sort="1682570010110" data-listing-reading-time-sort="3.24">
 <div class="body">
 <a href="./posts/eccc-webservice/index.html">
 <h3 class="no-anchor listing-title">
@@ -4622,6 +4622,20 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return popup.innerHTML;
     });
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp(/https:\/\/samalbers\.science/);
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
 });
 </script>
 </div> <!-- /content -->
