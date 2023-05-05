@@ -1,8 +1,8 @@
 ---
-title: The return of the webservice
+title: The return of the web service
 author: Sam Albers
-date: '2023-04-25'
-slug: eccc-webservice
+date: '2023-05-04'
+slug: eccc-web-service
 categories:
   - R
   - hydrology
@@ -32,38 +32,41 @@ The most common question I get about the tidyhydat package goes something like t
 
 > How do I get realtime data longer than the 30 days available in the datamart via [`realtime_dd`](https://docs.ropensci.org/tidyhydat/reference/realtime_dd.html)?
 
-Previously the answer was... you can't. The HYDAT database is a historical database. Data are validated and entered into HYDAT periodically. It is not updated in realtime. At the same time realtime data is only available for 30 days from the datamart. 
+Previously the answer was... you can't. The HYDAT database is a historical database of hydrometric data. Data are validated and entered into HYDAT periodically. It is not updated in realtime. At the same time realtime data is only available for 30 days from the datamart. 
 
-Now, however, Environment and Climate Change Canada (ECCC) provided a [webservice](https://wateroffice.ec.gc.ca/services/links_e.html) that provides realtime data for stations which extends back to about 18 months. This usually spans the gap to get data into HYDAT. And since tidyhydat version 0.6.0 you can now access this data in R via the `realtime_ws` function. This lost is a quick introduction to some of the usage of that webservice from tidyhydat. 
+Now, however, Environment and Climate Change Canada (ECCC) provided a [web service](https://wateroffice.ec.gc.ca/services/links_e.html) that provides realtime data for stations which extends back to about 18 months. This usually spans the gap for current data to when it gets into HYDAT. And since tidyhydat version 0.6.0 you can now access this data in R via the `realtime_ws` function. This post is a quick introduction to some of the usage of the web service from tidyhydat. 
 
 Let's load a few packages to help illustrate this.
 
-```{r}
-library(tidyhydat)
+```{r setup-no-show}
+#| echo: false
 library(gt)
+```
+
+```{r pkgs}
+library(tidyhydat)
 library(dplyr)
 library(lubridate)
 ```
 
-## Getting realtime hydrometric data
+## Using the web service for realtime hydrometric data
 
-The `realtime_ws` function operates in a similar way to the `realtime_dd` function. You can get data for a single station or for a list of stations and the function returns a tibble. Here I am assuming that you know which station you and know its number. For an introduction to tidyhydat see [this vignette](https://docs.ropensci.org/tidyhydat/articles/tidyhydat_an_introduction.html). 
+The `realtime_ws` function operates in a similar way to most of the other functions in tidyhydat particularly the `realtime_dd` function. You can pass a single station or a vector of stations and the function returns a tibble of data relating to that station. I am assuming that you know which station you want and know its number. For an introduction to tidyhydat see [this vignette](https://docs.ropensci.org/tidyhydat/articles/tidyhydat_an_introduction.html). You can also search for stations using the [`tidyhydat::search_stn_name`](https://docs.ropensci.org/tidyhydat/reference/search_stn_name.html) function.
 
-```{r}
+```{r compute-1}
 ws <- realtime_ws(
-  station_number = "02JE032"
+  station_number = "08MF005"
 )
 glimpse(ws)
 ```
 
-```{r}
+```{r side-table}
 #| results: asis
 #| column: margin
 #| echo: false
 
 param_id %>%
   select(Parameter, Name_En) %>%
-  # select(-matches("_Fr")) %>% 
   gt() %>% 
   tab_options(
     table.font.color = "white",
@@ -73,12 +76,12 @@ param_id %>%
   opt_table_font(stack = "monospace-code") 
 ```
 
-Immediately you can see that the data returned is different than the data returned by `realtime_dd`. In particular notice the `Name_En`, `Parameter` and `Code` columns. These columns are used to identify the parameters we are interested in. Turns out off that you can access more than just hydrometric data via the webservice (more on that later!). But for now let's just focus on hydrometric data by supplying 47 to the parameter argument to get discharge. Why did I choose 47? I used the `param_id` internal table which tells me that 47 is the parameter code for discharge. In the margin you can see all the other parameters available.
+Immediately you can see that the data returned is different than the data returned by `realtime_dd`. In particular notice the `Name_En`, `Parameter` and `Code` columns. These columns are used to identify the parameters we are interested in. Turns out that you can access more than just hydrometric data via the web service (more on that later!). But for now let's just focus on hydrometric data by supplying 47 to the parameter argument to get discharge. Why did I choose 47? I consulted the `param_id` internal table which tells me that 47 is the parameter code for discharge. In the margin you can see all the other parameters available.
 
-```{r}
+```{r computer-2}
 ws_discharge <- realtime_ws(
-  station_number = "02JE032",
-  parameter = 46
+  station_number = "08MF005",
+  parameter = 47
 )
 ```
 
@@ -88,12 +91,12 @@ So how many months back does this data go?
 range(ws_discharge$Date)
 ```
 
-Wait - I told you that this would extend back 18 months. What gives? Well the default data range for `realtime_ws` is 30 days. You can change this by supplying a `start_date` and `end_date` argument. 
+Wait - I told you that this would extend back 18 months. What gives? Well the default data range for `realtime_ws` is 30 days back from today. You can change this by supplying a `start_date` and `end_date` argument. 
 
 ```{r}
 ws_discharge <- realtime_ws(
-  station_number = "02JE032",
-  parameter = c(46, 5),
+  station_number = "08MF005",
+  parameter = 47,
   start_date = Sys.Date() - months(18),
   end_date = Sys.Date()
 )
@@ -105,9 +108,7 @@ Now that's much better. From here you can make beautiful plots, tables and summa
 
 ## Other Parameters
 
-I did however promise that I would mention something about the other parameters available. The long table to the right lists all the possible parameters. In the water office, you can see, sort of, which parameters are available for a given station. However it is lots of clicking. I currently don't know of an _easy_ way to determine which parameters are available for a given station other than just by checking. So for that I'd recommend a workflow like this:
-
-Query a station for a short duration:
+I did however promise that I would mention something about the other parameters available. The long table to the right lists all the possible parameters. In the [water office](https://wateroffice.ec.gc.ca/), you can see (sort of) which parameters are available for a given station. However it is lots of clicking. I currently don't know of an _easy_ way to determine which parameters are available for a given station other than just by checking. So for that I'd recommend querying a station for a short duration.
 ```{r}
 other_params <- realtime_ws(
   station_number = "08MF005",
@@ -117,20 +118,48 @@ other_params <- realtime_ws(
 param_id[param_id$Parameter %in% unique(other_params$Parameter),]
 ```
 
-Then you can see which parameters are available for that station. 
+Here we can see that `08MF005`, which is the Fraser River at Hope station, also monitors water temperature which has a parameter code of 5. If we re-query the web service, we see that we can fine tune our call to the web service to only return water temperature.
 
 ```{r}
+fraser_temp <- realtime_ws(
+  station_number = "08MF005",
+  start_date = Sys.Date() - months(18),
+  parameter = 5
+)
 ```
 
+## Why else might I want to use the web service?
 
-So once you chosen your measure you can see if your station has data for that measure. So a good first step is to grab all the stations that are also reporting in realtime
+One other reason you might consider using the web service is because it can be _much_ faster and more efficient that the datamart. We can construct one call to request all the data rather than iterate through multiple station csvs to get what we want. To illustrate this we can construct a simple function that benchmarks the two approaches. (Yes I know that these aren't returning _exactly_ the same thing but for these purposes it is good enough.)
 
 ```{r}
-stations <- realtime_stations()
-stations
+compare_realtime <- function(station_number) {
+  bench::mark(
+    realtime_ws = realtime_ws(
+      station_number = station_number,
+      parameter = c(46, 47)
+    ),
+    realtime_dd = realtime_dd(
+      station_number = station_number,
+    ),
+    max_iterations = 5,
+    check = FALSE
+  )
+}
 ```
 
-Ok so `r nrow(stations)` stations are reporting in realtime. There is no direct way to see 
+Let's compare the two functions for a single station:
+
 ```{r}
-
+compare_realtime("08MF005")
 ```
+
+Ok so on a single station, the two approaches are similar in speed though you can see that lots more memory is being allocated using `realtime_dd`. By the time you add more stations to the mix, it becomes clear that the web service is a better faster and more efficient approach.
+
+```{r}
+compare_realtime(c("08MF005", "08JC002", "02LA004"))
+```
+
+## Conclusions
+
+The web service functionality in tidyhydat is still new so if you notice any funky behaviour please let me know. You can do that by [opening an issue](https://github.com/ropensci/tidyhydat/issues) in the tidyhydat github repo. This functionality is a nice new way to access Canadian hydrometric data and I am excited to see how people may use it. 
