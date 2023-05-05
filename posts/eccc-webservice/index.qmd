@@ -28,6 +28,7 @@ knitr::opts_chunk$set(
 ```
 
 
+
 The most common question I get about the tidyhydat package goes something like this: 
 
 > How do I get realtime data longer than the 30 days available in the datamart via [`realtime_dd`](https://docs.ropensci.org/tidyhydat/reference/realtime_dd.html)?
