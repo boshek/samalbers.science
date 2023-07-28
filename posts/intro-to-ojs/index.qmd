@@ -1,0 +1,241 @@
+---
+title: scrambled eggs
+author: Sam Albers
+date: last-modified
+slug: intro-to-ojs
+categories:
+  - R
+  - Javascript
+  - Observable
+  - nhl
+  - api
+tags: []
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+So this was intended to be a post about Observable and quarto. I started with the question, "Can I visualize some age curves from open N.H.L. data?". This is a great use case for observable. However, I ended having to learn about the NHL api and how I could get what I wanted out of it so this is also a post about wrangling that data.
+
+
+```{r setup}
+#| include: false
+library(httr2)
+library(purrr)
+library(dplyr)
+library(glue)
+library(tidyr)
+
+convert_time_hours <- function(time_str) {
+  # Split the time into hours and minutes
+  time_parts <- strsplit(time_str, ":")[[1]]
+
+  # Convert the hours and minutes to integers
+  minutes <- as.integer(time_parts[1])
+  seconds <- as.integer(time_parts[2])
+
+  # Convert the time to seconds
+  minutes*60 + seconds
+}
+
+generate_year_string <- function(start, end) {
+  # Extract the starting and ending years
+  startYear <- as.numeric(substr(start, 1, 4))
+  endYear <- as.numeric(substr(end, 1, 4))
+  # Generate the sequence of years
+  years <- seq(startYear, endYear)
+  # Concatenate each year with the following one to get the year pairs
+  paste0(years, years + 1)
+}
+
+query_endpoint <- function(endpoint, ...) {
+  base_url <- "https://statsapi.web.nhl.com/"
+  # choose endpoint
+  req <- httr2::request(base_url) %>%
+    httr2::req_url_path_append(endpoint) 
+  # allow for query parameters 
+  req <- httr2::req_url_query(req, ...)
+  req <- httr2::req_perform(req)
+
+  resp <- httr2::resp_body_json(req, simplifyVector = TRUE)
+  resp$copyright <- NULL
+  dplyr::as_tibble(resp[[1]])
+}
+
+
+get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALSE) {
+  if (verbose) {
+    message(glue("Getting data for {team}."))
+  }
+
+  team_df <- query_endpoint("api/v1/teams") %>%
+    filter(teamName == team)
+
+  team_plus_roster <- query_endpoint(team_df$link, expand = "team.roster")
+
+  ## Drop goalies
+  roster <- team_plus_roster[["roster"]][["roster"]][[1]]
+  person_link <- roster[roster$position != "G", ][["person"]]$link
+  person_link <- person_link[!is.na(person_link)]
+
+  roster_with_ages <- map_df(seq_along(person_link), ~ {
+    query_endpoint(person_link[.x]) %>%
+      select(id, fullName, link, birthDate, currentAge) %>%
+      mutate(birthDate = as.Date(birthDate))
+  }) %>%
+    filter(currentAge >= age_cutoff)
+
+  point_per_60_by_season <- map_df(seq_along(roster_with_ages$link), ~ {
+    query_url <- glue("{roster_with_ages$link[.x]}/stats")
+
+    map_df(generate_year_string("19901991", "20222023"), \(season) {
+      if (verbose) {
+        message(
+          glue(
+            "Getting data for {roster_with_ages$fullName[.x]} for the {season} season"
+          )
+        )
+      }
+      stats <- query_endpoint(
+        query_url,
+        stats = "statsSingleSeason",
+        season = season
+      )
+
+      ## when there are no stats, return an empty tibble
+      if (length(stats[["splits"]][[1]]) == 0) {
+        return(tibble())
+      }
+
+      games_played_threshold <- stats[["splits"]][[1]][["stat"]] %>%
+        filter(games > min_games_played) 
+      
+      ## when they are not above the threshold, return an empty tibble
+      if (nrow(games_played_threshold) == 0) {
+        return(tibble())
+      }
+
+      games_played_threshold %>%
+        mutate(evenTimeOnIce = convert_time_hours(evenTimeOnIce)) %>%
+        mutate(even_strength_points_per_60 = ((points - powerPlayPoints) / evenTimeOnIce) * 3600) %>%
+        select(even_strength_points_per_60, shotPct) %>%
+        mutate(person_link = person_link[.x]) %>%
+        mutate(season = season)
+    })
+  })
+
+  if (length(point_per_60_by_season) == 0) {
+    if (verbose) {
+      message(glue("No players over {age_cutoff} found for {team}."))
+    }
+    return(tibble())
+  } else {
+    point_per_60_by_season %>%
+      mutate(team = team) %>%
+      left_join(roster_with_ages, by = c("person_link" = "link")) %>%
+      mutate(age_at_start_of_season = currentAge - (2022 - as.numeric(substr(season, 1, 4)))) %>%
+      filter(!is.na(fullName)) %>% 
+      as_tibble()
+  }
+}
+```
+
+Ok so the players that are above 35... are pretty good. Like really good actually. So obviously there is so selection bias going on here. The players that are playing at 35 are the best of the best. There is not a huge drop off for them. 
+```{r}
+#| echo: true
+
+# teams <- query_endpoint("api/v1/teams") 
+# age_curve_df = map_df(teams$teamName, get_points_by_age, age_cutoff = 18, min_games_played = 50, verbose = interactive())
+
+# readr::write_csv(age_curve_df, "age_curve.csv")
+```
+
+```{r}
+age_curve_df <- readr::read_csv("age_curve.csv") #%>% 
+#     filter(fullName != "Alex Newhook") %>% 
+#     filter(even_strength_points_per_60 > 0)
+
+ojs_define(ojs_age_curve_df = age_curve_df)
+```
+
+So here we import some libraries that don't automatically come bundled with quarto. We are grabbing the [arquero data wrangling](https://uwdata.github.io/arquero/) library which as far as I can is more or less dplyr for Observable javascript. Here is how they out it:
+
+> Following the relational algebra and inspired by the design of dplyr, Arquero provides a fluent API for manipulating column-oriented data frames.
+
+```{ojs}
+import { aq, op } from '@uwdata/arquero';
+```
+
+The first function that we are is `aq.from` which is the equivalent of `dplyr::as_tibble`. It takes a data frame and converts it to an arquero table.
+
+```{ojs}
+ageCurve = aq.from(transpose(ojs_age_curve_df))
+```
+
+Now we can do some data wrangling! Remember that we data coalated in the R step. The question we were interested in looking at was _at what age do players start to decline?_ Our evaluation metric is even strength points per 60 minutes. Say, we are interested in looking at playing time for players that are 35 and older. We can filter the `ageCurve` table using syntax that is very similar to dplyr. The only thing to note is what goes inside the `aq.escape` function. This is because we are using a javascript function inside of a javascript function. This escapes the inner function so that it is evaluated as javascript. 
+
+```{ojs}
+ageCurve
+  .filter(aq.escape(d => d.currentAge > 35)) 
+```
+
+Ok but you might asking yourself, why didn't I just do that in dplyr? The beauty of these `ojs` chunks is that we can calculate on this stuff on the fly so we can evaluate the same query for different age cutoffs. So the first we have to do is generate something interactive that we can create to define the age cutoff. For that we make use of Observable [`Inputs`](https://observablehq.com/@observablehq/inputs):
+
+```{ojs}
+viewof age_cutoff = Inputs.range([18, 40], {step: 1, value: 30})
+
+filteredAgeCurve = ageCurve
+  .filter(aq.escape(d => d.currentAge > age_cutoff)) 
+```
+
+That makes a nifty little slider whose value you can see in the box to the left. Now we can use that value to filter the `ageCurve` table. 
+
+So as you moved the slider, you are updating the `filteredAgeCurve` data in real time. 
+
+Armed with this super power we also want to be able to provide some ability to highlight certain players. There are lots of ways you can do that. We are going to for very simple and have a drop down menu that allows you to select a player. We are going to use the `Inputs.select` function to do that. 
+
+```{ojs}
+//| code-fold: true
+viewof player = Inputs.select(filteredAgeCurve.dedupe("fullName").orderby("fullName").array("fullName"), {
+  value: "Sidney Crosby"
+})
+
+singlePlayer = filteredAgeCurve
+  .filter(aq.escape(d => d.fullName == player)) 
+```
+
+It doesn't get too exciting though until we start to visualize it. I am using the `//| code-fold: true` comment to hide the code that generates the drop down and the plot so that you can see the plot, the slider and the dropdown more closely together.
+
+```{ojs}
+//| code-fold: true
+Plot.plot({
+  y: {
+    grid: true,
+    label: "Temperature (°F)"
+  },
+  marks: [
+    Plot.lineY(filteredAgeCurve, {
+        x: "age_at_start_of_season", 
+        y: "even_strength_points_per_60", 
+        z: "fullName",
+        stroke: "lightgray",
+        curve: "basis"
+      }),
+    Plot.lineY(singlePlayer, {
+        x: "age_at_start_of_season", 
+        y: "even_strength_points_per_60", 
+        z: "fullName",
+        stroke: "blue",
+        curve: "basis"
+      })
+  ]
+})
+```
+
+
+:::{.callout-note}
+NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2023. All Rights Reserved.
+:::
