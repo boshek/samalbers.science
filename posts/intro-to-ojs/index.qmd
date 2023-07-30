@@ -1,5 +1,5 @@
 ---
-title: scrambled eggs
+title: Defying Age with Observable
 author: Sam Albers
 date: last-modified
 slug: intro-to-ojs
@@ -18,25 +18,31 @@ linktitle: ''
 type: post
 ---
 
-So this was intended to be a post about Observable and quarto. I started with the question, "Can I visualize some age curves from open N.H.L. data?". This is a great use case for observable. However, I ended having to learn about the NHL api and how I could get what I wanted out of it so this is also a post about wrangling that data.
+Lately I've been thinking about two things: getting old and Observable. Getting old is self-explanatory. Observable is maybe less so. Normally Observable is a [javascript notebook environment](https://observablehq.com/@observablehq) that enables you to create interactive visualizations. This is a great platform and I suggest that if you are really interested in learning about Observable, you create an account there and start practicing. But sometimes, you want to take your interactive visualizations with you. This is where [quarto](https://quarto.org/) comes in. Quarto is the successor to [rmarkdown](https://rmarkdown.rstudio.com/) and is what this blog is written in. Like rmarkdown you can write prose and code in the same document. The biggest improvement with quarto is that you can also easily write code chunks in other language like python or observable flavoured javascript. 
+
+This post was intended to be about Observable and quarto using some data sourced from the National Hockey League api. So back to being the them of being old -- I was wondering what happens to N.H.L. players when they get old? I was not able to find an interactive visualizations that satifactorily provided any ability to explore the question "At what age do N.H.L. players start declining in terms of production"?  So then I ended having to learn about the NHL api and how I could get what I wanted out of it. That turned this into a post about wrangling data from the N.H.L. api. Almost accidentally, this really highlights the power of quarto. I can much more easily wrangle data in R. Sure it is possible to do solely in javascript but for me it is easier in R. But then when I want to make the visualization, I can seamlessly switch to javascript in quarto. 
+
+Let's start with how we got the data. As is usual, we start with a pretty standard suite of tidyverse packages. 
 
 
-```{r setup}
-#| include: false
+```{r pkgs}
+#| warning: false
 library(httr2)
 library(purrr)
 library(dplyr)
 library(glue)
 library(tidyr)
+```
 
+Next we need to define some helper functions.
+
+```{r}
 convert_time_hours <- function(time_str) {
   # Split the time into hours and minutes
   time_parts <- strsplit(time_str, ":")[[1]]
-
   # Convert the hours and minutes to integers
   minutes <- as.integer(time_parts[1])
   seconds <- as.integer(time_parts[2])
-
   # Convert the time to seconds
   minutes*60 + seconds
 }
@@ -50,43 +56,61 @@ generate_year_string <- function(start, end) {
   # Concatenate each year with the following one to get the year pairs
   paste0(years, years + 1)
 }
+```
 
+`convert_time_hours` turns a time string like `12:34` into the number of seconds. 
+
+```{r}
+convert_time_hours("824:13")
+```
+
+`generate_year_string` is a helper function to generate the year strings that the N.H.L. api expects.
+```{r}
+generate_year_string(19951996, 19981999)
+```
+
+`query_endpoint` is a helper function to query the N.H.L. api. It takes an endpoint and a list of query parameters and returns a tibble with the results. It is always helpful to isolate the code that does the querying from the code that does the data wrangling.
+
+```{r}
 query_endpoint <- function(endpoint, ...) {
   base_url <- "https://statsapi.web.nhl.com/"
-  # choose endpoint
   req <- httr2::request(base_url) %>%
-    httr2::req_url_path_append(endpoint) 
-  # allow for query parameters 
-  req <- httr2::req_url_query(req, ...)
-  req <- httr2::req_perform(req)
+    httr2::req_url_path_append(endpoint)  %>% 
+    httr2::req_url_query(...)
 
-  resp <- httr2::resp_body_json(req, simplifyVector = TRUE)
-  resp$copyright <- NULL
+  resp <- httr2::req_perform(req)
+
+  parsed <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  parsed$copyright <- NULL
   dplyr::as_tibble(resp[[1]])
 }
+```
 
+The `get_points_by_age` is the workhorse function for this post but is also one of those functions that does what you want it but if you were to try and copy it over, it might not behave the way you think it should. The code is annotated (another cool feature of quarto) to outline steps of this functions.
 
+```{r}
+#| code-annotations: hover
 get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALSE) {
   if (verbose) {
     message(glue("Getting data for {team}."))
   }
 
-  team_df <- query_endpoint("api/v1/teams") %>%
+  team_df <- query_endpoint("api/v1/teams") %>% # <1>
     filter(teamName == team)
 
-  team_plus_roster <- query_endpoint(team_df$link, expand = "team.roster")
+  team_plus_roster <- query_endpoint(team_df$link, expand = "team.roster") # <2>
 
   ## Drop goalies
   roster <- team_plus_roster[["roster"]][["roster"]][[1]]
-  person_link <- roster[roster$position != "G", ][["person"]]$link
+  person_link <- roster[roster$position != "G", ][["person"]]$link # <3>
   person_link <- person_link[!is.na(person_link)]
 
-  roster_with_ages <- map_df(seq_along(person_link), ~ {
+  roster_with_ages <- map_df(seq_along(person_link), ~ { # <4>
     query_endpoint(person_link[.x]) %>%
       select(id, fullName, link, birthDate, currentAge) %>%
       mutate(birthDate = as.Date(birthDate))
   }) %>%
-    filter(currentAge >= age_cutoff)
+    filter(currentAge >= age_cutoff) # <5>
 
   point_per_60_by_season <- map_df(seq_along(roster_with_ages$link), ~ {
     query_url <- glue("{roster_with_ages$link[.x]}/stats")
@@ -99,7 +123,7 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
           )
         )
       }
-      stats <- query_endpoint(
+      stats <- query_endpoint( # <6>
         query_url,
         stats = "statsSingleSeason",
         season = season
@@ -110,9 +134,9 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
         return(tibble())
       }
 
-      games_played_threshold <- stats[["splits"]][[1]][["stat"]] %>%
-        filter(games > min_games_played) 
-      
+      games_played_threshold <- stats[["splits"]][[1]][["stat"]] %>% # <7>
+        filter(games > min_games_played)
+
       ## when they are not above the threshold, return an empty tibble
       if (nrow(games_played_threshold) == 0) {
         return(tibble())
@@ -120,7 +144,7 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
 
       games_played_threshold %>%
         mutate(evenTimeOnIce = convert_time_hours(evenTimeOnIce)) %>%
-        mutate(even_strength_points_per_60 = ((points - powerPlayPoints) / evenTimeOnIce) * 3600) %>%
+        mutate(even_strength_points_per_60 = ((points - powerPlayPoints) / evenTimeOnIce) * 3600) %>% # <8>
         select(even_strength_points_per_60, shotPct) %>%
         mutate(person_link = person_link[.x]) %>%
         mutate(season = season)
@@ -136,14 +160,24 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
     point_per_60_by_season %>%
       mutate(team = team) %>%
       left_join(roster_with_ages, by = c("person_link" = "link")) %>%
-      mutate(age_at_start_of_season = currentAge - (2022 - as.numeric(substr(season, 1, 4)))) %>%
-      filter(!is.na(fullName)) %>% 
-      as_tibble()
+      mutate(age_at_start_of_season = currentAge - (2022 - as.numeric(substr(season, 1, 4)))) %>% # <9>
+      filter(!is.na(fullName)) %>%
+      as_tibble() # <10>
   }
 }
 ```
 
-Ok so the players that are above 35... are pretty good. Like really good actually. So obviously there is so selection bias going on here. The players that are playing at 35 are the best of the best. There is not a huge drop off for them. 
+1. Get the team id from the team name
+2. Get the roster for that team
+3. Filter out the goalies
+4. Query for the age of each player on the roster
+5. Filter out players that are younger than the age cutoff
+6. Get the stats for each player for each season when they actually played
+7. Filter out the players that don't meet the minimum games played threshold
+8. Calculate the points per 60 minutes for each player
+9. Calculate the age of the player at the start of the season
+10. Return a tibble with the results
+
 ```{r}
 #| echo: true
 
@@ -154,16 +188,15 @@ Ok so the players that are above 35... are pretty good. Like really good actuall
 ```
 
 ```{r}
-age_curve_df <- readr::read_csv("age_curve.csv") #%>% 
-#     filter(fullName != "Alex Newhook") %>% 
-#     filter(even_strength_points_per_60 > 0)
-
+age_curve_df <- readr::read_csv("age_curve.csv")
 ojs_define(ojs_age_curve_df = age_curve_df)
 ```
 
-So here we import some libraries that don't automatically come bundled with quarto. We are grabbing the [arquero data wrangling](https://uwdata.github.io/arquero/) library which as far as I can is more or less dplyr for Observable javascript. Here is how they out it:
+So here we import some libraries that don't automatically come bundled with quarto. We are grabbing the [arquero data wrangling](https://uwdata.github.io/arquero/) library which as far as I can tell, is more or less dplyr for Observable javascript. Here is how they describe it:
 
 > Following the relational algebra and inspired by the design of dplyr, Arquero provides a fluent API for manipulating column-oriented data frames.
+
+Cool! I know I said that I was going to do most of my data warangling in R but it really does help to be able to do some of it in javascript.
 
 ```{ojs}
 import { aq, op } from '@uwdata/arquero';
@@ -173,11 +206,13 @@ The first function that we are is `aq.from` which is the equivalent of `dplyr::a
 
 ```{ojs}
 ageCurve = aq.from(transpose(ojs_age_curve_df))
+ageCurve.view()
 ```
 
 Now we can do some data wrangling! Remember that we data coalated in the R step. The question we were interested in looking at was _at what age do players start to decline?_ Our evaluation metric is even strength points per 60 minutes. Say, we are interested in looking at playing time for players that are 35 and older. We can filter the `ageCurve` table using syntax that is very similar to dplyr. The only thing to note is what goes inside the `aq.escape` function. This is because we are using a javascript function inside of a javascript function. This escapes the inner function so that it is evaluated as javascript. 
 
 ```{ojs}
+//| eval: false
 ageCurve
   .filter(aq.escape(d => d.currentAge > 35)) 
 ```
@@ -235,6 +270,9 @@ Plot.plot({
 })
 ```
 
+
+
+Ok so the players that are above 35... are pretty good. Like really good actually. So obviously there is so selection bias going on here. The players that are playing at 35 are the best of the best. There is not a huge drop off for them.
 
 :::{.callout-note}
 NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2023. All Rights Reserved.
