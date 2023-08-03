@@ -5,7 +5,7 @@ date: last-modified
 slug: intro-to-ojs
 categories:
   - R
-  - Javascript
+  - JavaScript
   - Observable
   - nhl
   - api
@@ -18,9 +18,9 @@ linktitle: ''
 type: post
 ---
 
-Lately I've been thinking about two things: getting old and Observable. Getting old is self-explanatory. Observable is maybe less so. Normally Observable is a [javascript notebook environment](https://observablehq.com/@observablehq) that enables you to create interactive visualizations. This is a great platform and I suggest that if you are really interested in learning about Observable, you create an account there and start practicing. But sometimes, you want to take your interactive visualizations with you. This is where [quarto](https://quarto.org/) comes in. Quarto is the successor to [rmarkdown](https://rmarkdown.rstudio.com/) and is what this blog is written in. Like rmarkdown you can write prose and code in the same document. The biggest improvement with quarto is that you can also easily write code chunks in other language like python or observable flavoured javascript. 
+Lately I've been thinking about two things: getting old and Observable. Getting old is self-explanatory. Observable is maybe less so. Normally Observable is a [JavaScript notebook environment](https://observablehq.com/@observablehq) that enables you to create interactive visualizations. This is a great platform and I suggest that if you are really interested in learning about Observable, you create an account there and start practicing. But sometimes, you want to take your interactive visualizations with you. This is where [quarto](https://quarto.org/) comes in. Quarto is the successor to [rmarkdown](https://rmarkdown.rstudio.com/) and is what this blog is written in. Like rmarkdown you can write prose and code in the same document. The biggest improvement with quarto is that you can also easily write code chunks in other language like python or observable flavoured JavaScript. 
 
-This post was intended to be about Observable and quarto using some data sourced from the National Hockey League api. So back to being the them of being old -- I was wondering what happens to N.H.L. players when they get old? I was not able to find an interactive visualizations that satifactorily provided any ability to explore the question "At what age do N.H.L. players start declining in terms of production"?  So then I ended having to learn about the NHL api and how I could get what I wanted out of it. That turned this into a post about wrangling data from the N.H.L. api. Almost accidentally, this really highlights the power of quarto. I can much more easily wrangle data in R. Sure it is possible to do solely in javascript but for me it is easier in R. But then when I want to make the visualization, I can seamlessly switch to javascript in quarto. 
+This post was intended to be about Observable and quarto using some data sourced from the National Hockey League api. So back to being the them of being old -- I was wondering what happens to N.H.L. players when they get old? I was not able to find an interactive visualizations that satifactorily provided any ability to explore the question "At what age do N.H.L. players start declining in terms of production"?  So then I ended having to learn about the NHL api and how I could get what I wanted out of it. That turned this into a post about wrangling data from the N.H.L. api. Almost accidentally, this really highlights the power of quarto. I can much more easily wrangle data in R. Sure it is possible to do solely in JavaScript but for me it is easier in R. But then when I want to make the visualization, I can seamlessly switch to JavaScript in quarto. 
 
 Let's start with how we got the data. As is usual, we start with a pretty standard suite of tidyverse packages. 
 
@@ -33,6 +33,8 @@ library(dplyr)
 library(glue)
 library(tidyr)
 ```
+
+## Define some helper functions
 
 Next we need to define some helper functions.
 
@@ -58,7 +60,7 @@ generate_year_string <- function(start, end) {
 }
 ```
 
-`convert_time_hours` turns a time string like `12:34` into the number of seconds. 
+`convert_time_hours` turns a time string like `824:13` into the number of seconds. 
 
 ```{r}
 convert_time_hours("824:13")
@@ -69,7 +71,7 @@ convert_time_hours("824:13")
 generate_year_string(19951996, 19981999)
 ```
 
-`query_endpoint` is a helper function to query the N.H.L. api. It takes an endpoint and a list of query parameters and returns a tibble with the results. It is always helpful to isolate the code that does the querying from the code that does the data wrangling.
+`query_endpoint` is the core function that actually sends a data request to the N.H.L. api. It takes an endpoint and a list of query parameters and returns a tibble with the results. It is always helpful to isolate the code that does the querying from the code that does the data wrangling.
 
 ```{r}
 query_endpoint <- function(endpoint, ...) {
@@ -85,6 +87,12 @@ query_endpoint <- function(endpoint, ...) {
   dplyr::as_tibble(resp[[1]])
 }
 ```
+
+With every request to the N.H.L. api, the following note is returned in the response, specifying exactly who owns all the tradeamarks and logos. We drop it from the response because it is not really useful for our purposes but I am replicating it here:
+
+:::{.callout-note}
+NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2023. All Rights Reserved.
+:::
 
 The `get_points_by_age` is the workhorse function for this post but is also one of those functions that does what you want it but if you were to try and copy it over, it might not behave the way you think it should. The code is annotated (another cool feature of quarto) to outline steps of this functions.
 
@@ -178,25 +186,41 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
 9. Calculate the age of the player at the start of the season
 10. Return a tibble with the results
 
+## Use the helper functions to get the data
+
 ```{r}
 #| echo: true
+#| eval: false
 
-# teams <- query_endpoint("api/v1/teams") 
-# age_curve_df = map_df(teams$teamName, get_points_by_age, age_cutoff = 18, min_games_played = 50, verbose = interactive())
-
-# readr::write_csv(age_curve_df, "age_curve.csv")
+teams <- query_endpoint("api/v1/teams")
+age_curve_df <- map_df(
+  teams$teamName,
+  get_points_by_age,
+  age_cutoff = 18,
+  min_games_played = 50,
+  verbose = interactive()
+)
 ```
 
 ```{r}
-age_curve_df <- readr::read_csv("age_curve.csv")
+#| eval: true
+#| echo: false
+
+# readr::write_csv(age_curve_df, "age_curve.csv")
+age_curve_df <- readr::read_csv("age_curve.csv", show_col_types = FALSE)
+```
+
+## The pass off to JavaScript
+
+```{r}
 ojs_define(ojs_age_curve_df = age_curve_df)
 ```
 
-So here we import some libraries that don't automatically come bundled with quarto. We are grabbing the [arquero data wrangling](https://uwdata.github.io/arquero/) library which as far as I can tell, is more or less dplyr for Observable javascript. Here is how they describe it:
+So here we import some libraries that don't automatically come bundled with quarto. We are grabbing the [arquero data wrangling](https://uwdata.github.io/arquero/) library which as far as I can tell, is more or less dplyr for Observable JavaScript. Here is how they describe it:
 
 > Following the relational algebra and inspired by the design of dplyr, Arquero provides a fluent API for manipulating column-oriented data frames.
 
-Cool! I know I said that I was going to do most of my data warangling in R but it really does help to be able to do some of it in javascript.
+Cool! I know I said that I was going to do most of my data warangling in R but it really does help to be able to do some of it in JavaScript.
 
 ```{ojs}
 import { aq, op } from '@uwdata/arquero';
@@ -209,7 +233,7 @@ ageCurve = aq.from(transpose(ojs_age_curve_df))
 ageCurve.view()
 ```
 
-Now we can do some data wrangling! Remember that we data coalated in the R step. The question we were interested in looking at was _at what age do players start to decline?_ Our evaluation metric is even strength points per 60 minutes. Say, we are interested in looking at playing time for players that are 35 and older. We can filter the `ageCurve` table using syntax that is very similar to dplyr. The only thing to note is what goes inside the `aq.escape` function. This is because we are using a javascript function inside of a javascript function. This escapes the inner function so that it is evaluated as javascript. 
+Now we can do some data wrangling! Remember that we data coalated in the R step. The question we were interested in looking at was _at what age do players start to decline?_ Our evaluation metric is even strength points per 60 minutes. Say, we are interested in looking at playing time for players that are 35 and older. We can filter the `ageCurve` table using syntax that is very similar to dplyr. The only thing to note is what goes inside the `aq.escape` function. This is because we are using a JavaScript function inside of a JavaScript function. This escapes the inner function so that it is evaluated as JavaScript. 
 
 ```{ojs}
 //| eval: false
@@ -217,7 +241,7 @@ ageCurve
   .filter(aq.escape(d => d.currentAge > 35)) 
 ```
 
-Ok but you might asking yourself, why didn't I just do that in dplyr? The beauty of these `ojs` chunks is that we can calculate on this stuff on the fly so we can evaluate the same query for different age cutoffs. So the first we have to do is generate something interactive that we can create to define the age cutoff. For that we make use of Observable [`Inputs`](https://observablehq.com/@observablehq/inputs):
+Ok but you might asking yourself, why didn't I just do that in dplyr? The beauty of these `ojs` chunks is that we can calculate this stuff on the fly so we can evaluate the same query for different age cutoffs. So the first we have to do is generate something interactive that we can create to define the age cutoff. For that we make use of Observable [`Inputs`](https://observablehq.com/@observablehq/inputs):
 
 ```{ojs}
 viewof age_cutoff = Inputs.range([18, 40], {step: 1, value: 30})
@@ -226,11 +250,11 @@ filteredAgeCurve = ageCurve
   .filter(aq.escape(d => d.currentAge > age_cutoff)) 
 ```
 
-That makes a nifty little slider whose value you can see in the box to the left. Now we can use that value to filter the `ageCurve` table. 
+That makes a nifty little slider whose value you can see in the box to the left. Now we can use _that_ value to filter the `ageCurve` table. 
 
 So as you moved the slider, you are updating the `filteredAgeCurve` data in real time. 
 
-Armed with this super power we also want to be able to provide some ability to highlight certain players. There are lots of ways you can do that. We are going to for very simple and have a drop down menu that allows you to select a player. We are going to use the `Inputs.select` function to do that. 
+Armed with this super power we also want to be able to provide some ability to highlight certain players. There are lots of ways you can do that. We are going for very simple and have a drop down menu that allows you to select a player and use the `Inputs.select` function to do that. 
 
 ```{ojs}
 //| code-fold: true
@@ -242,14 +266,14 @@ singlePlayer = filteredAgeCurve
   .filter(aq.escape(d => d.fullName == player)) 
 ```
 
-It doesn't get too exciting though until we start to visualize it. I am using the `//| code-fold: true` comment to hide the code that generates the drop down and the plot so that you can see the plot, the slider and the dropdown more closely together.
+It doesn't get too exciting though until we start to visualize it. I am using the `code-fold: true` chunk option to hide the code that generates the drop down and the plot so that you can see the plot, the slider and the dropdown more closely together.
 
 ```{ojs}
 //| code-fold: true
 Plot.plot({
   y: {
     grid: true,
-    label: "Temperature (°F)"
+    label: "Even Strength Points per 60"
   },
   marks: [
     Plot.lineY(filteredAgeCurve, {
@@ -274,6 +298,4 @@ Plot.plot({
 
 Ok so the players that are above 35... are pretty good. Like really good actually. So obviously there is so selection bias going on here. The players that are playing at 35 are the best of the best. There is not a huge drop off for them.
 
-:::{.callout-note}
-NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2023. All Rights Reserved.
-:::
+
