@@ -257,7 +257,7 @@ ageCurve
   .filter(aq.escape(d => d.currentAge > 35)) 
 ```
 
-Ok but you might asking yourself, why didn't I just do that in dplyr? The beauty of these `ojs` chunks is that we can calculate this stuff on the fly using interactive tools like sliders, dropdown menus and radio buttons. This can turn your static html documents so we can evaluate the same query for different age cutoffs. So the first we have to do is generate something interactive that we can create to define the age cutoff. For that we make use of Observable [`Inputs`](https://observablehq.com/@observablehq/inputs). That makes a nifty little slider whose value you can see in the box to the left. Now we can use _that_ value to filter the `ageCurve` table updating the `filteredAgeCurve` data in real time. It would also be useful to be able to highlight certain players. We are going for very simple and have a drop down menu that allows you to select a player and use the `Inputs.select` function to do that. 
+Ok but you might asking yourself, why don't I just do that in dplyr? The beauty of these `ojs` chunks is that we can perform these operations on the fly using interactive tools like sliders, dropdown menus and radio buttons. For that we make use of Observable [`Inputs`](https://observablehq.com/@observablehq/inputs). Let's make two of these: a slider and a dropdown. The slider (via `Inputs.range`) defines the variable `age_cutoff` and we can use _that_ value to filter the `ageCurve` table updating the `filteredAgeCurve` data in real time. We then take the `filteredAgeCurve` to determine unique player names and provide those as the values in the dropdown menu (via `Inputs.select`). One consequence of that is the values in the dropdown menu are dependent on the slider. Check for yourself! There are many fewer players at the age cutoff of 35.  
 
 ```{ojs}
 viewof age_cutoff = Inputs.range([18, 40], {step: 1, value: 30})
@@ -273,7 +273,7 @@ singlePlayer = filteredAgeCurve
   .filter(aq.escape(d => d.fullName == player)) 
 ```
 
-It doesn't get too exciting though until we start to visualize it. I am using the `code-fold: true` chunk option to hide the code that generates the drop down and the plot so that you can see the plot, the slider and the dropdown more closely together.
+It doesn't get too exciting though until we start to visualize it. I am using the `code-fold: true` chunk option to hide the code that generates the plot so that you can see the plot, the slider and the dropdown more closely together.
 
 ```{ojs}
 //| code-fold: true
@@ -281,6 +281,10 @@ Plot.plot({
   y: {
     grid: true,
     label: "Even Strength Points per 60"
+  },
+  x: {
+    grid: true,
+    label: "Age at the start of the season"
   },
   marks: [
     Plot.lineY(filteredAgeCurve, {

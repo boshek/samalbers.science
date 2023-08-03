@@ -25079,39 +25079,39 @@ Note
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-annotation="1" data-code-cell="annotated-cell-7" data-code-lines="4">Get the team id from the team name</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="4" data-code-annotation="1">Get the team id from the team name</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-annotation="2" data-code-cell="annotated-cell-7" data-code-lines="7">Get the roster for that team</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="7" data-code-annotation="2">Get the roster for that team</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-annotation="3" data-code-cell="annotated-cell-7" data-code-lines="11">Filter out the goalies</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="11" data-code-annotation="3">Filter out the goalies</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-annotation="4" data-code-cell="annotated-cell-7" data-code-lines="14">Query for the age of each player on the roster</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="14" data-code-annotation="4">Query for the age of each player on the roster</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-annotation="6" data-code-cell="annotated-cell-7" data-code-lines="24">Get the stats for each player for each season when they actually played</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="24" data-code-annotation="6">Get the stats for each player for each season when they actually played</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-annotation="7" data-code-cell="annotated-cell-7" data-code-lines="37">Filter out the players that don’t meet the minimum games played threshold</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="37" data-code-annotation="7">Filter out the players that don’t meet the minimum games played threshold</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="8">8</dt>
 <dd>
-<span data-code-annotation="8" data-code-cell="annotated-cell-7" data-code-lines="49">Calculate the points per 60 minutes for each player</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="49" data-code-annotation="8">Calculate the points per 60 minutes for each player</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="9">9</dt>
 <dd>
-<span data-code-annotation="9" data-code-cell="annotated-cell-7" data-code-lines="63">Calculate the age of the player at the start of the season</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="63" data-code-annotation="9">Calculate the age of the player at the start of the season</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="10">10</dt>
 <dd>
-<span data-code-annotation="10" data-code-cell="annotated-cell-7" data-code-lines="66">Return a tibble with the results</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="66" data-code-annotation="10">Return a tibble with the results</span>
 </dd>
 </dl>
 </div>
@@ -25206,7 +25206,7 @@ Note
 </div>
 </div>
 </div>
-<p>Ok but you might asking yourself, why didn’t I just do that in dplyr? The beauty of these <code>ojs</code> chunks is that we can calculate this stuff on the fly using interactive tools like sliders, dropdown menus and radio buttons. This can turn your static html documents so we can evaluate the same query for different age cutoffs. So the first we have to do is generate something interactive that we can create to define the age cutoff. For that we make use of Observable <a href="https://observablehq.com/@observablehq/inputs"><code>Inputs</code></a>. That makes a nifty little slider whose value you can see in the box to the left. Now we can use <em>that</em> value to filter the <code>ageCurve</code> table updating the <code>filteredAgeCurve</code> data in real time. It would also be useful to be able to highlight certain players. We are going for very simple and have a drop down menu that allows you to select a player and use the <code>Inputs.select</code> function to do that.</p>
+<p>Ok but you might asking yourself, why don’t I just do that in dplyr? The beauty of these <code>ojs</code> chunks is that we can perform these operations on the fly using interactive tools like sliders, dropdown menus and radio buttons. For that we make use of Observable <a href="https://observablehq.com/@observablehq/inputs"><code>Inputs</code></a>. Let’s make two of these: a slider and a dropdown. The slider (via <code>Inputs.range</code>) defines the variable <code>age_cutoff</code> and we can use <em>that</em> value to filter the <code>ageCurve</code> table updating the <code>filteredAgeCurve</code> data in real time. We then take the <code>filteredAgeCurve</code> to determine unique player names and provide those as the values in the dropdown menu (via <code>Inputs.select</code>). One consequence of that is the values in the dropdown menu are dependent on the slider. Check for yourself! There are many fewer players at the age cutoff of 35.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16" data-startfrom="263" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 262;"><span id="cb16-263"><a href="#cb16-263" aria-hidden="true" tabindex="-1"></a>viewof age_cutoff <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">18</span><span class="op">,</span> <span class="dv">40</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">30</span>})</span>
 <span id="cb16-264"><a href="#cb16-264" aria-hidden="true" tabindex="-1"></a></span>
@@ -25248,7 +25248,7 @@ Note
 </div>
 </div>
 </div>
-<p>It doesn’t get too exciting though until we start to visualize it. I am using the <code>code-fold: true</code> chunk option to hide the code that generates the drop down and the plot so that you can see the plot, the slider and the dropdown more closely together.</p>
+<p>It doesn’t get too exciting though until we start to visualize it. I am using the <code>code-fold: true</code> chunk option to hide the code that generates the plot so that you can see the plot, the slider and the dropdown more closely together.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -25257,23 +25257,27 @@ Note
 <span id="cb17-281"><a href="#cb17-281" aria-hidden="true" tabindex="-1"></a>    <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
 <span id="cb17-282"><a href="#cb17-282" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Even Strength Points per 60&quot;</span></span>
 <span id="cb17-283"><a href="#cb17-283" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb17-284"><a href="#cb17-284" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb17-285"><a href="#cb17-285" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(filteredAgeCurve<span class="op">,</span> {</span>
-<span id="cb17-286"><a href="#cb17-286" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
-<span id="cb17-287"><a href="#cb17-287" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
-<span id="cb17-288"><a href="#cb17-288" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
-<span id="cb17-289"><a href="#cb17-289" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">&quot;lightgray&quot;</span><span class="op">,</span></span>
-<span id="cb17-290"><a href="#cb17-290" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
-<span id="cb17-291"><a href="#cb17-291" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
-<span id="cb17-292"><a href="#cb17-292" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(singlePlayer<span class="op">,</span> {</span>
-<span id="cb17-293"><a href="#cb17-293" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
-<span id="cb17-294"><a href="#cb17-294" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
-<span id="cb17-295"><a href="#cb17-295" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
-<span id="cb17-296"><a href="#cb17-296" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">&quot;blue&quot;</span><span class="op">,</span></span>
-<span id="cb17-297"><a href="#cb17-297" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
-<span id="cb17-298"><a href="#cb17-298" aria-hidden="true" tabindex="-1"></a>      })</span>
-<span id="cb17-299"><a href="#cb17-299" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb17-300"><a href="#cb17-300" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-284"><a href="#cb17-284" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {</span>
+<span id="cb17-285"><a href="#cb17-285" aria-hidden="true" tabindex="-1"></a>    <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb17-286"><a href="#cb17-286" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Age at the start of the season&quot;</span></span>
+<span id="cb17-287"><a href="#cb17-287" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb17-288"><a href="#cb17-288" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb17-289"><a href="#cb17-289" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(filteredAgeCurve<span class="op">,</span> {</span>
+<span id="cb17-290"><a href="#cb17-290" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
+<span id="cb17-291"><a href="#cb17-291" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
+<span id="cb17-292"><a href="#cb17-292" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
+<span id="cb17-293"><a href="#cb17-293" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">&quot;lightgray&quot;</span><span class="op">,</span></span>
+<span id="cb17-294"><a href="#cb17-294" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
+<span id="cb17-295"><a href="#cb17-295" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb17-296"><a href="#cb17-296" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(singlePlayer<span class="op">,</span> {</span>
+<span id="cb17-297"><a href="#cb17-297" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
+<span id="cb17-298"><a href="#cb17-298" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
+<span id="cb17-299"><a href="#cb17-299" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
+<span id="cb17-300"><a href="#cb17-300" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">&quot;blue&quot;</span><span class="op">,</span></span>
+<span id="cb17-301"><a href="#cb17-301" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
+<span id="cb17-302"><a href="#cb17-302" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb17-303"><a href="#cb17-303" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb17-304"><a href="#cb17-304" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-5" data-nodetype="expression">
@@ -25288,7 +25292,7 @@ Note
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"import { aq, op } from '@uwdata/arquero';\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"ageCurve = aq.from(transpose(ojs_age_curve_df))\nageCurve.view()\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"viewof age_cutoff = Inputs.range([18, 40], {step: 1, value: 30})\n\nfilteredAgeCurve = ageCurve\n  .filter(aq.escape(d => d.currentAge > age_cutoff)) \n\nviewof player = Inputs.select(filteredAgeCurve.dedupe(\"fullName\").orderby(\"fullName\").array(\"fullName\"), {\n  value: \"Sidney Crosby\"\n})\n\nsinglePlayer = filteredAgeCurve\n  .filter(aq.escape(d => d.fullName == player)) \n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"Plot.plot({\n  y: {\n    grid: true,\n    label: \"Even Strength Points per 60\"\n  },\n  marks: [\n    Plot.lineY(filteredAgeCurve, {\n        x: \"age_at_start_of_season\", \n        y: \"even_strength_points_per_60\", \n        z: \"fullName\",\n        stroke: \"lightgray\",\n        curve: \"basis\"\n      }),\n    Plot.lineY(singlePlayer, {\n        x: \"age_at_start_of_season\", \n        y: \"even_strength_points_per_60\", \n        z: \"fullName\",\n        stroke: \"blue\",\n        curve: \"basis\"\n      })\n  ]\n})\n"},{"methodName":"interpretQuiet","source":"shinyInput('age_cutoff')"},{"methodName":"interpretQuiet","source":"shinyInput('player')"}]}
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"import { aq, op } from '@uwdata/arquero';\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"ageCurve = aq.from(transpose(ojs_age_curve_df))\nageCurve.view()\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"viewof age_cutoff = Inputs.range([18, 40], {step: 1, value: 30})\n\nfilteredAgeCurve = ageCurve\n  .filter(aq.escape(d => d.currentAge > age_cutoff)) \n\nviewof player = Inputs.select(filteredAgeCurve.dedupe(\"fullName\").orderby(\"fullName\").array(\"fullName\"), {\n  value: \"Sidney Crosby\"\n})\n\nsinglePlayer = filteredAgeCurve\n  .filter(aq.escape(d => d.fullName == player)) \n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"Plot.plot({\n  y: {\n    grid: true,\n    label: \"Even Strength Points per 60\"\n  },\n  x: {\n    grid: true,\n    label: \"Age at the start of the season\"\n  },\n  marks: [\n    Plot.lineY(filteredAgeCurve, {\n        x: \"age_at_start_of_season\", \n        y: \"even_strength_points_per_60\", \n        z: \"fullName\",\n        stroke: \"lightgray\",\n        curve: \"basis\"\n      }),\n    Plot.lineY(singlePlayer, {\n        x: \"age_at_start_of_season\", \n        y: \"even_strength_points_per_60\", \n        z: \"fullName\",\n        stroke: \"blue\",\n        curve: \"basis\"\n      })\n  ]\n})\n"},{"methodName":"interpretQuiet","source":"shinyInput('age_cutoff')"},{"methodName":"interpretQuiet","source":"shinyInput('player')"}]}
 </script>
 <script type="module">
 window._ojs.runtime.setLocalResolver({});
