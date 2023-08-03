@@ -108,7 +108,7 @@ The `get_points_by_age` is the workhorse function for this post but is also one 
 
 ```{r}
 #| code-annotations: hover
-get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALSE) {
+get_points_by_age <- function(team, min_games_played, verbose = FALSE) {
   api_message(glue("Getting data for {team}."), verbose = verbose)
 
   team_df <- query_endpoint("api/v1/teams") %>% # <1>
@@ -125,8 +125,7 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
     query_endpoint(person_link[.x]) %>%
       select(id, fullName, link, birthDate, currentAge) %>%
       mutate(birthDate = as.Date(birthDate))
-  }) %>%
-    filter(currentAge >= age_cutoff) # <5>
+  })
 
   point_per_60_by_season <- map_df(seq_along(roster_with_ages$link), ~ {
     query_url <- glue("{roster_with_ages$link[.x]}/stats")
@@ -165,7 +164,7 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
   })
 
   if (length(point_per_60_by_season) == 0) {
-    api_message(glue("No players over {age_cutoff} found for {team}.", verbose = verbose))
+    api_message(glue("No players over found for {team}.", verbose = verbose))
     return(tibble())
   } else {
     point_per_60_by_season %>%
@@ -173,6 +172,7 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
       left_join(roster_with_ages, by = c("person_link" = "link")) %>%
       mutate(age_at_start_of_season = currentAge - (2022 - as.numeric(substr(season, 1, 4)))) %>% # <9>
       filter(!is.na(fullName)) %>%
+      relocate(fullName, birthDate, season, team, .before = even_strength_points_per_60) %>% 
       as_tibble() # <10>
   }
 }
@@ -191,15 +191,22 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
 
 ## Use the helper functions to get the data
 
+The way that I've written `get_points_by_age`, you supply it a team name and it will look for stats on those players that are currently on the roster. So you would invoke it like this:
+```{r}
+#| eval: false
+get_points_by_age("Penguins", min_games_played = 60)
+```
+
+However, since we are interested in all players in the N.H.L. we need all teams. Here we use `map_df` to iterate over each team and then bind the results together into a single tibble. This the data we will working with. 
+
 ```{r}
 #| echo: true
 #| eval: false
 
 teams <- query_endpoint("api/v1/teams")
 age_curve_df <- map_df(
-  teams$teamName[2],
+  teams$teamName,
   get_points_by_age,
-  age_cutoff = 18,
   min_games_played = 40,
   verbose = interactive()
 )
@@ -210,16 +217,22 @@ age_curve_df <- map_df(
 #| echo: false
 
 # readr::write_csv(age_curve_df, "age_curve.csv")
-age_curve_df <- readr::read_csv("age_curve.csv", show_col_types = FALSE)
+(age_curve_df <- readr::read_csv("age_curve.csv", show_col_types = FALSE))
 ```
 
-## The pass off to JavaScript
+## The pass off to Observable JavaScript
+
+Now that we have the data, we can pass it off to JavaScript. We do this by using the `ojs_define` function. This function is available in R and python and it allows you to make data available in an ojs chunk. The `age_curve_df` data we gathered in the previous steps will now be available in the ojs chunk below as `ojs_age_curve_df`.
 
 ```{r}
 ojs_define(ojs_age_curve_df = age_curve_df)
 ```
 
-So here we import some libraries that don't automatically come bundled with quarto. We are grabbing the [arquero data wrangling](https://uwdata.github.io/arquero/) library which as far as I can tell, is more or less dplyr for Observable JavaScript. Here is how they describe it:
+## Working with Observable JavaScript
+
+The rest of the code in this post is all written in JavaScript. 
+
+We do need import some libraries (just like R) that don't automatically come bundled with quarto. We are grabbing the [arquero data wrangling](https://uwdata.github.io/arquero/) library which as far as I can tell, is more or less dplyr for Observable JavaScript. Here is how they describe it:
 
 > Following the relational algebra and inspired by the design of dplyr, Arquero provides a fluent API for manipulating column-oriented data frames.
 
@@ -244,23 +257,14 @@ ageCurve
   .filter(aq.escape(d => d.currentAge > 35)) 
 ```
 
-Ok but you might asking yourself, why didn't I just do that in dplyr? The beauty of these `ojs` chunks is that we can calculate this stuff on the fly so we can evaluate the same query for different age cutoffs. So the first we have to do is generate something interactive that we can create to define the age cutoff. For that we make use of Observable [`Inputs`](https://observablehq.com/@observablehq/inputs):
+Ok but you might asking yourself, why didn't I just do that in dplyr? The beauty of these `ojs` chunks is that we can calculate this stuff on the fly using interactive tools like sliders, dropdown menus and radio buttons. This can turn your static html documents so we can evaluate the same query for different age cutoffs. So the first we have to do is generate something interactive that we can create to define the age cutoff. For that we make use of Observable [`Inputs`](https://observablehq.com/@observablehq/inputs). That makes a nifty little slider whose value you can see in the box to the left. Now we can use _that_ value to filter the `ageCurve` table updating the `filteredAgeCurve` data in real time. It would also be useful to be able to highlight certain players. We are going for very simple and have a drop down menu that allows you to select a player and use the `Inputs.select` function to do that. 
 
 ```{ojs}
 viewof age_cutoff = Inputs.range([18, 40], {step: 1, value: 30})
 
 filteredAgeCurve = ageCurve
   .filter(aq.escape(d => d.currentAge > age_cutoff)) 
-```
 
-That makes a nifty little slider whose value you can see in the box to the left. Now we can use _that_ value to filter the `ageCurve` table. 
-
-So as you moved the slider, you are updating the `filteredAgeCurve` data in real time. 
-
-Armed with this super power we also want to be able to provide some ability to highlight certain players. There are lots of ways you can do that. We are going for very simple and have a drop down menu that allows you to select a player and use the `Inputs.select` function to do that. 
-
-```{ojs}
-//| code-fold: true
 viewof player = Inputs.select(filteredAgeCurve.dedupe("fullName").orderby("fullName").array("fullName"), {
   value: "Sidney Crosby"
 })
