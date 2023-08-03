@@ -39,10 +39,10 @@ library(tidyr)
 Next we need to define some helper functions.
 
 ```{r}
-convert_time_hours <- function(time_str) {
-  # Split the time into hours and minutes
+convert_time <- function(time_str) {
+  # Split the time into minutes and seconds
   time_parts <- strsplit(time_str, ":")[[1]]
-  # Convert the hours and minutes to integers
+  # Convert to integers
   minutes <- as.integer(time_parts[1])
   seconds <- as.integer(time_parts[2])
   # Convert the time to seconds
@@ -60,15 +60,25 @@ generate_year_string <- function(start, end) {
 }
 ```
 
-`convert_time_hours` turns a time string like `824:13` into the number of seconds. 
+`convert_time` turns a time string like `824:13` into the number of seconds. 
 
 ```{r}
-convert_time_hours("824:13")
+convert_time("824:13")
 ```
 
 `generate_year_string` is a helper function to generate the year strings that the N.H.L. api expects.
 ```{r}
 generate_year_string(19951996, 19981999)
+```
+
+This is a function to help sending messages to the console. Defining it here saves lots of space where I use it later on. 
+```{r}
+api_message <- function(..., verbose = TRUE) {
+  if (verbose) {
+    message(...)
+  }
+  invisible(TRUE)
+}
 ```
 
 `query_endpoint` is the core function that actually sends a data request to the N.H.L. api. It takes an endpoint and a list of query parameters and returns a tibble with the results. It is always helpful to isolate the code that does the querying from the code that does the data wrangling.
@@ -84,7 +94,7 @@ query_endpoint <- function(endpoint, ...) {
 
   parsed <- httr2::resp_body_json(resp, simplifyVector = TRUE)
   parsed$copyright <- NULL
-  dplyr::as_tibble(resp[[1]])
+  dplyr::as_tibble(parsed[[1]])
 }
 ```
 
@@ -99,9 +109,7 @@ The `get_points_by_age` is the workhorse function for this post but is also one 
 ```{r}
 #| code-annotations: hover
 get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALSE) {
-  if (verbose) {
-    message(glue("Getting data for {team}."))
-  }
+  api_message(glue("Getting data for {team}."), verbose = verbose)
 
   team_df <- query_endpoint("api/v1/teams") %>% # <1>
     filter(teamName == team)
@@ -124,13 +132,6 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
     query_url <- glue("{roster_with_ages$link[.x]}/stats")
 
     map_df(generate_year_string("19901991", "20222023"), \(season) {
-      if (verbose) {
-        message(
-          glue(
-            "Getting data for {roster_with_ages$fullName[.x]} for the {season} season"
-          )
-        )
-      }
       stats <- query_endpoint( # <6>
         query_url,
         stats = "statsSingleSeason",
@@ -139,20 +140,24 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
 
       ## when there are no stats, return an empty tibble
       if (length(stats[["splits"]][[1]]) == 0) {
+        api_message(glue("No data for {roster_with_ages$fullName[.x]} for the {season} season", verbose = verbose))
         return(tibble())
       }
+      api_message(glue("Getting data for {roster_with_ages$fullName[.x]} for the {season} season", verbose = verbose))
 
       games_played_threshold <- stats[["splits"]][[1]][["stat"]] %>% # <7>
         filter(games > min_games_played)
 
       ## when they are not above the threshold, return an empty tibble
       if (nrow(games_played_threshold) == 0) {
+        api_message(glue("{roster_with_ages$fullName[.x]} did not play at least {min_games_played} games in the {season} season", verbose = verbose))
         return(tibble())
       }
 
       games_played_threshold %>%
-        mutate(evenTimeOnIce = convert_time_hours(evenTimeOnIce)) %>%
-        mutate(even_strength_points_per_60 = ((points - powerPlayPoints) / evenTimeOnIce) * 3600) %>% # <8>
+        mutate(evenTimeOnIce = convert_time(evenTimeOnIce)) %>%
+        mutate(even_strength_points = points - powerPlayPoints) %>%
+        mutate(even_strength_points_per_60 = (even_strength_points / evenTimeOnIce) * 3600) %>% # <8>
         select(even_strength_points_per_60, shotPct) %>%
         mutate(person_link = person_link[.x]) %>%
         mutate(season = season)
@@ -160,9 +165,7 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
   })
 
   if (length(point_per_60_by_season) == 0) {
-    if (verbose) {
-      message(glue("No players over {age_cutoff} found for {team}."))
-    }
+    api_message(glue("No players over {age_cutoff} found for {team}.", verbose = verbose))
     return(tibble())
   } else {
     point_per_60_by_season %>%
@@ -194,10 +197,10 @@ get_points_by_age <- function(team, age_cutoff, min_games_played, verbose = FALS
 
 teams <- query_endpoint("api/v1/teams")
 age_curve_df <- map_df(
-  teams$teamName,
+  teams$teamName[2],
   get_points_by_age,
   age_cutoff = 18,
-  min_games_played = 50,
+  min_games_played = 40,
   verbose = interactive()
 )
 ```

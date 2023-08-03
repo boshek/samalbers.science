@@ -25076,43 +25076,43 @@ Note
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="1" data-code-lines="6">Get the team id from the team name</span>
+<span data-code-lines="6" data-code-annotation="1" data-code-cell="annotated-cell-6">Get the team id from the team name</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="2" data-code-lines="9">Get the roster for that team</span>
+<span data-code-lines="9" data-code-annotation="2" data-code-cell="annotated-cell-6">Get the roster for that team</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="3" data-code-lines="13">Filter out the goalies</span>
+<span data-code-lines="13" data-code-annotation="3" data-code-cell="annotated-cell-6">Filter out the goalies</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="4" data-code-lines="16">Query for the age of each player on the roster</span>
+<span data-code-lines="16" data-code-annotation="4" data-code-cell="annotated-cell-6">Query for the age of each player on the roster</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="5" data-code-lines="21">Filter out players that are younger than the age cutoff</span>
+<span data-code-lines="21" data-code-annotation="5" data-code-cell="annotated-cell-6">Filter out players that are younger than the age cutoff</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="6" data-code-lines="34">Get the stats for each player for each season when they actually played</span>
+<span data-code-lines="34" data-code-annotation="6" data-code-cell="annotated-cell-6">Get the stats for each player for each season when they actually played</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="7" data-code-lines="45">Filter out the players that don’t meet the minimum games played threshold</span>
+<span data-code-lines="45" data-code-annotation="7" data-code-cell="annotated-cell-6">Filter out the players that don’t meet the minimum games played threshold</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="8">8</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="8" data-code-lines="55">Calculate the points per 60 minutes for each player</span>
+<span data-code-lines="55" data-code-annotation="8" data-code-cell="annotated-cell-6">Calculate the points per 60 minutes for each player</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="9">9</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="9" data-code-lines="71">Calculate the age of the player at the start of the season</span>
+<span data-code-lines="71" data-code-annotation="9" data-code-cell="annotated-cell-6">Calculate the age of the player at the start of the season</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="10">10</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="10" data-code-lines="73">Return a tibble with the results</span>
+<span data-code-lines="73" data-code-annotation="10" data-code-cell="annotated-cell-6">Return a tibble with the results</span>
 </dd>
 </dl>
 </div>
@@ -25142,7 +25142,7 @@ Note
 </blockquote>
 <p>Cool! I know I said that I was going to do most of my data warangling in R but it really does help to be able to do some of it in JavaScript.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10" data-startfrom="225" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 224;"><span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { aq<span class="op">,</span> op } <span class="im">from</span> <span class="st">&#39;@uwdata/arquero&#39;</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10" data-startfrom="228" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 227;"><span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { aq<span class="op">,</span> op } <span class="im">from</span> <span class="st">&#39;@uwdata/arquero&#39;</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-1" data-nodetype="declaration">
 
@@ -25151,8 +25151,8 @@ Note
 </div>
 <p>The first function that we are is <code>aq.from</code> which is the equivalent of <code>dplyr::as_tibble</code>. It takes a data frame and converts it to an arquero table.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11" data-startfrom="232" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 231;"><span id="cb11-232"><a href="#cb11-232" aria-hidden="true" tabindex="-1"></a>ageCurve <span class="op">=</span> aq<span class="op">.</span><span class="fu">from</span>(<span class="fu">transpose</span>(ojs_age_curve_df))</span>
-<span id="cb11-233"><a href="#cb11-233" aria-hidden="true" tabindex="-1"></a>ageCurve<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11" data-startfrom="235" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 234;"><span id="cb11-235"><a href="#cb11-235" aria-hidden="true" tabindex="-1"></a>ageCurve <span class="op">=</span> aq<span class="op">.</span><span class="fu">from</span>(<span class="fu">transpose</span>(ojs_age_curve_df))</span>
+<span id="cb11-236"><a href="#cb11-236" aria-hidden="true" tabindex="-1"></a>ageCurve<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-2-1" data-nodetype="declaration">
@@ -25170,8 +25170,8 @@ Note
 </div>
 <p>Now we can do some data wrangling! Remember that we data coalated in the R step. The question we were interested in looking at was <em>at what age do players start to decline?</em> Our evaluation metric is even strength points per 60 minutes. Say, we are interested in looking at playing time for players that are 35 and older. We can filter the <code>ageCurve</code> table using syntax that is very similar to dplyr. The only thing to note is what goes inside the <code>aq.escape</code> function. This is because we are using a JavaScript function inside of a JavaScript function. This escapes the inner function so that it is evaluated as JavaScript.</p>
 <div class="cell" data-eval="false">
-<div class="sourceCode cell-code" id="cb12" data-startfrom="239" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 238;"><span id="cb12-239"><a href="#cb12-239" aria-hidden="true" tabindex="-1"></a>ageCurve</span>
-<span id="cb12-240"><a href="#cb12-240" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">currentAge</span> <span class="op">&gt;</span> <span class="dv">35</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12" data-startfrom="242" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 241;"><span id="cb12-242"><a href="#cb12-242" aria-hidden="true" tabindex="-1"></a>ageCurve</span>
+<span id="cb12-243"><a href="#cb12-243" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">currentAge</span> <span class="op">&gt;</span> <span class="dv">35</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-3" data-nodetype="expression">
 
@@ -25180,10 +25180,10 @@ Note
 </div>
 <p>Ok but you might asking yourself, why didn’t I just do that in dplyr? The beauty of these <code>ojs</code> chunks is that we can calculate this stuff on the fly so we can evaluate the same query for different age cutoffs. So the first we have to do is generate something interactive that we can create to define the age cutoff. For that we make use of Observable <a href="https://observablehq.com/@observablehq/inputs"><code>Inputs</code></a>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13" data-startfrom="247" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 246;"><span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a>viewof age_cutoff <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">18</span><span class="op">,</span> <span class="dv">40</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">30</span>})</span>
-<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a>filteredAgeCurve <span class="op">=</span> ageCurve</span>
-<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">currentAge</span> <span class="op">&gt;</span> age_cutoff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13" data-startfrom="250" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 249;"><span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a>viewof age_cutoff <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">18</span><span class="op">,</span> <span class="dv">40</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">30</span>})</span>
+<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a>filteredAgeCurve <span class="op">=</span> ageCurve</span>
+<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">currentAge</span> <span class="op">&gt;</span> age_cutoff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-4-1" data-nodetype="declaration">
@@ -25205,12 +25205,12 @@ Note
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14" data-startfrom="261" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 260;"><span id="cb14-261"><a href="#cb14-261" aria-hidden="true" tabindex="-1"></a>viewof player <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(filteredAgeCurve<span class="op">.</span><span class="fu">dedupe</span>(<span class="st">&quot;fullName&quot;</span>)<span class="op">.</span><span class="fu">orderby</span>(<span class="st">&quot;fullName&quot;</span>)<span class="op">.</span><span class="fu">array</span>(<span class="st">&quot;fullName&quot;</span>)<span class="op">,</span> {</span>
-<span id="cb14-262"><a href="#cb14-262" aria-hidden="true" tabindex="-1"></a>  <span class="dt">value</span><span class="op">:</span> <span class="st">&quot;Sidney Crosby&quot;</span></span>
-<span id="cb14-263"><a href="#cb14-263" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb14-264"><a href="#cb14-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-265"><a href="#cb14-265" aria-hidden="true" tabindex="-1"></a>singlePlayer <span class="op">=</span> filteredAgeCurve</span>
-<span id="cb14-266"><a href="#cb14-266" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">fullName</span> <span class="op">==</span> player))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14" data-startfrom="264" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 263;"><span id="cb14-264"><a href="#cb14-264" aria-hidden="true" tabindex="-1"></a>viewof player <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(filteredAgeCurve<span class="op">.</span><span class="fu">dedupe</span>(<span class="st">&quot;fullName&quot;</span>)<span class="op">.</span><span class="fu">orderby</span>(<span class="st">&quot;fullName&quot;</span>)<span class="op">.</span><span class="fu">array</span>(<span class="st">&quot;fullName&quot;</span>)<span class="op">,</span> {</span>
+<span id="cb14-265"><a href="#cb14-265" aria-hidden="true" tabindex="-1"></a>  <span class="dt">value</span><span class="op">:</span> <span class="st">&quot;Sidney Crosby&quot;</span></span>
+<span id="cb14-266"><a href="#cb14-266" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-267"><a href="#cb14-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-268"><a href="#cb14-268" aria-hidden="true" tabindex="-1"></a>singlePlayer <span class="op">=</span> filteredAgeCurve</span>
+<span id="cb14-269"><a href="#cb14-269" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">fullName</span> <span class="op">==</span> player))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -25231,28 +25231,28 @@ Note
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15" data-startfrom="272" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 271;"><span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb15-273"><a href="#cb15-273" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {</span>
-<span id="cb15-274"><a href="#cb15-274" aria-hidden="true" tabindex="-1"></a>    <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Even Strength Points per 60&quot;</span></span>
-<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(filteredAgeCurve<span class="op">,</span> {</span>
-<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
-<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
-<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
-<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">&quot;lightgray&quot;</span><span class="op">,</span></span>
-<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
-<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
-<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(singlePlayer<span class="op">,</span> {</span>
-<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
-<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
-<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
-<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">&quot;blue&quot;</span><span class="op">,</span></span>
-<span id="cb15-290"><a href="#cb15-290" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
-<span id="cb15-291"><a href="#cb15-291" aria-hidden="true" tabindex="-1"></a>      })</span>
-<span id="cb15-292"><a href="#cb15-292" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15" data-startfrom="275" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 274;"><span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {</span>
+<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a>    <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Even Strength Points per 60&quot;</span></span>
+<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(filteredAgeCurve<span class="op">,</span> {</span>
+<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
+<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
+<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
+<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">&quot;lightgray&quot;</span><span class="op">,</span></span>
+<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
+<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(singlePlayer<span class="op">,</span> {</span>
+<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
+<span id="cb15-290"><a href="#cb15-290" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
+<span id="cb15-291"><a href="#cb15-291" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
+<span id="cb15-292"><a href="#cb15-292" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">&quot;blue&quot;</span><span class="op">,</span></span>
+<span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
+<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-6" data-nodetype="expression">
