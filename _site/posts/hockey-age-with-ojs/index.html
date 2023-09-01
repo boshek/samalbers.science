@@ -24908,8 +24908,7 @@ initializeRuntime();
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#define-some-helper-functions" id="toc-define-some-helper-functions" class="nav-link active" data-scroll-target="#define-some-helper-functions">Define some helper functions</a></li>
-  <li><a href="#use-the-helper-functions-to-get-the-data" id="toc-use-the-helper-functions-to-get-the-data" class="nav-link" data-scroll-target="#use-the-helper-functions-to-get-the-data">Use the helper functions to get the data</a></li>
+  <li><a href="#use-the-helper-functions-to-get-the-data" id="toc-use-the-helper-functions-to-get-the-data" class="nav-link active" data-scroll-target="#use-the-helper-functions-to-get-the-data">Use the helper functions to get the data</a></li>
   <li><a href="#the-pass-off-to-ojs" id="toc-the-pass-off-to-ojs" class="nav-link" data-scroll-target="#the-pass-off-to-ojs">The pass off to ojs</a></li>
   <li><a href="#working-with-observable-javascript" id="toc-working-with-observable-javascript" class="nav-link" data-scroll-target="#working-with-observable-javascript">Working with Observable JavaScript</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
@@ -24922,8 +24921,8 @@ initializeRuntime();
 
 
 
-<p>Lately I’ve been thinking about two things: getting old and Observable. Getting old is self-explanatory. ObservableJS (ojs) is maybe less so. Normally ojs is used in a <a href="https://observablehq.com/@observablehq">JavaScript notebook environment</a> that enables you to create interactive visualizations. This is a great platform and I suggest that if you are really interested in learning about ojs, you create an account there and start practicing. But sometimes, you want to take your interactive visualizations with you. This is where <a href="https://quarto.org/">quarto</a> comes in. Quarto is the successor to <a href="https://rmarkdown.rstudio.com/">rmarkdown</a> and is what this blog is written in. Like rmarkdown you can write prose and code in the same document. The biggest improvement with quarto is that you can also easily write code chunks in other language like python or ojs.</p>
-<p>This post was intended to be about ojs and quarto using some data sourced from the National Hockey League api. So back to being the them of being old – I was wondering what happens to N.H.L. players when they get old? In particular what happens to their productivity? I was not able to find any interactive visualizations that satifactorily provided any ability to explore the question “At what age do N.H.L. players start declining in terms of production”? So then I ended having to learn about the NHL api and how I could get what I wanted out of it. That turned this into a post also about wrangling data from the N.H.L. api. Almost accidentally, this really highlights the power of quarto. I can much more easily wrangle data in R. Sure it is possible to do solely in ojs but for me it is easier in R. But then when I want to make the visualization, I can seamlessly switch to ojs in quarto.</p>
+<p>Lately I’ve been thinking about two things: getting old and ObservableJS. Getting old is self-explanatory. ObservableJS (ojs) is maybe less so. Normally ojs is used in a <a href="https://observablehq.com/@observablehq">JavaScript notebook environment</a> that enables you to create amazing interactive visualizations. This is a great platform and I suggest that if you are really interested in learning about ojs, you create an account there and start practicing. But sometimes, you want to take your interactive visualizations with you. This is where <a href="https://quarto.org/">quarto</a> comes in. Quarto is the successor to <a href="https://rmarkdown.rstudio.com/">rmarkdown</a> and is what this blog is written in. Like rmarkdown you can write prose and code in the same document. The biggest improvement with quarto is that you can also (more) easily write code chunks in other language like python or ojs.</p>
+<p>This post was intended to be about ojs and quarto using some data sourced from the National Hockey League api. So back to being the theme of being old – I was wondering what happens to NHL players when they get old? In particular what happens to their productivity? I was not able to find any interactive visualizations that satifactorily provided any ability to explore the question “At what age do NHL players start declining in production”? So then I ended up having to learn about the NHL api and how I could get what I wanted out of it. That turned this into a post also about wrangling data from the NHL api. Almost accidentally, this really highlights the power of quarto. I can much more easily wrangle data in R. Sure it is possible to do this solely in ojs but for me it is easier in R. But then when I want to make the visualization, I can seamlessly switch to ojs in the same quarto doc.</p>
 <p>Let’s start with how we got the data. As is usual, we start with a pretty standard suite of tidyverse packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr2)</span>
@@ -24932,8 +24931,6 @@ initializeRuntime();
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="define-some-helper-functions" class="level2">
-<h2 class="anchored" data-anchor-id="define-some-helper-functions">Define some helper functions</h2>
 <p>Next we need to define some helper functions.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>convert_time <span class="ot">&lt;-</span> <span class="cf">function</span>(time_str) {</span>
@@ -24943,7 +24940,7 @@ initializeRuntime();
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  minutes <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(time_parts[<span class="dv">1</span>])</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  seconds <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(time_parts[<span class="dv">2</span>])</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert the time to seconds</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  minutes<span class="sc">*</span><span class="dv">60</span> <span class="sc">+</span> seconds</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  minutes <span class="sc">*</span> <span class="dv">60</span> <span class="sc">+</span> seconds</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>generate_year_string <span class="ot">&lt;-</span> <span class="cf">function</span>(start, end) {</span>
@@ -24963,7 +24960,7 @@ initializeRuntime();
 <pre><code>[1] 49453</code></pre>
 </div>
 </div>
-<p><code>generate_year_string</code> is a helper function to generate the year strings that the N.H.L. api expects.</p>
+<p><code>generate_year_string</code> is a helper function to generate the year strings that the NHL api expects.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">generate_year_string</span>(<span class="dv">19951996</span>, <span class="dv">19981999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -24973,18 +24970,16 @@ initializeRuntime();
 <p>This is a function to help sending messages to the console. Defining it here saves lots of space where I use it later on.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>api_message <span class="ot">&lt;-</span> <span class="cf">function</span>(..., <span class="at">verbose =</span> <span class="cn">TRUE</span>) {</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (verbose) {</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(...)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(<span class="cn">TRUE</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (verbose) <span class="fu">message</span>(...)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(<span class="cn">TRUE</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>query_endpoint</code> is the core function that actually sends a data request to the N.H.L. api. It takes an endpoint and a list of query parameters and returns a tibble with the results. It is always helpful to isolate the code that does the querying from the code that does the data wrangling.</p>
+<p><code>query_endpoint</code> is the core function that actually sends a data request to the NHL api. It takes an endpoint and a list of query parameters and returns a tibble with the results. It is always helpful to isolate the code that does the querying from the code that does the data wrangling.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>query_endpoint <span class="ot">&lt;-</span> <span class="cf">function</span>(endpoint, ...) {</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  base_url <span class="ot">&lt;-</span> <span class="st">&quot;https://statsapi.web.nhl.com/&quot;</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  req <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(base_url) <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(endpoint)  <span class="sc">%&gt;%</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(endpoint) <span class="sc">%&gt;%</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    httr2<span class="sc">::</span><span class="fu">req_url_query</span>(...)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">req_perform</span>(req)</span>
@@ -24994,7 +24989,7 @@ initializeRuntime();
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>(parsed[[<span class="dv">1</span>]])</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>With every request to the N.H.L. api, the following note is returned in the response, specifying exactly who owns all the trademarks and logos. We drop it from the response because it is not really useful for our example but I am replicating it here:</p>
+<p>With every request to the NHL api, the following note is returned in the response, specifying exactly who owns all the trademarks and logos. We drop it from the response because it is not really useful for our data wrangling example but I am replicating it here:</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -25008,7 +25003,7 @@ Copyright
 <p>NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2023. All Rights Reserved.</p>
 </div>
 </div>
-<p>The <code>get_points_by_age</code> is the workhorse function for this post but is also one of those functions that does what you want it but if you were to try and copy it over, it might not behave the way you think it should. The code is annotated (another cool feature of quarto) to outline the steps of this functions This likely could be broken up into smaller functions but really I am just trying to get data to illustrate using Observable.</p>
+<p>The <code>get_points_by_age</code> is the workhorse function for this post but is also one of those functions that does just what you want it but it make not be broadly useful. For example, this functions requests data for every player that is currently on an NHL roster. That’s a lot of data and the api may get cranky with you for requesting that much. The code is annotated (another cool feature of quarto) to outline the steps of this functions. Click on the step and it will highlight the line of code it is referencing.</p>
 <div class="cell" data-code-annotations="hover">
 <div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>get_points_by_age <span class="ot">&lt;-</span> <span class="cf">function</span>(team, min_games_played, <span class="at">verbose =</span> <span class="cn">FALSE</span>) {</span>
 <span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">api_message</span>(<span class="fu">glue</span>(<span class="st">&quot;Getting data for {team}.&quot;</span>), <span class="at">verbose =</span> verbose)</span>
@@ -25041,107 +25036,134 @@ Copyright
 <span id="annotated-cell-7-29"><a href="#annotated-cell-7-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-7-30"><a href="#annotated-cell-7-30" aria-hidden="true" tabindex="-1"></a>      <span class="do">## when there are no stats, return an empty tibble</span></span>
 <span id="annotated-cell-7-31"><a href="#annotated-cell-7-31" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">length</span>(stats[[<span class="st">&quot;splits&quot;</span>]][[<span class="dv">1</span>]]) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="annotated-cell-7-32"><a href="#annotated-cell-7-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">api_message</span>(<span class="fu">glue</span>(<span class="st">&quot;No data for {roster_with_ages$fullName[.x]} for the {season} season&quot;</span>, <span class="at">verbose =</span> verbose))</span>
-<span id="annotated-cell-7-33"><a href="#annotated-cell-7-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">tibble</span>())</span>
-<span id="annotated-cell-7-34"><a href="#annotated-cell-7-34" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="annotated-cell-7-35"><a href="#annotated-cell-7-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">api_message</span>(<span class="fu">glue</span>(<span class="st">&quot;Getting data for {roster_with_ages$fullName[.x]} for the {season} season&quot;</span>, <span class="at">verbose =</span> verbose))</span>
-<span id="annotated-cell-7-36"><a href="#annotated-cell-7-36" aria-hidden="true" tabindex="-1"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-7-37" class="code-annotation-target"><a href="#annotated-cell-7-37" aria-hidden="true" tabindex="-1"></a>      games_played_threshold <span class="ot">&lt;-</span> stats[[<span class="st">&quot;splits&quot;</span>]][[<span class="dv">1</span>]][[<span class="st">&quot;stat&quot;</span>]] <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-38"><a href="#annotated-cell-7-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(games <span class="sc">&gt;</span> min_games_played)</span>
-<span id="annotated-cell-7-39"><a href="#annotated-cell-7-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-7-40"><a href="#annotated-cell-7-40" aria-hidden="true" tabindex="-1"></a>      <span class="do">## when they are not above the threshold, return an empty tibble</span></span>
-<span id="annotated-cell-7-41"><a href="#annotated-cell-7-41" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">nrow</span>(games_played_threshold) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="annotated-cell-7-42"><a href="#annotated-cell-7-42" aria-hidden="true" tabindex="-1"></a>        <span class="fu">api_message</span>(<span class="fu">glue</span>(<span class="st">&quot;{roster_with_ages$fullName[.x]} did not play at least {min_games_played} games in the {season} season&quot;</span>, <span class="at">verbose =</span> verbose))</span>
-<span id="annotated-cell-7-43"><a href="#annotated-cell-7-43" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">tibble</span>())</span>
-<span id="annotated-cell-7-44"><a href="#annotated-cell-7-44" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="annotated-cell-7-45"><a href="#annotated-cell-7-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-7-46"><a href="#annotated-cell-7-46" aria-hidden="true" tabindex="-1"></a>      games_played_threshold <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-47"><a href="#annotated-cell-7-47" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">evenTimeOnIce =</span> <span class="fu">convert_time</span>(evenTimeOnIce)) <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-48"><a href="#annotated-cell-7-48" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">even_strength_points =</span> points <span class="sc">-</span> powerPlayPoints) <span class="sc">%&gt;%</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-7-49" class="code-annotation-target"><a href="#annotated-cell-7-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">even_strength_points_per_60 =</span> (even_strength_points <span class="sc">/</span> evenTimeOnIce) <span class="sc">*</span> <span class="dv">3600</span>) <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-50"><a href="#annotated-cell-7-50" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(even_strength_points_per_60, shotPct) <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-51"><a href="#annotated-cell-7-51" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">link =</span> roster_with_ages<span class="sc">$</span>link[.x]) <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-52"><a href="#annotated-cell-7-52" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">season =</span> season) <span class="sc">%&gt;%</span> </span>
-<span id="annotated-cell-7-53"><a href="#annotated-cell-7-53" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(link, season, even_strength_points_per_60, shotPct)</span>
-<span id="annotated-cell-7-54"><a href="#annotated-cell-7-54" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="annotated-cell-7-55"><a href="#annotated-cell-7-55" aria-hidden="true" tabindex="-1"></a>    season_stats </span>
-<span id="annotated-cell-7-56"><a href="#annotated-cell-7-56" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="annotated-cell-7-57"><a href="#annotated-cell-7-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-7-58"><a href="#annotated-cell-7-58" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(point_per_60_by_season) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="annotated-cell-7-59"><a href="#annotated-cell-7-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">api_message</span>(<span class="fu">glue</span>(<span class="st">&quot;No players over found for {team}.&quot;</span>, <span class="at">verbose =</span> verbose))</span>
-<span id="annotated-cell-7-60"><a href="#annotated-cell-7-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">tibble</span>())</span>
-<span id="annotated-cell-7-61"><a href="#annotated-cell-7-61" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="annotated-cell-7-62"><a href="#annotated-cell-7-62" aria-hidden="true" tabindex="-1"></a>    point_per_60_by_season <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-63"><a href="#annotated-cell-7-63" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">team =</span> team) <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-64"><a href="#annotated-cell-7-64" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(roster_with_ages, <span class="at">by =</span> <span class="st">&quot;link&quot;</span>) <span class="sc">%&gt;%</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-7-65" class="code-annotation-target"><a href="#annotated-cell-7-65" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">age_at_start_of_season =</span> currentAge <span class="sc">-</span> (<span class="dv">2022</span> <span class="sc">-</span> <span class="fu">as.numeric</span>(<span class="fu">substr</span>(season, <span class="dv">1</span>, <span class="dv">4</span>)))) <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-66"><a href="#annotated-cell-7-66" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(fullName)) <span class="sc">%&gt;%</span></span>
-<span id="annotated-cell-7-67"><a href="#annotated-cell-7-67" aria-hidden="true" tabindex="-1"></a>      <span class="fu">relocate</span>(fullName, birthDate, season, team, <span class="at">.before =</span> even_strength_points_per_60) <span class="sc">%&gt;%</span> </span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-7-68" class="code-annotation-target"><a href="#annotated-cell-7-68" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as_tibble</span>()</span>
-<span id="annotated-cell-7-69"><a href="#annotated-cell-7-69" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="annotated-cell-7-70"><a href="#annotated-cell-7-70" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="annotated-cell-7-32"><a href="#annotated-cell-7-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">api_message</span>(</span>
+<span id="annotated-cell-7-33"><a href="#annotated-cell-7-33" aria-hidden="true" tabindex="-1"></a>          <span class="fu">glue</span>(<span class="st">&quot;No data for {roster_with_ages$fullName[.x]} for the {season} season&quot;</span>, <span class="at">verbose =</span> verbose)</span>
+<span id="annotated-cell-7-34"><a href="#annotated-cell-7-34" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="annotated-cell-7-35"><a href="#annotated-cell-7-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">tibble</span>())</span>
+<span id="annotated-cell-7-36"><a href="#annotated-cell-7-36" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="annotated-cell-7-37"><a href="#annotated-cell-7-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">api_message</span>(</span>
+<span id="annotated-cell-7-38"><a href="#annotated-cell-7-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">glue</span>(<span class="st">&quot;Getting data for {roster_with_ages$fullName[.x]} for the {season} season&quot;</span>, <span class="at">verbose =</span> verbose)</span>
+<span id="annotated-cell-7-39"><a href="#annotated-cell-7-39" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="annotated-cell-7-40"><a href="#annotated-cell-7-40" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-7-41" class="code-annotation-target"><a href="#annotated-cell-7-41" aria-hidden="true" tabindex="-1"></a>      games_played_threshold <span class="ot">&lt;-</span> stats[[<span class="st">&quot;splits&quot;</span>]][[<span class="dv">1</span>]][[<span class="st">&quot;stat&quot;</span>]] <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-42"><a href="#annotated-cell-7-42" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(games <span class="sc">&gt;</span> min_games_played)</span>
+<span id="annotated-cell-7-43"><a href="#annotated-cell-7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-44"><a href="#annotated-cell-7-44" aria-hidden="true" tabindex="-1"></a>      <span class="do">## when they are not above the threshold, return an empty tibble</span></span>
+<span id="annotated-cell-7-45"><a href="#annotated-cell-7-45" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">nrow</span>(games_played_threshold) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="annotated-cell-7-46"><a href="#annotated-cell-7-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">api_message</span>(<span class="fu">glue</span>(<span class="st">&quot;{roster_with_ages$fullName[.x]} did not play at least {min_games_played} games in the {season} season&quot;</span>, <span class="at">verbose =</span> verbose))</span>
+<span id="annotated-cell-7-47"><a href="#annotated-cell-7-47" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">tibble</span>())</span>
+<span id="annotated-cell-7-48"><a href="#annotated-cell-7-48" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="annotated-cell-7-49"><a href="#annotated-cell-7-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-50"><a href="#annotated-cell-7-50" aria-hidden="true" tabindex="-1"></a>      games_played_threshold <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-51"><a href="#annotated-cell-7-51" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">evenTimeOnIce =</span> <span class="fu">convert_time</span>(evenTimeOnIce)) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-52"><a href="#annotated-cell-7-52" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">even_strength_points =</span> points <span class="sc">-</span> powerPlayPoints) <span class="sc">%&gt;%</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-7-53" class="code-annotation-target"><a href="#annotated-cell-7-53" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">even_strength_points_per_60 =</span> (even_strength_points <span class="sc">/</span> evenTimeOnIce) <span class="sc">*</span> <span class="dv">3600</span>) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-54"><a href="#annotated-cell-7-54" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(even_strength_points_per_60, shotPct) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-55"><a href="#annotated-cell-7-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">link =</span> roster_with_ages<span class="sc">$</span>link[.x]) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-56"><a href="#annotated-cell-7-56" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">season =</span> season) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-57"><a href="#annotated-cell-7-57" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(link, season, even_strength_points_per_60, shotPct)</span>
+<span id="annotated-cell-7-58"><a href="#annotated-cell-7-58" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="annotated-cell-7-59"><a href="#annotated-cell-7-59" aria-hidden="true" tabindex="-1"></a>    season_stats</span>
+<span id="annotated-cell-7-60"><a href="#annotated-cell-7-60" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="annotated-cell-7-61"><a href="#annotated-cell-7-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-62"><a href="#annotated-cell-7-62" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(point_per_60_by_season) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="annotated-cell-7-63"><a href="#annotated-cell-7-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">api_message</span>(<span class="fu">glue</span>(<span class="st">&quot;No players over found for {team}.&quot;</span>, <span class="at">verbose =</span> verbose))</span>
+<span id="annotated-cell-7-64"><a href="#annotated-cell-7-64" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">tibble</span>())</span>
+<span id="annotated-cell-7-65"><a href="#annotated-cell-7-65" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="annotated-cell-7-66"><a href="#annotated-cell-7-66" aria-hidden="true" tabindex="-1"></a>    point_per_60_by_season <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-67"><a href="#annotated-cell-7-67" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">team =</span> team) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-68"><a href="#annotated-cell-7-68" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(roster_with_ages, <span class="at">by =</span> <span class="st">&quot;link&quot;</span>) <span class="sc">%&gt;%</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-7-69" class="code-annotation-target"><a href="#annotated-cell-7-69" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">age_at_start_of_season =</span> currentAge <span class="sc">-</span> (<span class="dv">2022</span> <span class="sc">-</span> <span class="fu">as.numeric</span>(<span class="fu">substr</span>(season, <span class="dv">1</span>, <span class="dv">4</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-70"><a href="#annotated-cell-7-70" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(fullName)) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-71"><a href="#annotated-cell-7-71" aria-hidden="true" tabindex="-1"></a>      <span class="fu">relocate</span>(fullName, birthDate, season, team, <span class="at">.before =</span> even_strength_points_per_60) <span class="sc">%&gt;%</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-7-72" class="code-annotation-target"><a href="#annotated-cell-7-72" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as_tibble</span>()</span>
+<span id="annotated-cell-7-73"><a href="#annotated-cell-7-73" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="annotated-cell-7-74"><a href="#annotated-cell-7-74" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-annotation="1" data-code-cell="annotated-cell-7" data-code-lines="4">Get the team id from the team name</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="1" data-code-lines="4">Get the team id from the team name</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-annotation="2" data-code-cell="annotated-cell-7" data-code-lines="7">Get the roster for that team</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="2" data-code-lines="7">Get the roster for that team</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-annotation="3" data-code-cell="annotated-cell-7" data-code-lines="11">Filter out the goalies</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="3" data-code-lines="11">Filter out the goalies</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-annotation="4" data-code-cell="annotated-cell-7" data-code-lines="14">Query for the age of each player on the roster</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="4" data-code-lines="14">Query for the age of each player on the roster</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-annotation="5" data-code-cell="annotated-cell-7" data-code-lines="24">Get the stats for each player for each season when they actually played</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="5" data-code-lines="24">Get the stats for each player for each season when they actually played</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-annotation="6" data-code-cell="annotated-cell-7" data-code-lines="37">Filter out the players that don’t meet the minimum games played threshold</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="6" data-code-lines="41">Filter out the players that don’t meet the minimum games played threshold</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-annotation="7" data-code-cell="annotated-cell-7" data-code-lines="49">Calculate the points per 60 minutes for each player</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="7" data-code-lines="53">Calculate the points per 60 minutes for each player</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="8">8</dt>
 <dd>
-<span data-code-annotation="8" data-code-cell="annotated-cell-7" data-code-lines="65">Calculate the age of the player at the start of the season</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="8" data-code-lines="69">Calculate the age of the player at the start of the season</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="9">9</dt>
 <dd>
-<span data-code-annotation="9" data-code-cell="annotated-cell-7" data-code-lines="68">Return a tibble with the results</span>
+<span data-code-cell="annotated-cell-7" data-code-annotation="9" data-code-lines="72">Return a tibble with the results</span>
 </dd>
 </dl>
 </div>
 </div>
-</section>
 <section id="use-the-helper-functions-to-get-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="use-the-helper-functions-to-get-the-data">Use the helper functions to get the data</h2>
 <p>The way that I’ve written <code>get_points_by_age</code>, you supply it a team name and it will look for stats on those players that are currently on the roster. So you would invoke it like this:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_points_by_age</span>(<span class="st">&quot;Penguins&quot;</span>, <span class="at">min_games_played =</span> <span class="dv">60</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>However, since we are interested in all players in the N.H.L. we need all teams. First we can submit a query to the teams endpoint to get all the team. Then we use <code>purrr::map_df</code> to iterate over each team and then bind the results together into a single tibble. This the data we will working with.</p>
+<p>However, since we are interested in all players in the NHL, we need all teams. So first we can submit a query to the teams endpoint to get all the teams .</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>teams <span class="ot">&lt;-</span> <span class="fu">query_endpoint</span>(<span class="st">&quot;api/v1/teams&quot;</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>age_curve_df <span class="ot">&lt;-</span> <span class="fu">map_df</span>(</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  teams<span class="sc">$</span>teamName, <span class="sc">~</span>{</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_points_by_age</span>(.x, <span class="at">min_games_played =</span> <span class="dv">40</span>, <span class="at">verbose =</span> <span class="fu">interactive</span>())</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>teams</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 32 × 15
+      id name                link  venue$name abbreviation teamName locationName
+   &lt;int&gt; &lt;chr&gt;               &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;       
+ 1     1 New Jersey Devils   /api… Prudentia… NJD          Devils   New Jersey  
+ 2     2 New York Islanders  /api… UBS Arena  NYI          Islande… New York    
+ 3     3 New York Rangers    /api… Madison S… NYR          Rangers  New York    
+ 4     4 Philadelphia Flyers /api… Wells Far… PHI          Flyers   Philadelphia
+ 5     5 Pittsburgh Penguins /api… PPG Paint… PIT          Penguins Pittsburgh  
+ 6     6 Boston Bruins       /api… TD Garden  BOS          Bruins   Boston      
+ 7     7 Buffalo Sabres      /api… KeyBank C… BUF          Sabres   Buffalo     
+ 8     8 Montréal Canadiens  /api… Bell Cent… MTL          Canadie… Montréal    
+ 9     9 Ottawa Senators     /api… Canadian … OTT          Senators Ottawa      
+10    10 Toronto Maple Leafs /api… Scotiaban… TOR          Maple L… Toronto     
+# ℹ 22 more rows
+# ℹ 12 more variables: venue$link &lt;chr&gt;, $city &lt;chr&gt;, $timeZone &lt;df[,3]&gt;,
+#   $id &lt;int&gt;, firstYearOfPlay &lt;chr&gt;, division &lt;df[,5]&gt;, conference &lt;df[,3]&gt;,
+#   franchise &lt;df[,3]&gt;, shortName &lt;chr&gt;, officialSiteUrl &lt;chr&gt;,
+#   franchiseId &lt;int&gt;, active &lt;lgl&gt;</code></pre>
+</div>
+</div>
+<p>Then we use <code>purrr::map_df</code> to iterate over each team and then bind the results together into a single tibble. This the data we will be working with.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>age_curve_df <span class="ot">&lt;-</span> <span class="fu">map_df</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  teams<span class="sc">$</span>teamName, <span class="sc">~</span>{</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_points_by_age</span>(.x, <span class="at">min_games_played =</span> <span class="dv">40</span>, <span class="at">verbose =</span> <span class="fu">interactive</span>())</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="the-pass-off-to-ojs" class="level2">
 <h2 class="anchored" data-anchor-id="the-pass-off-to-ojs">The pass off to ojs</h2>
-<p>Now that we have the data, we can pass it off to JavaScript. We do this by using the <code>ojs_define</code> function. This function is available in R and python and it allows you to <a href="https://quarto.org/docs/interactive/ojs/data-sources.html#python-and-r">make data available</a> to any ojs chunk in your quarot document. The <code>age_curve_df</code> data we gathered in the previous steps will now be available for any ojs chunk as <code>ojs_age_curve_df</code> regardless of where it is in the document.</p>
+<p>Now that we have the data, we can pass it off to JavaScript. We do this by using the <code>ojs_define</code> function. This function is available in R and python and it allows you to <a href="https://quarto.org/docs/interactive/ojs/data-sources.html#python-and-r">make data available</a> to any ojs chunk in your quarto document. The <code>age_curve_df</code> data we gathered in the previous steps will now be available for any ojs chunk as <code>ojs_age_curve_df</code> regardless of where it is in the document.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span>(<span class="at">ojs_age_curve_df =</span> age_curve_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span>(<span class="at">ojs_age_curve_df =</span> age_curve_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="working-with-observable-javascript" class="level2">
@@ -25152,7 +25174,7 @@ Copyright
 <p>inspired by the design of dplyr, Arquero provides a fluent API for manipulating column-oriented data frames.</p>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12" data-startfrom="238" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 237;"><span id="cb12-238"><a href="#cb12-238" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { aq<span class="op">,</span> op } <span class="im">from</span> <span class="st">&#39;@uwdata/arquero&#39;</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14" data-startfrom="245" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 244;"><span id="cb14-245"><a href="#cb14-245" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { aq<span class="op">,</span> op } <span class="im">from</span> <span class="st">&#39;@uwdata/arquero&#39;</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-1" data-nodetype="declaration">
 
@@ -25160,10 +25182,10 @@ Copyright
 </div>
 </div>
 <p>Cool! I know I said that I was going to do most of my data warangling in R but it really does help to be able to do some of it in JavaScript.</p>
-<p>The first function that we are is <code>aq.from</code> which is the equivalent of <code>dplyr::as_tibble</code>. It takes a data frame and converts it to an arquero table. We then call the <code>view</code> method on the table to see what it looks like.</p>
+<p>The first function that we are using is <code>aq.from</code> which is the equivalent of <code>dplyr::as_tibble</code>. It takes a data frame and converts it to an arquero table. We then call the <code>view</code> method on the table to see what it looks like. We are also need to <code>transpose</code> our data frame because arquero expects the data to be in a <a href="https://quarto.org/docs/interactive/ojs/data-sources.html#transpose">row-oriented</a> format.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13" data-startfrom="248" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 247;"><span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a>ageCurve <span class="op">=</span> aq<span class="op">.</span><span class="fu">from</span>(<span class="fu">transpose</span>(ojs_age_curve_df))</span>
-<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a>ageCurve<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15" data-startfrom="255" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 254;"><span id="cb15-255"><a href="#cb15-255" aria-hidden="true" tabindex="-1"></a>ageCurve <span class="op">=</span> aq<span class="op">.</span><span class="fu">from</span>(<span class="fu">transpose</span>(ojs_age_curve_df))</span>
+<span id="cb15-256"><a href="#cb15-256" aria-hidden="true" tabindex="-1"></a>ageCurve<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-2-1" data-nodetype="declaration">
@@ -25181,37 +25203,37 @@ Copyright
 </div>
 <p>The question we were interested in looking at was <em>at what age do players start to decline?</em> Our evaluation metric will be even strength points per 60 minutes. Say, we are interested in looking at playing time for players that are 35 and older. We can filter the <code>ageCurve</code> table using syntax that is very similar to dplyr. The only thing to note is what goes inside the <code>aq.escape</code> function. This is because we are using a JavaScript function inside of a JavaScript function. This escapes the inner function so that it is evaluated properly.</p>
 <div class="cell" data-eval="false">
-<div class="sourceCode cell-code" id="cb14" data-startfrom="255" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 254;"><span id="cb14-255"><a href="#cb14-255" aria-hidden="true" tabindex="-1"></a>ageCurve</span>
-<span id="cb14-256"><a href="#cb14-256" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">currentAge</span> <span class="op">&gt;</span> <span class="dv">35</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16" data-startfrom="262" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 261;"><span id="cb16-262"><a href="#cb16-262" aria-hidden="true" tabindex="-1"></a>ageCurve</span>
+<span id="cb16-263"><a href="#cb16-263" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">currentAge</span> <span class="op">&gt;</span> <span class="dv">35</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-3" data-nodetype="expression">
 
 </div>
 </div>
 </div>
-<p>Ok but you might asking yourself, why don’t I just do that in dplyr? The beauty of these <code>ojs</code> chunks is that we can perform these operations on the fly using interactive tools like sliders, dropdown menus and radio buttons. For that we make use of Observable <a href="https://observablehq.com/@observablehq/inputs"><code>Inputs</code></a>. Let’s make two of these: a slider and a dropdown. The slider (via <code>Inputs.range</code>) will define the variable <code>age_cutoff</code> and we can use <em>that</em> value to filter the <code>ageCurve</code> table updating the <code>filteredAgeCurve</code> data as a user interacts with the slider. We then take the <code>filteredAgeCurve</code> to determine unique player names and provide those as the values in the dropdown menu (via <code>Inputs.select</code>). One consequence of that is the values in the dropdown menu are dependent on the slider. Check for yourself. There are many fewer players to highlight at the age cutoff of 35.</p>
+<p>Ok but you might asking yourself, why don’t I just do that in dplyr? The beauty of these <code>ojs</code> chunks is that we can perform these operations on the fly using interactive tools like sliders, dropdown menus and radio buttons. For that we make use of ObservableJS <a href="https://observablehq.com/@observablehq/inputs"><code>Inputs</code></a>. Let’s make two of these: a slider and a dropdown. The slider (via <code>Inputs.range</code>) will define the variable <code>age_cutoff</code> and we can use <em>that</em> value to filter the <code>ageCurve</code> table updating the <code>filteredAgeCurve</code> data as a user interacts with the slider. We then take the <code>filteredAgeCurve</code> to determine unique player names and provide those as the values in the dropdown menu (via <code>Inputs.select</code>). One consequence of that is the values in the dropdown menu are dependent on the slider. Check for yourself. There are many fewer players to highlight at the age cutoff of 35.</p>
 <p>It doesn’t get too exciting though until we start to visualize it. I am using the <code>code-fold: true</code> chunk option to hide the code that generates the plot and the inputs so that you can see the plot, the slider and the dropdown more closely together. Have a look at the code comments for a better idea of what is going on.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15" data-startfrom="268" data-source-offset="-21"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 267;"><span id="cb15-268"><a href="#cb15-268" aria-hidden="true" tabindex="-1"></a>viewof age_cutoff <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">18</span><span class="op">,</span> <span class="dv">40</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">30</span>})</span>
-<span id="cb15-269"><a href="#cb15-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-270"><a href="#cb15-270" aria-hidden="true" tabindex="-1"></a><span class="co">// capture the value of the slider and filter the ageCurve table</span></span>
-<span id="cb15-271"><a href="#cb15-271" aria-hidden="true" tabindex="-1"></a>filteredAgeCurve <span class="op">=</span> ageCurve</span>
-<span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">currentAge</span> <span class="op">&gt;</span> age_cutoff)) </span>
-<span id="cb15-273"><a href="#cb15-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-274"><a href="#cb15-274" aria-hidden="true" tabindex="-1"></a><span class="co">// get the unique player names alphabetically</span></span>
-<span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a>orderedNames <span class="op">=</span> filteredAgeCurve</span>
-<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">dedupe</span>(<span class="st">&quot;fullName&quot;</span>)</span>
-<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">orderby</span>(<span class="st">&quot;fullName&quot;</span>)</span>
-<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">array</span>(<span class="st">&quot;fullName&quot;</span>)</span>
-<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a><span class="co">// setup the dropdown</span></span>
-<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a>viewof player <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(orderedNames<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> <span class="st">&quot;Sidney Crosby&quot;</span>})</span>
-<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a><span class="co">// filter the filteredAgeCurve table to the selected player</span></span>
-<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a>singlePlayer <span class="op">=</span> filteredAgeCurve</span>
-<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">fullName</span> <span class="op">==</span> player))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17" data-startfrom="275" data-source-offset="-21"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 274;"><span id="cb17-275"><a href="#cb17-275" aria-hidden="true" tabindex="-1"></a>viewof age_cutoff <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">18</span><span class="op">,</span> <span class="dv">40</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">30</span>})</span>
+<span id="cb17-276"><a href="#cb17-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-277"><a href="#cb17-277" aria-hidden="true" tabindex="-1"></a><span class="co">// capture the value of the slider and filter the ageCurve table</span></span>
+<span id="cb17-278"><a href="#cb17-278" aria-hidden="true" tabindex="-1"></a>filteredAgeCurve <span class="op">=</span> ageCurve</span>
+<span id="cb17-279"><a href="#cb17-279" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">currentAge</span> <span class="op">&gt;</span> age_cutoff)) </span>
+<span id="cb17-280"><a href="#cb17-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-281"><a href="#cb17-281" aria-hidden="true" tabindex="-1"></a><span class="co">// get the unique player names alphabetically</span></span>
+<span id="cb17-282"><a href="#cb17-282" aria-hidden="true" tabindex="-1"></a>orderedNames <span class="op">=</span> filteredAgeCurve</span>
+<span id="cb17-283"><a href="#cb17-283" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">dedupe</span>(<span class="st">&quot;fullName&quot;</span>)</span>
+<span id="cb17-284"><a href="#cb17-284" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">orderby</span>(<span class="st">&quot;fullName&quot;</span>)</span>
+<span id="cb17-285"><a href="#cb17-285" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">array</span>(<span class="st">&quot;fullName&quot;</span>)</span>
+<span id="cb17-286"><a href="#cb17-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-287"><a href="#cb17-287" aria-hidden="true" tabindex="-1"></a><span class="co">// setup the dropdown</span></span>
+<span id="cb17-288"><a href="#cb17-288" aria-hidden="true" tabindex="-1"></a>viewof player <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(orderedNames<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> <span class="st">&quot;Sidney Crosby&quot;</span>})</span>
+<span id="cb17-289"><a href="#cb17-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-290"><a href="#cb17-290" aria-hidden="true" tabindex="-1"></a><span class="co">// filter the filteredAgeCurve table to the selected player</span></span>
+<span id="cb17-291"><a href="#cb17-291" aria-hidden="true" tabindex="-1"></a>singlePlayer <span class="op">=</span> filteredAgeCurve</span>
+<span id="cb17-292"><a href="#cb17-292" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(aq<span class="op">.</span><span class="fu">escape</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">fullName</span> <span class="op">==</span> player))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -25252,31 +25274,31 @@ Copyright
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16" data-startfrom="294" data-source-offset="-101"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 293;"><span id="cb16-294"><a href="#cb16-294" aria-hidden="true" tabindex="-1"></a>plotMarksHelper <span class="op">=</span> <span class="kw">function</span>(data<span class="op">,</span> color) {</span>
-<span id="cb16-295"><a href="#cb16-295" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">lineY</span>(data<span class="op">,</span> {</span>
-<span id="cb16-296"><a href="#cb16-296" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
-<span id="cb16-297"><a href="#cb16-297" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
-<span id="cb16-298"><a href="#cb16-298" aria-hidden="true" tabindex="-1"></a>    <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
-<span id="cb16-299"><a href="#cb16-299" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stroke</span><span class="op">:</span> color<span class="op">,</span></span>
-<span id="cb16-300"><a href="#cb16-300" aria-hidden="true" tabindex="-1"></a>    <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
-<span id="cb16-301"><a href="#cb16-301" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
-<span id="cb16-302"><a href="#cb16-302" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-303"><a href="#cb16-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-304"><a href="#cb16-304" aria-hidden="true" tabindex="-1"></a><span class="co">// setup the plot</span></span>
-<span id="cb16-305"><a href="#cb16-305" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb16-306"><a href="#cb16-306" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Even Strength Points per 60&quot;</span>}<span class="op">,</span></span>
-<span id="cb16-307"><a href="#cb16-307" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {</span>
-<span id="cb16-308"><a href="#cb16-308" aria-hidden="true" tabindex="-1"></a>    <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb16-309"><a href="#cb16-309" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Age at the start of the season&quot;</span></span>
-<span id="cb16-310"><a href="#cb16-310" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb16-311"><a href="#cb16-311" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb16-312"><a href="#cb16-312" aria-hidden="true" tabindex="-1"></a>    <span class="co">// plot all lines above a certain age</span></span>
-<span id="cb16-313"><a href="#cb16-313" aria-hidden="true" tabindex="-1"></a>    <span class="co">// that filteredAgeCurve data changes as the slider changes</span></span>
-<span id="cb16-314"><a href="#cb16-314" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plotMarksHelper</span>(filteredAgeCurve<span class="op">,</span> <span class="st">&quot;lightgray&quot;</span>)<span class="op">,</span> </span>
-<span id="cb16-315"><a href="#cb16-315" aria-hidden="true" tabindex="-1"></a>    <span class="co">// highlight the selected player in blue</span></span>
-<span id="cb16-316"><a href="#cb16-316" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plotMarksHelper</span>(singlePlayer<span class="op">,</span> <span class="st">&quot;blue&quot;</span>) </span>
-<span id="cb16-317"><a href="#cb16-317" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb16-318"><a href="#cb16-318" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18" data-startfrom="301" data-source-offset="-101"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 300;"><span id="cb18-301"><a href="#cb18-301" aria-hidden="true" tabindex="-1"></a>plotMarksHelper <span class="op">=</span> <span class="kw">function</span>(data<span class="op">,</span> color) {</span>
+<span id="cb18-302"><a href="#cb18-302" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">lineY</span>(data<span class="op">,</span> {</span>
+<span id="cb18-303"><a href="#cb18-303" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> <span class="st">&quot;age_at_start_of_season&quot;</span><span class="op">,</span> </span>
+<span id="cb18-304"><a href="#cb18-304" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="st">&quot;even_strength_points_per_60&quot;</span><span class="op">,</span> </span>
+<span id="cb18-305"><a href="#cb18-305" aria-hidden="true" tabindex="-1"></a>    <span class="dt">z</span><span class="op">:</span> <span class="st">&quot;fullName&quot;</span><span class="op">,</span></span>
+<span id="cb18-306"><a href="#cb18-306" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stroke</span><span class="op">:</span> color<span class="op">,</span></span>
+<span id="cb18-307"><a href="#cb18-307" aria-hidden="true" tabindex="-1"></a>    <span class="dt">curve</span><span class="op">:</span> <span class="st">&quot;basis&quot;</span></span>
+<span id="cb18-308"><a href="#cb18-308" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb18-309"><a href="#cb18-309" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-310"><a href="#cb18-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-311"><a href="#cb18-311" aria-hidden="true" tabindex="-1"></a><span class="co">// setup the plot</span></span>
+<span id="cb18-312"><a href="#cb18-312" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb18-313"><a href="#cb18-313" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Even Strength Points per 60&quot;</span>}<span class="op">,</span></span>
+<span id="cb18-314"><a href="#cb18-314" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {</span>
+<span id="cb18-315"><a href="#cb18-315" aria-hidden="true" tabindex="-1"></a>    <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb18-316"><a href="#cb18-316" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;Age at the start of the season&quot;</span></span>
+<span id="cb18-317"><a href="#cb18-317" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb18-318"><a href="#cb18-318" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb18-319"><a href="#cb18-319" aria-hidden="true" tabindex="-1"></a>    <span class="co">// plot all lines above a certain age</span></span>
+<span id="cb18-320"><a href="#cb18-320" aria-hidden="true" tabindex="-1"></a>    <span class="co">// that filteredAgeCurve data changes as the slider changes</span></span>
+<span id="cb18-321"><a href="#cb18-321" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plotMarksHelper</span>(filteredAgeCurve<span class="op">,</span> <span class="st">&quot;lightgray&quot;</span>)<span class="op">,</span> </span>
+<span id="cb18-322"><a href="#cb18-322" aria-hidden="true" tabindex="-1"></a>    <span class="co">// highlight the selected player in blue</span></span>
+<span id="cb18-323"><a href="#cb18-323" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plotMarksHelper</span>(singlePlayer<span class="op">,</span> <span class="st">&quot;blue&quot;</span>) </span>
+<span id="cb18-324"><a href="#cb18-324" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb18-325"><a href="#cb18-325" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -25293,20 +25315,20 @@ Copyright
 </div>
 </div>
 </div>
-<p>We are using here the <code>Plot</code> <a href="https://observablehq.com/plot/">library</a> that also comes bundled with ojs in quarto. I find the code to create plots in ojs pretty accessible. Allison Horst wrote a really nice <a href="https://observablehq.com/@observablehq/plot-from-ggplot2">transition guide</a> from ggplot2 to <code>Plot</code> that has proven to be very helpful. <code>Plot</code> draws from the same <em>grammar of graphics</em> that ggplot2 does so it’s spirit should feel familiar. Visual properties, like color, are mapped to variables in the data</p>
-<p>I have quite found the best way to write nice code in ojs but the results are undeniable. The plots are beautiful and interactive. Plot provides so many more opportunities for inteactivity than other interactive plotting libraries like plotly or ggiraph. Those are great libraries but creating visualization from scratch in ojs feel more natural and flexible.</p>
+<p>We are using here the <code>Plot</code> <a href="https://observablehq.com/plot/">library</a> that also comes bundled with ojs in quarto. I find the code to create plots in ojs pretty accessible. Allison Horst wrote a really nice <a href="https://observablehq.com/@observablehq/plot-from-ggplot2">transition guide</a> from ggplot2 to <code>Plot</code> that has proven to be very helpful. <code>Plot</code> draws from the same <em>grammar of graphics</em> that ggplot2 does so it’s spirit should feel familiar. Visual properties, like colour, are mapped to variables in the data</p>
+<p>I have not quite found the best way to write nice (read: not smelly) code in ojs but the results are undeniably useful. The plots are beautiful and interactive. Plot provides so many more opportunities for interactivity than other interactive plotting libraries like plotly or ggiraph. Those are great libraries but creating visualization from scratch in ojs feel more natural and flexible.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>I would be remiss to just have a pretty plot and not say anything about the data. The slider and the player selector both provide a simple way to explore the data. A couple points to note:</p>
 <ul>
 <li>The overall trend is that many players start to decline at around 30. However there is some clear selection bias here. Players that are not producing at a high level are not going to be playing at 35.</li>
-<li>Sidney Crosby is a beast. He is still producing at a consistnely high level at 35.</li>
-<li>The players that you would expect, display truly stunning numbers. Nathan Mckinnon is just getting better and better and at 26, there is nothing to suggest that he is slowing down. Connor McDavid entered the league at a stunning pace and has consistency kept it up.</li>
+<li>Sidney Crosby is a beast. He is still producing at a consistently high level at 35.</li>
+<li>The players that you would expect display truly stunning numbers. Nathan Mckinnon is just getting better and better and at 26, there is nothing to suggest that he is slowing down. Connor McDavid entered the league at a stunning pace and has consistency kept it up.</li>
 <li>Joel Pavelski is a complete of an outlier. He produced his best season at 38.</li>
 <li>Corey Perry is also an outlier but in the opposite direction. He has been in a strong decline since he was 30. And yet all he does is compete for Cups so clearly he’s still doing something right.</li>
 </ul>
-<p>To wrap this up, I think that ojs is a great way to create interactive visualizations. I’ve tried to highlight the handoff from R to ojs and illustrate how you might go out create a plot. I hope you enjoyed this post and I hope you learned something.</p>
+<p>To wrap this up, I think that ojs is a great way to create interactive visualizations. I’ve tried to highlight the handoff from R to ojs and illustrate how you might go about creating a plot.</p>
 <blockquote class="blockquote">
 <p>Photo by <a href="https://unsplash.com/photos/KFIjzXYg1RM">Jeremy Bishop</a> on <a href="https://unsplash.com/">Unsplash</a></p>
 </blockquote>

@@ -19,12 +19,11 @@ linktitle: ''
 type: post
 ---
 
-Lately I've been thinking about two things: getting old and Observable. Getting old is self-explanatory. ObservableJS (ojs) is maybe less so. Normally ojs is used in a [JavaScript notebook environment](https://observablehq.com/@observablehq) that enables you to create interactive visualizations. This is a great platform and I suggest that if you are really interested in learning about ojs, you create an account there and start practicing. But sometimes, you want to take your interactive visualizations with you. This is where [quarto](https://quarto.org/) comes in. Quarto is the successor to [rmarkdown](https://rmarkdown.rstudio.com/) and is what this blog is written in. Like rmarkdown you can write prose and code in the same document. The biggest improvement with quarto is that you can also easily write code chunks in other language like python or ojs. 
+Lately I've been thinking about two things: getting old and ObservableJS. Getting old is self-explanatory. ObservableJS (ojs) is maybe less so. Normally ojs is used in a [JavaScript notebook environment](https://observablehq.com/@observablehq) that enables you to create amazing interactive visualizations. This is a great platform and I suggest that if you are really interested in learning about ojs, you create an account there and start practicing. But sometimes, you want to take your interactive visualizations with you. This is where [quarto](https://quarto.org/) comes in. Quarto is the successor to [rmarkdown](https://rmarkdown.rstudio.com/) and is what this blog is written in. Like rmarkdown you can write prose and code in the same document. The biggest improvement with quarto is that you can also (more) easily write code chunks in other language like python or ojs. 
 
-This post was intended to be about ojs and quarto using some data sourced from the National Hockey League api. So back to being the them of being old -- I was wondering what happens to N.H.L. players when they get old? In particular what happens to their productivity? I was not able to find any interactive visualizations that satifactorily provided any ability to explore the question "At what age do N.H.L. players start declining in terms of production"?  So then I ended having to learn about the NHL api and how I could get what I wanted out of it. That turned this into a post also about wrangling data from the N.H.L. api. Almost accidentally, this really highlights the power of quarto. I can much more easily wrangle data in R. Sure it is possible to do solely in ojs but for me it is easier in R. But then when I want to make the visualization, I can seamlessly switch to ojs in quarto. 
+This post was intended to be about ojs and quarto using some data sourced from the National Hockey League api. So back to being the theme of being old -- I was wondering what happens to NHL players when they get old? In particular what happens to their productivity? I was not able to find any interactive visualizations that satifactorily provided any ability to explore the question "At what age do NHL players start declining in production"?  So then I ended up having to learn about the NHL api and how I could get what I wanted out of it. That turned this into a post also about wrangling data from the NHL api. Almost accidentally, this really highlights the power of quarto. I can much more easily wrangle data in R. Sure it is possible to do this solely in ojs but for me it is easier in R. But then when I want to make the visualization, I can seamlessly switch to ojs in the same quarto doc. 
 
 Let's start with how we got the data. As is usual, we start with a pretty standard suite of tidyverse packages. 
-
 
 ```{r pkgs}
 #| warning: false
@@ -34,8 +33,6 @@ library(dplyr)
 library(glue)
 library(tidyr)
 ```
-
-## Define some helper functions
 
 Next we need to define some helper functions.
 
@@ -47,7 +44,7 @@ convert_time <- function(time_str) {
   minutes <- as.integer(time_parts[1])
   seconds <- as.integer(time_parts[2])
   # Convert the time to seconds
-  minutes*60 + seconds
+  minutes * 60 + seconds
 }
 
 generate_year_string <- function(start, end) {
@@ -67,7 +64,7 @@ generate_year_string <- function(start, end) {
 convert_time("824:13")
 ```
 
-`generate_year_string` is a helper function to generate the year strings that the N.H.L. api expects.
+`generate_year_string` is a helper function to generate the year strings that the NHL api expects.
 ```{r}
 generate_year_string(19951996, 19981999)
 ```
@@ -75,20 +72,18 @@ generate_year_string(19951996, 19981999)
 This is a function to help sending messages to the console. Defining it here saves lots of space where I use it later on. 
 ```{r}
 api_message <- function(..., verbose = TRUE) {
-  if (verbose) {
-    message(...)
-  }
+  if (verbose) message(...)
   invisible(TRUE)
 }
 ```
 
-`query_endpoint` is the core function that actually sends a data request to the N.H.L. api. It takes an endpoint and a list of query parameters and returns a tibble with the results. It is always helpful to isolate the code that does the querying from the code that does the data wrangling.
+`query_endpoint` is the core function that actually sends a data request to the NHL api. It takes an endpoint and a list of query parameters and returns a tibble with the results. It is always helpful to isolate the code that does the querying from the code that does the data wrangling.
 
 ```{r}
 query_endpoint <- function(endpoint, ...) {
   base_url <- "https://statsapi.web.nhl.com/"
   req <- httr2::request(base_url) %>%
-    httr2::req_url_path_append(endpoint)  %>% 
+    httr2::req_url_path_append(endpoint) %>%
     httr2::req_url_query(...)
 
   resp <- httr2::req_perform(req)
@@ -99,14 +94,14 @@ query_endpoint <- function(endpoint, ...) {
 }
 ```
 
-With every request to the N.H.L. api, the following note is returned in the response, specifying exactly who owns all the trademarks and logos. We drop it from the response because it is not really useful for our example but I am replicating it here:
+With every request to the NHL api, the following note is returned in the response, specifying exactly who owns all the trademarks and logos. We drop it from the response because it is not really useful for our data wrangling example but I am replicating it here:
 
 :::{.callout-note}
 ## Copyright
 NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2023. All Rights Reserved.
 :::
 
-The `get_points_by_age` is the workhorse function for this post but is also one of those functions that does what you want it but if you were to try and copy it over, it might not behave the way you think it should. The code is annotated (another cool feature of quarto) to outline the steps of this functions This likely could be broken up into smaller functions but really I am just trying to get data to illustrate using Observable. 
+The `get_points_by_age` is the workhorse function for this post but is also one of those functions that does just what you want it but it make not be broadly useful. For example, this functions requests data for every player that is currently on an NHL roster. That's a lot of data and the api may get cranky with you for requesting that much. The code is annotated (another cool feature of quarto) to outline the steps of this functions. Click on the step and it will highlight the line of code it is referencing.
 
 ```{r}
 #| code-annotations: hover
@@ -141,10 +136,14 @@ get_points_by_age <- function(team, min_games_played, verbose = FALSE) {
 
       ## when there are no stats, return an empty tibble
       if (length(stats[["splits"]][[1]]) == 0) {
-        api_message(glue("No data for {roster_with_ages$fullName[.x]} for the {season} season", verbose = verbose))
+        api_message(
+          glue("No data for {roster_with_ages$fullName[.x]} for the {season} season", verbose = verbose)
+        )
         return(tibble())
       }
-      api_message(glue("Getting data for {roster_with_ages$fullName[.x]} for the {season} season", verbose = verbose))
+      api_message(
+        glue("Getting data for {roster_with_ages$fullName[.x]} for the {season} season", verbose = verbose)
+      )
 
       games_played_threshold <- stats[["splits"]][[1]][["stat"]] %>% # <6>
         filter(games > min_games_played)
@@ -161,10 +160,10 @@ get_points_by_age <- function(team, min_games_played, verbose = FALSE) {
         mutate(even_strength_points_per_60 = (even_strength_points / evenTimeOnIce) * 3600) %>% # <7>
         select(even_strength_points_per_60, shotPct) %>%
         mutate(link = roster_with_ages$link[.x]) %>%
-        mutate(season = season) %>% 
+        mutate(season = season) %>%
         select(link, season, even_strength_points_per_60, shotPct)
     })
-    season_stats 
+    season_stats
   })
 
   if (length(point_per_60_by_season) == 0) {
@@ -176,7 +175,7 @@ get_points_by_age <- function(team, min_games_played, verbose = FALSE) {
       left_join(roster_with_ages, by = "link") %>%
       mutate(age_at_start_of_season = currentAge - (2022 - as.numeric(substr(season, 1, 4)))) %>% # <8>
       filter(!is.na(fullName)) %>%
-      relocate(fullName, birthDate, season, team, .before = even_strength_points_per_60) %>% 
+      relocate(fullName, birthDate, season, team, .before = even_strength_points_per_60) %>%
       as_tibble() # <9>
   }
 }
@@ -200,13 +199,21 @@ The way that I've written `get_points_by_age`, you supply it a team name and it 
 get_points_by_age("Penguins", min_games_played = 60, verbose = FALSE)
 ```
 
-However, since we are interested in all players in the N.H.L. we need all teams. First we can submit a query to the teams endpoint to get all the team. Then we use `purrr::map_df` to iterate over each team and then bind the results together into a single tibble. This the data we will working with. 
+However, since we are interested in all players in the NHL, we need all teams. So first we can submit a query to the teams endpoint to get all the teams . 
+
+```{r}
+#| echo: true
+
+teams <- query_endpoint("api/v1/teams")
+teams
+```
+
+Then we use `purrr::map_df` to iterate over each team and then bind the results together into a single tibble. This the data we will be working with. 
 
 ```{r}
 #| echo: true
 #| eval: false
 
-teams <- query_endpoint("api/v1/teams")
 age_curve_df <- map_df(
   teams$teamName, ~{
     get_points_by_age(.x, min_games_played = 40, verbose = interactive())
@@ -221,7 +228,7 @@ age_curve_df <- map_df(list.files("out/", pattern = "*.csv", full.names = TRUE),
 
 ## The pass off to ojs
 
-Now that we have the data, we can pass it off to JavaScript. We do this by using the `ojs_define` function. This function is available in R and python and it allows you to [make data available](https://quarto.org/docs/interactive/ojs/data-sources.html#python-and-r) to any ojs chunk in your quarot document. The `age_curve_df` data we gathered in the previous steps will now be available for any ojs chunk as `ojs_age_curve_df` regardless of where it is in the document.
+Now that we have the data, we can pass it off to JavaScript. We do this by using the `ojs_define` function. This function is available in R and python and it allows you to [make data available](https://quarto.org/docs/interactive/ojs/data-sources.html#python-and-r) to any ojs chunk in your quarto document. The `age_curve_df` data we gathered in the previous steps will now be available for any ojs chunk as `ojs_age_curve_df` regardless of where it is in the document.
 
 ```{r}
 ojs_define(ojs_age_curve_df = age_curve_df)
@@ -242,7 +249,7 @@ import { aq, op } from '@uwdata/arquero';
 Cool! I know I said that I was going to do most of my data warangling in R but it really does help to be able to do some of it in JavaScript.
 
 
-The first function that we are is `aq.from` which is the equivalent of `dplyr::as_tibble`. It takes a data frame and converts it to an arquero table. We then call the `view` method on the table to see what it looks like.
+The first function that we are using is `aq.from` which is the equivalent of `dplyr::as_tibble`. It takes a data frame and converts it to an arquero table. We then call the `view` method on the table to see what it looks like. We are also need to `transpose` our data frame because arquero expects the data to be in a [row-oriented](https://quarto.org/docs/interactive/ojs/data-sources.html#transpose) format.
 
 ```{ojs}
 ageCurve = aq.from(transpose(ojs_age_curve_df))
@@ -257,7 +264,7 @@ ageCurve
   .filter(aq.escape(d => d.currentAge > 35)) 
 ```
 
-Ok but you might asking yourself, why don't I just do that in dplyr? The beauty of these `ojs` chunks is that we can perform these operations on the fly using interactive tools like sliders, dropdown menus and radio buttons. For that we make use of Observable [`Inputs`](https://observablehq.com/@observablehq/inputs). Let's make two of these: a slider and a dropdown. The slider (via `Inputs.range`) will define the variable `age_cutoff` and we can use _that_ value to filter the `ageCurve` table updating the `filteredAgeCurve` data as a user interacts with the slider. We then take the `filteredAgeCurve` to determine unique player names and provide those as the values in the dropdown menu (via `Inputs.select`). One consequence of that is the values in the dropdown menu are dependent on the slider. Check for yourself. There are many fewer players to highlight at the age cutoff of 35.  
+Ok but you might asking yourself, why don't I just do that in dplyr? The beauty of these `ojs` chunks is that we can perform these operations on the fly using interactive tools like sliders, dropdown menus and radio buttons. For that we make use of ObservableJS [`Inputs`](https://observablehq.com/@observablehq/inputs). Let's make two of these: a slider and a dropdown. The slider (via `Inputs.range`) will define the variable `age_cutoff` and we can use _that_ value to filter the `ageCurve` table updating the `filteredAgeCurve` data as a user interacts with the slider. We then take the `filteredAgeCurve` to determine unique player names and provide those as the values in the dropdown menu (via `Inputs.select`). One consequence of that is the values in the dropdown menu are dependent on the slider. Check for yourself. There are many fewer players to highlight at the age cutoff of 35.  
 
 It doesn't get too exciting though until we start to visualize it. I am using the `code-fold: true` chunk option to hide the code that generates the plot and the inputs so that you can see the plot, the slider and the dropdown more closely together. Have a look at the code comments for a better idea of what is going on.
 
@@ -318,21 +325,21 @@ Plot.plot({
 })
 ```
 
-We are using here the `Plot` [library](https://observablehq.com/plot/) that also comes bundled with ojs in quarto. I find the code to create plots in ojs pretty accessible. Allison Horst wrote a really nice [transition guide](https://observablehq.com/@observablehq/plot-from-ggplot2) from ggplot2 to `Plot` that has proven to be very helpful. `Plot` draws from the same _grammar of graphics_ that ggplot2 does so it's spirit should feel familiar. Visual properties, like color, are mapped to variables in the data 
+We are using here the `Plot` [library](https://observablehq.com/plot/) that also comes bundled with ojs in quarto. I find the code to create plots in ojs pretty accessible. Allison Horst wrote a really nice [transition guide](https://observablehq.com/@observablehq/plot-from-ggplot2) from ggplot2 to `Plot` that has proven to be very helpful. `Plot` draws from the same _grammar of graphics_ that ggplot2 does so it's spirit should feel familiar. Visual properties, like colour, are mapped to variables in the data 
 
-I have quite found the best way to write nice code in ojs but the results are undeniable. The plots are beautiful and interactive. Plot provides so many more opportunities for inteactivity than other interactive plotting libraries like plotly or ggiraph. Those are great libraries but creating visualization from scratch in ojs feel more natural and flexible. 
+I have not quite found the best way to write nice (read: not smelly) code in ojs but the results are undeniably useful. The plots are beautiful and interactive. Plot provides so many more opportunities for interactivity than other interactive plotting libraries like plotly or ggiraph. Those are great libraries but creating visualization from scratch in ojs feel more natural and flexible. 
 
 ## Conclusion
 
 I would be remiss to just have a pretty plot and not say anything about the data. The slider and the player selector both provide a simple way to explore the data. A couple points to note:
 
 - The overall trend is that many players start to decline at around 30. However there is some clear selection bias here. Players that are not producing at a high level are not going to be playing at 35. 
-- Sidney Crosby is a beast. He is still producing at a consistnely high level at 35.
-- The players that you would expect, display truly stunning numbers. Nathan Mckinnon is just getting better and better and at 26, there is nothing to suggest that he is slowing down. Connor McDavid entered the league at a stunning pace and has consistency kept it up.
+- Sidney Crosby is a beast. He is still producing at a consistently high level at 35.
+- The players that you would expect display truly stunning numbers. Nathan Mckinnon is just getting better and better and at 26, there is nothing to suggest that he is slowing down. Connor McDavid entered the league at a stunning pace and has consistency kept it up.
 - Joel Pavelski is a complete of an outlier. He produced his best season at 38.
 - Corey Perry is also an outlier but in the opposite direction. He has been in a strong decline since he was 30. And yet all he does is compete for Cups so clearly he's still doing something right.
 
-To wrap this up, I think that ojs is a great way to create interactive visualizations. I've tried to highlight the handoff from R to ojs and illustrate how you might go out create a plot. I hope you enjoyed this post and I hope you learned something.
+To wrap this up, I think that ojs is a great way to create interactive visualizations. I've tried to highlight the handoff from R to ojs and illustrate how you might go about creating a plot.
 
 
 > Photo by [Jeremy Bishop](https://unsplash.com/photos/KFIjzXYg1RM) on [Unsplash](https://unsplash.com/)
