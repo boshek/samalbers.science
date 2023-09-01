@@ -1,15 +1,16 @@
 ---
-title: Defying Age with Observable
+title: Talking (Hockey) Age with ObservableJS
 author: Sam Albers
 date: last-modified
-slug: intro-to-ojs
+slug: hockey-age-with-ojs
 categories:
   - R
   - JavaScript
-  - Observable
+  - ObservableJS
   - nhl
   - api
 tags: []
+image: https://images.unsplash.com/photo-1610988609269-7289d0739c2c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80
 description: ''
 featured: ''
 featuredalt: ''
@@ -334,3 +335,4 @@ I would be remiss to just have a pretty plot and not say anything about the data
 To wrap this up, I think that ojs is a great way to create interactive visualizations. I've tried to highlight the handoff from R to ojs and illustrate how you might go out create a plot. I hope you enjoyed this post and I hope you learned something.
 
 
+> Photo by [Jeremy Bishop](https://unsplash.com/photos/KFIjzXYg1RM) on [Unsplash](https://unsplash.com/)
