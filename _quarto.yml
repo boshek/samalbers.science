@@ -19,8 +19,8 @@ format:
     self-contained: true
     link-external-newwindow: true
     theme:
-      dark: [darkly, urchin-black.scss]
       light: [flatly, urchin.scss]
+      dark: [darkly, urchin-black.scss]
     css: styles.css
     toc: true
 execute: 
