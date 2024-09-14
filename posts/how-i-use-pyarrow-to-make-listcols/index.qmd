@@ -60,3 +60,29 @@ nested_river_df |>
 
 
 Recently I wanted to construct something that resembled a list column in a python data pipeline which was then handed off to R. So this post is a learning of how to do that in python. 
+
+
+```python
+import pyarrow as pa
+import seaborn as sns
+
+# Load iris dataset
+iris = sns.load_dataset('iris')
+
+# Convert pandas DataFrame to pyarrow Table
+iris_table = pa.Table.from_pandas(iris)
+
+# Columns to nest (other than 'Species')
+columns_to_nest = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
+
+# Create the aggregation list
+aggregations = [(col, 'list') for col in columns_to_nest]
+
+# Group by 'Species' and aggregate the other columns into lists
+grouped = iris_table.group_by(['species']).aggregate(aggregations)
+
+# Output the resulting table
+print(grouped)
+
+grouped.to_pandas()
+```
