@@ -1,0 +1,88 @@
+---
+title: How I am making a listcol in pyarrow
+author: Sam Albers
+date: last-modified
+slug: hockey-age-with-ojs
+categories:
+  - R
+  - Python
+  - arrow
+  - parquet
+tags: []
+
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+execute: 
+  warning: false
+---
+
+Arrow, parquet and interoperability between languages in 2024 has come so far. In particular [Apache Arrow](https://arrow.apache.org/) provides us common types across languages. This type of consistency makes hand-offs between languages much simpler because we don't have to manually find equivalent types that behave approximately the same. However, sometimes you still have to find the right way to organize your data, in a type that arrow knows, so that it will map correctly to a type that you might be used to working with. 
+
+This post is about constructing something that resembles a [list column](https://tidyr.tidyverse.org/articles/nest.html) in R but you have to start out in python. List columns (also called nested data) are a really attractive data structure. The same idea exists in JSON but nested data in a dataframe just makes more sense to my brain. It also for more efficient data storage as you aren't repeating attribute columns across every row of your nested values. For example, consider this hydrometric data from [tidyhydat](https://docs.ropensci.org/tidyhydat/)
+
+```{r}
+library(tidyhydat)
+river_df <- hy_daily_flows("08MF005")
+river_df
+```
+
+We have lots of repeated column values across many river discharge values. Instead if we nested the data we get one row per station/ 
+
+```{r}
+library(tidyr)
+nested_river_df <- nest(river_df, .by = c(STATION_NUMBER, Parameter), .key = "flow_data")
+nested_river_df
+```
+
+This opens up some nice possibilities to do some calculations on `flow_data` but still maintain that single row per station data model using the purrr package. For example here we could sum the river discharge values by year then take the average of that and return a single value per station. This is a powerful feature that can keep your data compact and intutitive.
+
+```{r}
+library(purrr)
+library(dplyr)
+library(lubridate)
+nested_river_df |>
+  mutate(
+    avg_annual_value = map_dbl(
+      flow_data, ~ {
+        .x |>
+          group_by(year = year(Date)) |>
+          summarise(sum_flows = sum(Value, na.rm = TRUE)) |>
+          summarise(avg_val = mean(sum_flows)) |>
+          pull(avg_val)
+      }
+    ), .before = flow_data
+  )
+```
+
+
+Recently I wanted to construct something that resembled a list column in a python data pipeline which was then handed off to R. So this post is a learning of how to do that in python. 
+
+
+```python
+import pyarrow as pa
+import seaborn as sns
+
+# Load iris dataset
+iris = sns.load_dataset('iris')
+
+# Convert pandas DataFrame to pyarrow Table
+iris_table = pa.Table.from_pandas(iris)
+
+# Columns to nest (other than 'Species')
+columns_to_nest = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
+
+# Create the aggregation list
+aggregations = [(col, 'list') for col in columns_to_nest]
+
+# Group by 'Species' and aggregate the other columns into lists
+grouped = iris_table.group_by(['species']).aggregate(aggregations)
+
+# Output the resulting table
+print(grouped)
+
+grouped.to_pandas()
+```

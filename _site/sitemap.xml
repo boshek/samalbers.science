@@ -6,7 +6,7 @@
   </url>
   <url>
     <loc>https://samalbers.science/index.html</loc>
-    <lastmod>2023-09-01T22:29:43.836Z</lastmod>
+    <lastmod>2024-09-14T16:29:11.460Z</lastmod>
   </url>
   <url>
     <loc>https://samalbers.science/about.html</loc>
@@ -39,5 +39,9 @@
   <url>
     <loc>https://samalbers.science/posts/hockey-age-with-ojs/index.html</loc>
     <lastmod>2023-09-02T22:08:49.192Z</lastmod>
+  </url>
+  <url>
+    <loc>https://samalbers.science/posts/how-i-use-pyarrow-to-make-listcols/index.html</loc>
+    <lastmod>2024-09-14T23:22:19.970Z</lastmod>
   </url>
 </urlset>
