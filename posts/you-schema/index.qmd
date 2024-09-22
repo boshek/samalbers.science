@@ -1,0 +1,148 @@
+---
+title: I Scream, You Scream, We All Scream for an Arrow Schema
+author: Sam Albers
+date: last-modified
+slug: you-schema
+execute: 
+  warning: true
+categories:
+  - R
+  - Arrow
+  - python
+tags: []
+
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+Always take the time to write a schema. Sometimes you have to. It is isn't optional. But in less strongly typed languages like R and python, you can sometimes get away with not specifying a schema because there are such good tools are correctly inferring it. This post is a instance where you absolutely do need to provide schema. 
+
+A data structure that is popular is a hive partitioned dataset. This is a cheap data structure that is easy to create (just structured directories!), compatible with s3 and has many tools to take advantage of it. I say "cheap" because it does not come with the overhead of a full fledged database but on some level can act like one. For example, you can efficiently query partitioned data with SQL just like a typical database. 
+
+To illustrate why schemas are important for a partitioned dataset we first need to create one. We are going to use R's internal `quakes` data. The code below creates a reprex but the main to notice is that one partition, station 50, contains an extra column called `wave_height`. This scenario mimics a situation where for station 50 perhaps you gained a new sensor and thus collect more data (always good!). 
+
+```{r}
+#| include: false
+library(reticulate)
+```
+
+```{r}
+library(arrow)
+for (i in unique(quakes$stations)) {  
+  quakes_per_station <- quakes[quakes$stations == i, ]
+  if (i == "50") {
+    quakes_per_station$wave_height <- runif(nrow(quakes_per_station), 0, 100)
+  }
+  write_dataset(quakes_per_station, "quakes_partitioned/", partitioning = "stations")
+}
+```
+
+The directory `quakes_partitioned` will have a bunch of sub-directories of the formation `{variable}={value}`. 
+
+```
+quakes_partitioned/
+├── stations=10
+```
+
+If we examine just one of those files, we can see how it contains:
+
+```{r}
+read_parquet("quakes_partitioned/stations=10/part-0.parquet")
+```
+
+Note that we have dropped the station column from the parquet representation because it is contained within the partitioned structure. 
+
+Apache Arrow has considerable functionality for dealing with partitioned data via its [dataset layer](https://arrow.apache.org/docs/java/dataset.html). The easiest way for us to take advantage of this in R is to use `open_dataset` and point it at the partitioned directory _and_ tell it that there is a partitioned variable:
+
+```{r}
+open_dataset("quakes_partitioned/", partitioning = "stations")
+```
+
+This is a very fast operation that quickly collects some basic metadata from our `quakes` dataset. However we can see clearly that we are missing the added `water_temp` column from station 50. If we investigate that single parquet file we can see that that column there:
+
+```{r}
+read_parquet("quakes_partitioned/stations=50/part-0.parquet")
+```
+
+So what's happened here? An arrow dataset just uses the first file to construct the metadata. Because `water_temp` is no present there, it is not picked up by a `open_dataset` call. 
+
+How can we fix this? A schema! If we take the time to create a schema, we can tell `open_dataset`, hey there is another collect in there that we are also interested in. The arrow R package provides a [`schema` function](https://arrow.apache.org/docs/r/reference/schema.html) to construct this:
+
+```{r}
+quake_schema <- schema(
+  lat = float64(), 
+  long = float64(),
+  depth = int32(),
+  mag = float64(),
+  wave_height = float64(),
+  station = string()
+  )
+quake_schema
+```
+
+Now we can provide that schema to the `open_dataset` function and see what happens:
+
+```{r}
+quakes_dataset <- open_dataset(
+  "quakes_partitioned/", 
+  partitioning = "stations", 
+  schema = quake_schema
+  )
+quakes_dataset
+```
+
+We've got our `wave_height` column! We explicitly told arrow about it and so now you can work with it as you would any other column. 
+
+One option that is worth discussing is setting the `unify_schemas` argument to `TRUE`. From the arrow documentation:
+
+> should all data fragments (files, Datasets) be scanned in order to create a unified schema from them? If FALSE, only the first fragment will be inspected for its schema. Use this fast path when you know and trust that all fragments have an identical schema. The default is FALSE when creating a dataset from a directory path/URI or vector of file paths/URIs (because there may be many files and scanning may be slow) but TRUE when sources is a list of Datasets (because there should be few Datasets in the list and their Schemas are already in memory).
+
+This is an excellent heuristic for when you should use `unify_schemas`. I'd also suggest that you also gain some benefit from explicitly writing our your schema types as well the fields being used. Also specifying the schema in the way discussed above happens to be a bit faster too:
+
+```{r}
+library(bench)
+library(dplyr, warn.conflicts = FALSE)
+
+bench::mark(
+  set_schema = open_dataset("quakes_partitioned/", partitioning = "stations", schema = quake_schema) |> collect(),
+  unify_schema = open_dataset("quakes_partitioned/", partitioning = "stations", unify_schemas = TRUE) |> collect(),
+  check = FALSE
+)
+```
+
+It is also worth mentioning that this is not a R specific thing. The same pattern exists in pyarrow:
+
+
+```{python}
+import pyarrow as pa
+import pyarrow.dataset as ds
+
+
+quakes_partitioned = ds.dataset("quakes_partitioned/", partitioning = "hive")
+quakes_partitioned.schema
+```
+
+I am not certain quite what the schema metadata is telling us here and that'll have to be an investigation for another day. But the thing you can notice here is that, again, in the absense of a schema, we don't detect that `wave_height` column. But if we instead provide it, we are able to detect it:
+
+
+```{python}
+quake_schema = pa.schema(
+    [
+        ("lat", pa.float64()),
+        ("long", pa.float64()),
+        ("depth", pa.int32()),
+        ("mag", pa.float64()),
+        ("wave_height", pa.float64()),
+        ("stations", pa.string()),
+    ]
+)
+
+quakes_partitioned = ds.dataset("quakes_partitioned/", partitioning = "hive", schema=quake_schema)
+quakes_partitioned.schema
+```
+
+Explicitly setting your schema, illustrated her with Apache Arrow datasets, can be really important. You always have a schema - this process just reminds us that you either let it be inferred by another program or you tell your computer exactly what you want. 
