@@ -19,6 +19,8 @@ linktitle: ''
 type: post
 ---
 
+
+
 Always take the time to write a schema. Sometimes you have to. It is isn't optional. But in less strongly typed languages like R and python, you can sometimes get away with not specifying a schema because there are such good tools are correctly inferring it. This post is a instance where you absolutely do need to provide schema. 
 
 A data structure that is popular is a hive partitioned dataset. This is a cheap data structure that is easy to create (just structured directories!), compatible with s3 and has many tools to take advantage of it. I say "cheap" because it does not come with the overhead of a full fledged database but on some level can act like one. For example, you can efficiently query partitioned data with SQL just like a typical database. 
