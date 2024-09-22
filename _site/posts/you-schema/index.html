@@ -4917,16 +4917,16 @@ See $metadata for additional Schema metadata</code></pre>
 <pre><code># A tibble: 10 × 5
      lat  long depth   mag wave_height
    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;       &lt;dbl&gt;
- 1 -22.6  181.   544   5         19.3 
- 2 -20.6  182.   529   5         88.1 
- 3 -22.9  173.    56   5.1       88.1 
- 4 -23.3  184    164   4.8       25.2 
- 5 -20.5  182.   559   4.9       98.1 
- 6 -26.5  178.   609   5         91.4 
- 7 -25.0  180.   505   4.9       91.9 
- 8 -23.4  180.   541   4.6       75.5 
- 9 -23.9  180.   524   4.6        2.80
-10 -20.9  185.    82   4.9       62.6 </code></pre>
+ 1 -22.6  181.   544   5          29.4
+ 2 -20.6  182.   529   5          16.9
+ 3 -22.9  173.    56   5.1        52.3
+ 4 -23.3  184    164   4.8        53.4
+ 5 -20.5  182.   559   4.9        35.1
+ 6 -26.5  178.   609   5          91.4
+ 7 -25.0  180.   505   4.9        50.4
+ 8 -23.4  180.   541   4.6        91.4
+ 9 -23.9  180.   524   4.6        64.1
+10 -20.9  185.    82   4.9        20.5</code></pre>
 </div>
 </div>
 <p>So what’s happened here? An arrow dataset just uses the first file to construct the metadata. Because <code>water_temp</code> is no present there, it is not picked up by a <code>open_dataset</code> call.</p>
@@ -4989,8 +4989,8 @@ station: string</code></pre>
 <pre><code># A tibble: 2 × 6
   expression        min  median `itr/sec` mem_alloc `gc/sec`
   &lt;bch:expr&gt;   &lt;bch:tm&gt; &lt;bch:t&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-1 set_schema     32.7ms  34.1ms      29.3    1.08MB     4.89
-2 unify_schema   37.7ms  38.9ms      25.4   16.38KB     5.09</code></pre>
+1 set_schema     32.1ms  33.3ms      29.7    1.08MB     4.57
+2 unify_schema   38.9ms  40.6ms      23.0   16.38KB     5.11</code></pre>
 </div>
 </div>
 <p>It is also worth mentioning that this is not a R specific thing. The same pattern exists in pyarrow:</p>
@@ -5027,6 +5027,9 @@ UTF-8
 1
 2621&#39; + 128</code></pre>
 </div>
+</div>
+<p>I am not certain quite what the schema metadata is telling us here and that’ll have to be an investigation for another day. But the thing you can notice here is that, again, in the absense of a schema, we don’t detect that <code>wave_height</code> column. But if we instead provide it, we are able to detect it:</p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>quake_schema <span class="op">=</span> pa.schema(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    [</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;lat&quot;</span>, pa.float64()),</span>
@@ -5049,6 +5052,7 @@ wave_height: double
 stations: string</code></pre>
 </div>
 </div>
+<p>Explicitly setting your schema, illustrated her with Apache Arrow datasets, can be really important. You always have a schema - this process just reminds us that you either let it be inferred by another program or you tell your computer exactly what you want.</p>
 
 
 
