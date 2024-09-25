@@ -25,7 +25,7 @@ Always take the time to write a schema. Sometimes you have to. It is isn't optio
 
 A data structure that is popular is a hive partitioned dataset. This is a cheap data structure that is easy to create (just structured directories!), compatible with s3 and has many tools to take advantage of it. I say "cheap" because it does not come with the overhead of a full fledged database but on some level can act like one. For example, you can efficiently query partitioned data with SQL just like a typical database. 
 
-To illustrate why schemas are important for a partitioned dataset we first need to create one. We are going to use R's internal `quakes` data. The code below creates a reprex but the main thing to notice is that one partition, `statiosn=50`, contains an additional column called `wave_height`. This scenario mimics a situation where for that station, perhaps you gained a new sensor and thus collected more data (always good!). 
+To illustrate why schemas are important for a partitioned dataset we first need to create one. We are going to use R's internal `quakes` data. The code below creates a reprex but the main thing to notice is that one partition, `stations=50`, contains an additional column called `wave_height`. This scenario mimics a situation where for that station, perhaps you gained a new sensor and thus collected more data (always good!). 
 
 ```{r}
 #| include: false
