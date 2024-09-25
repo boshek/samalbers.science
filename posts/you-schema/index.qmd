@@ -34,7 +34,7 @@ library(reticulate)
 
 ```{r}
 library(arrow, warn.conflicts = FALSE)
-for (i in unique(quakes$stations)) {  
+for (i in unique(quakes$stations)) {
   quakes_per_station <- quakes[quakes$stations == i, ]
   if (i == "50") {
     quakes_per_station$wave_height <- runif(nrow(quakes_per_station), 0, 100)
@@ -76,13 +76,13 @@ How can we fix this? A schema! If we take the time to create a schema, we can te
 
 ```{r}
 quake_schema <- schema(
-  lat = float64(), 
+  lat = float64(),
   long = float64(),
   depth = int32(),
   mag = float64(),
   wave_height = float64(),
   station = string()
-  )
+)
 quake_schema
 ```
 
@@ -90,10 +90,10 @@ Now we can provide that schema to the `open_dataset` function and see what happe
 
 ```{r}
 quakes_dataset <- open_dataset(
-  "quakes_partitioned/", 
-  partitioning = "stations", 
+  "quakes_partitioned/",
+  partitioning = "stations",
   schema = quake_schema
-  )
+)
 quakes_dataset
 ```
 

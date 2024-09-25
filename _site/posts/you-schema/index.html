@@ -4845,7 +4845,7 @@ vertical-align: -.125em;
 <p>To illustrate why schemas are important for a partitioned dataset we first need to create one. We are going to use R’s internal <code>quakes</code> data. The code below creates a reprex but the main thing to notice is that one partition, <code>statiosn=50</code>, contains an additional column called <code>wave_height</code>. This scenario mimics a situation where for that station, perhaps you gained a new sensor and thus collected more data (always good!).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(quakes<span class="sc">$</span>stations)) {  </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(quakes<span class="sc">$</span>stations)) {</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  quakes_per_station <span class="ot">&lt;-</span> quakes[quakes<span class="sc">$</span>stations <span class="sc">==</span> i, ]</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="st">&quot;50&quot;</span>) {</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    quakes_per_station<span class="sc">$</span>wave_height <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">nrow</span>(quakes_per_station), <span class="dv">0</span>, <span class="dv">100</span>)</span>
@@ -4908,29 +4908,29 @@ See $metadata for additional Schema metadata</code></pre>
 <pre><code># A tibble: 10 × 5
      lat  long depth   mag wave_height
    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;       &lt;dbl&gt;
- 1 -22.6  181.   544   5          72.6
- 2 -20.6  182.   529   5          48.6
- 3 -22.9  173.    56   5.1        30.6
- 4 -23.3  184    164   4.8        85.8
- 5 -20.5  182.   559   4.9        90.2
- 6 -26.5  178.   609   5          20.9
- 7 -25.0  180.   505   4.9        17.6
- 8 -23.4  180.   541   4.6        20.2
- 9 -23.9  180.   524   4.6        52.5
-10 -20.9  185.    82   4.9        53.1</code></pre>
+ 1 -22.6  181.   544   5         66.2 
+ 2 -20.6  182.   529   5         70.7 
+ 3 -22.9  173.    56   5.1       91.7 
+ 4 -23.3  184    164   4.8       78.6 
+ 5 -20.5  182.   559   4.9       70.5 
+ 6 -26.5  178.   609   5          3.60
+ 7 -25.0  180.   505   4.9       76.8 
+ 8 -23.4  180.   541   4.6       37.8 
+ 9 -23.9  180.   524   4.6       55.7 
+10 -20.9  185.    82   4.9       91.9 </code></pre>
 </div>
 </div>
 <p>So what’s happened here? An arrow dataset just uses the first file to construct the metadata. Because <code>water_temp</code> is not present there, it is not picked up by a <code>open_dataset</code> call.</p>
 <p>How can we fix this? A schema! If we take the time to create a schema, we can tell <code>open_dataset</code>: “hey there is another column in there that we are also interested in”. The arrow R package provides a <a href="https://arrow.apache.org/docs/r/reference/schema.html"><code>schema</code> function</a> to construct this:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>quake_schema <span class="ot">&lt;-</span> <span class="fu">schema</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">lat =</span> <span class="fu">float64</span>(), </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">lat =</span> <span class="fu">float64</span>(),</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">long =</span> <span class="fu">float64</span>(),</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">depth =</span> <span class="fu">int32</span>(),</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mag =</span> <span class="fu">float64</span>(),</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">wave_height =</span> <span class="fu">float64</span>(),</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">station =</span> <span class="fu">string</span>()</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>quake_schema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Schema
@@ -4945,10 +4945,10 @@ station: string</code></pre>
 <p>Now we can provide that schema to the <code>open_dataset</code> function and see what happens:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>quakes_dataset <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;quakes_partitioned/&quot;</span>, </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>, </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;quakes_partitioned/&quot;</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>,</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">schema =</span> quake_schema</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>quakes_dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>FileSystemDataset with 102 Parquet files
@@ -4990,8 +4990,8 @@ station: string</code></pre>
 <pre><code># A tibble: 2 × 6
   expression        min  median `itr/sec` mem_alloc `gc/sec`
   &lt;bch:expr&gt;   &lt;bch:tm&gt; &lt;bch:t&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-1 set_schema     32.6ms  34.1ms      29.0    1.08MB     4.83
-2 unify_schema   38.6ms  40.3ms      24.6   16.38KB     4.92</code></pre>
+1 set_schema     31.7ms  33.6ms      29.8    1.08MB     4.58
+2 unify_schema     39ms    41ms      24.2   16.38KB     4.84</code></pre>
 </div>
 </div>
 <p>It is also worth mentioning that this is not a R specific thing. The same pattern exists in pyarrow:</p>
