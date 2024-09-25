@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sam Albers">
-<meta name="dcterms.date" content="2024-09-22">
+<meta name="dcterms.date" content="2024-09-24">
 
 <title>I Scream, You Scream, We All Scream for an Arrow Schema – sam | science</title>
 <style>
@@ -4800,7 +4800,7 @@ vertical-align: -.125em;
       <h1 class="title">I Scream, You Scream, We All Scream for an Arrow Schema</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
-                <div class="quarto-category">Arrow</div>
+                <div class="quarto-category">Apache Arrow</div>
                 <div class="quarto-category">python</div>
               </div>
                   </div>
@@ -4819,7 +4819,7 @@ vertical-align: -.125em;
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">September 22, 2024</p>
+        <p class="date">September 24, 2024</p>
       </div>
     </div>
     
@@ -4840,34 +4840,25 @@ vertical-align: -.125em;
 
 
 
-<p>Always take the time to write a schema. Sometimes you have to. It is isn’t optional. But in less strongly typed languages like R and python, you can sometimes get away with not specifying a schema because there are such good tools are correctly inferring it. This post is a instance where you absolutely do need to provide schema.</p>
+<p>Always take the time to write a schema. Sometimes you have to. It is isn’t optional. But in less strongly typed languages like R and python, you can sometimes get away with not specifying a schema because there are such good tools for correctly inferring it. This post is an example of an instance where you absolutely do need to provide schema.</p>
 <p>A data structure that is popular is a hive partitioned dataset. This is a cheap data structure that is easy to create (just structured directories!), compatible with s3 and has many tools to take advantage of it. I say “cheap” because it does not come with the overhead of a full fledged database but on some level can act like one. For example, you can efficiently query partitioned data with SQL just like a typical database.</p>
-<p>To illustrate why schemas are important for a partitioned dataset we first need to create one. We are going to use R’s internal <code>quakes</code> data. The code below creates a reprex but the main to notice is that one partition, station 50, contains an extra column called <code>wave_height</code>. This scenario mimics a situation where for station 50 perhaps you gained a new sensor and thus collect more data (always good!).</p>
+<p>To illustrate why schemas are important for a partitioned dataset we first need to create one. We are going to use R’s internal <code>quakes</code> data. The code below creates a reprex but the main thing to notice is that one partition, <code>statiosn=50</code>, contains an additional column called <code>wave_height</code>. This scenario mimics a situation where for that station, perhaps you gained a new sensor and thus collected more data (always good!).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: &#39;arrow&#39;</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from &#39;package:utils&#39;:
-
-    timestamp</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(quakes<span class="sc">$</span>stations)) {  </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  quakes_per_station <span class="ot">&lt;-</span> quakes[quakes<span class="sc">$</span>stations <span class="sc">==</span> i, ]</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="st">&quot;50&quot;</span>) {</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    quakes_per_station<span class="sc">$</span>wave_height <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">nrow</span>(quakes_per_station), <span class="dv">0</span>, <span class="dv">100</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_dataset</span>(quakes_per_station, <span class="st">&quot;quakes_partitioned/&quot;</span>, <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(quakes<span class="sc">$</span>stations)) {  </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  quakes_per_station <span class="ot">&lt;-</span> quakes[quakes<span class="sc">$</span>stations <span class="sc">==</span> i, ]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="st">&quot;50&quot;</span>) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    quakes_per_station<span class="sc">$</span>wave_height <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">nrow</span>(quakes_per_station), <span class="dv">0</span>, <span class="dv">100</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_dataset</span>(quakes_per_station, <span class="st">&quot;quakes_partitioned/&quot;</span>, <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The directory <code>quakes_partitioned</code> will have a bunch of sub-directories of the formation <code>{variable}={value}</code>.</p>
 <pre><code>quakes_partitioned/
 ├── stations=10</code></pre>
-<p>If we examine just one of those files, we can see how it contains:</p>
+<p>If we examine just one of those files, we can see what it contains:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_parquet</span>(<span class="st">&quot;quakes_partitioned/stations=10/part-0.parquet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_parquet</span>(<span class="st">&quot;quakes_partitioned/stations=10/part-0.parquet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 20 × 4
      lat  long depth   mag
@@ -4894,10 +4885,10 @@ Attaching package: &#39;arrow&#39;</code></pre>
 20 -17.7  188.    45   4.2</code></pre>
 </div>
 </div>
-<p>Note that we have dropped the station column from the parquet representation because it is contained within the partitioned structure.</p>
-<p>Apache Arrow has considerable functionality for dealing with partitioned data via its <a href="https://arrow.apache.org/docs/java/dataset.html">dataset layer</a>. The easiest way for us to take advantage of this in R is to use <code>open_dataset</code> and point it at the partitioned directory <em>and</em> tell it that there is a partitioned variable:</p>
+<p>Note that the station column has been dropped from the parquet file because it is contained within the partitioned structure (i.e. the directory name).</p>
+<p>Apache Arrow has considerable functionality for dealing with partitioned data via its <a href="https://arrow.apache.org/docs/java/dataset.html">dataset layer</a>. The easiest way for us to take advantage of this in R is to use <code>open_dataset</code>, point it at the partitioned directory <em>and</em> tell it that there is a partitioned variable:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dataset</span>(<span class="st">&quot;quakes_partitioned/&quot;</span>, <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dataset</span>(<span class="st">&quot;quakes_partitioned/&quot;</span>, <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>FileSystemDataset with 102 Parquet files
 5 columns
@@ -4910,37 +4901,37 @@ stations: int32
 See $metadata for additional Schema metadata</code></pre>
 </div>
 </div>
-<p>This is a very fast operation that quickly collects some basic metadata from our <code>quakes</code> dataset. However we can see clearly that we are missing the added <code>water_temp</code> column from station 50. If we investigate that single parquet file we can see that that column there:</p>
+<p>This is a very fast operation that quickly collects some basic metadata from our <code>quakes</code> dataset. However we can see clearly that we are missing the added <code>water_temp</code> column from station 50. If we investigate that single parquet file we can see that column there:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_parquet</span>(<span class="st">&quot;quakes_partitioned/stations=50/part-0.parquet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_parquet</span>(<span class="st">&quot;quakes_partitioned/stations=50/part-0.parquet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 5
      lat  long depth   mag wave_height
    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;       &lt;dbl&gt;
- 1 -22.6  181.   544   5         74.3 
- 2 -20.6  182.   529   5         70.6 
- 3 -22.9  173.    56   5.1       52.6 
- 4 -23.3  184    164   4.8       82.3 
- 5 -20.5  182.   559   4.9       27.3 
- 6 -26.5  178.   609   5         76.7 
- 7 -25.0  180.   505   4.9       18.2 
- 8 -23.4  180.   541   4.6       90.3 
- 9 -23.9  180.   524   4.6        2.35
-10 -20.9  185.    82   4.9       57.6 </code></pre>
+ 1 -22.6  181.   544   5          72.6
+ 2 -20.6  182.   529   5          48.6
+ 3 -22.9  173.    56   5.1        30.6
+ 4 -23.3  184    164   4.8        85.8
+ 5 -20.5  182.   559   4.9        90.2
+ 6 -26.5  178.   609   5          20.9
+ 7 -25.0  180.   505   4.9        17.6
+ 8 -23.4  180.   541   4.6        20.2
+ 9 -23.9  180.   524   4.6        52.5
+10 -20.9  185.    82   4.9        53.1</code></pre>
 </div>
 </div>
-<p>So what’s happened here? An arrow dataset just uses the first file to construct the metadata. Because <code>water_temp</code> is no present there, it is not picked up by a <code>open_dataset</code> call.</p>
-<p>How can we fix this? A schema! If we take the time to create a schema, we can tell <code>open_dataset</code>, hey there is another collect in there that we are also interested in. The arrow R package provides a <a href="https://arrow.apache.org/docs/r/reference/schema.html"><code>schema</code> function</a> to construct this:</p>
+<p>So what’s happened here? An arrow dataset just uses the first file to construct the metadata. Because <code>water_temp</code> is not present there, it is not picked up by a <code>open_dataset</code> call.</p>
+<p>How can we fix this? A schema! If we take the time to create a schema, we can tell <code>open_dataset</code>: “hey there is another column in there that we are also interested in”. The arrow R package provides a <a href="https://arrow.apache.org/docs/r/reference/schema.html"><code>schema</code> function</a> to construct this:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>quake_schema <span class="ot">&lt;-</span> <span class="fu">schema</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">lat =</span> <span class="fu">float64</span>(), </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">long =</span> <span class="fu">float64</span>(),</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">depth =</span> <span class="fu">int32</span>(),</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mag =</span> <span class="fu">float64</span>(),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">wave_height =</span> <span class="fu">float64</span>(),</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">station =</span> <span class="fu">string</span>()</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>quake_schema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>quake_schema <span class="ot">&lt;-</span> <span class="fu">schema</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">lat =</span> <span class="fu">float64</span>(), </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">long =</span> <span class="fu">float64</span>(),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">depth =</span> <span class="fu">int32</span>(),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mag =</span> <span class="fu">float64</span>(),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">wave_height =</span> <span class="fu">float64</span>(),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">station =</span> <span class="fu">string</span>()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>quake_schema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Schema
 lat: double
@@ -4953,12 +4944,12 @@ station: string</code></pre>
 </div>
 <p>Now we can provide that schema to the <code>open_dataset</code> function and see what happens:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>quakes_dataset <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;quakes_partitioned/&quot;</span>, </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>, </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">schema =</span> quake_schema</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>quakes_dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>quakes_dataset <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;quakes_partitioned/&quot;</span>, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">schema =</span> quake_schema</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>quakes_dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>FileSystemDataset with 102 Parquet files
 6 columns
@@ -4970,37 +4961,46 @@ wave_height: double
 station: string</code></pre>
 </div>
 </div>
-<p>We’ve got our <code>wave_height</code> column! We explicitly told arrow about it and so now you can work with it as you would any other column.</p>
-<p>One option that is worth discussing is setting the <code>unify_schemas</code> argument to <code>TRUE</code>. From the arrow documentation:</p>
+<p><code>open_dataset</code> has recognized our <code>wave_height</code> column! We explicitly told arrow about it through a schema and so now you can work with it as you would any other column.</p>
+<p>One other option that is worth discussing is setting the <code>unify_schemas</code> argument to <code>TRUE</code>. From the arrow documentation:</p>
 <blockquote class="blockquote">
 <p>should all data fragments (files, Datasets) be scanned in order to create a unified schema from them? If FALSE, only the first fragment will be inspected for its schema. Use this fast path when you know and trust that all fragments have an identical schema. The default is FALSE when creating a dataset from a directory path/URI or vector of file paths/URIs (because there may be many files and scanning may be slow) but TRUE when sources is a list of Datasets (because there should be few Datasets in the list and their Schemas are already in memory).</p>
 </blockquote>
-<p>This is an excellent heuristic for when you should use <code>unify_schemas</code>. I’d also suggest that you also gain some benefit from explicitly writing our your schema types as well the fields being used. Also specifying the schema in the way discussed above happens to be a bit faster too:</p>
+<p>This is an excellent heuristic for when you should use <code>unify_schemas</code>. I’d also suggest that you also gain some benefit from explicitly writing our your schema types as well the fields being used. Also specifying the schema in the way discussed above happens to be a bit a tiny bit faster on these data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bench)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>bench<span class="sc">::</span><span class="fu">mark</span>(</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_schema =</span> <span class="fu">open_dataset</span>(<span class="st">&quot;quakes_partitioned/&quot;</span>, <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>, <span class="at">schema =</span> quake_schema) <span class="sc">|&gt;</span> <span class="fu">collect</span>(),</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">unify_schema =</span> <span class="fu">open_dataset</span>(<span class="st">&quot;quakes_partitioned/&quot;</span>, <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>, <span class="at">unify_schemas =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">collect</span>(),</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">check =</span> <span class="cn">FALSE</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bench)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>bench<span class="sc">::</span><span class="fu">mark</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_schema =</span> <span class="fu">open_dataset</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;quakes_partitioned/&quot;</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">schema =</span> quake_schema</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>(),</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">unify_schema =</span> <span class="fu">open_dataset</span>(</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;quakes_partitioned/&quot;</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">partitioning =</span> <span class="st">&quot;stations&quot;</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">unify_schemas =</span> <span class="cn">TRUE</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>(),</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">check =</span> <span class="cn">FALSE</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 6
   expression        min  median `itr/sec` mem_alloc `gc/sec`
   &lt;bch:expr&gt;   &lt;bch:tm&gt; &lt;bch:t&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-1 set_schema       35ms  36.7ms      27.0    1.08MB     4.91
-2 unify_schema   38.6ms  40.2ms      24.5   16.38KB     4.90</code></pre>
+1 set_schema     32.6ms  34.1ms      29.0    1.08MB     4.83
+2 unify_schema   38.6ms  40.3ms      24.6   16.38KB     4.92</code></pre>
 </div>
 </div>
 <p>It is also worth mentioning that this is not a R specific thing. The same pattern exists in pyarrow:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyarrow <span class="im">as</span> pa</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyarrow.dataset <span class="im">as</span> ds</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>quakes_partitioned <span class="op">=</span> ds.dataset(<span class="st">&quot;quakes_partitioned/&quot;</span>, partitioning <span class="op">=</span> <span class="st">&quot;hive&quot;</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>quakes_partitioned.schema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyarrow <span class="im">as</span> pa</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyarrow.dataset <span class="im">as</span> ds</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>quakes_partitioned <span class="op">=</span> ds.dataset(<span class="st">&quot;quakes_partitioned/&quot;</span>, partitioning <span class="op">=</span> <span class="st">&quot;hive&quot;</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>quakes_partitioned.schema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>lat: double
 long: double
@@ -5030,19 +5030,19 @@ UTF-8
 </div>
 <p>I am not certain quite what the schema metadata is telling us here and that’ll have to be an investigation for another day. But the thing you can notice here is that, again, in the absense of a schema, we don’t detect that <code>wave_height</code> column. But if we instead provide it, we are able to detect it:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>quake_schema <span class="op">=</span> pa.schema(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    [</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;lat&quot;</span>, pa.float64()),</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;long&quot;</span>, pa.float64()),</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;depth&quot;</span>, pa.int32()),</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;mag&quot;</span>, pa.float64()),</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;wave_height&quot;</span>, pa.float64()),</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;stations&quot;</span>, pa.string()),</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>quakes_partitioned <span class="op">=</span> ds.dataset(<span class="st">&quot;quakes_partitioned/&quot;</span>, partitioning <span class="op">=</span> <span class="st">&quot;hive&quot;</span>, schema<span class="op">=</span>quake_schema)</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>quakes_partitioned.schema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>quake_schema <span class="op">=</span> pa.schema(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;lat&quot;</span>, pa.float64()),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;long&quot;</span>, pa.float64()),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;depth&quot;</span>, pa.int32()),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;mag&quot;</span>, pa.float64()),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;wave_height&quot;</span>, pa.float64()),</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;stations&quot;</span>, pa.string()),</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>quakes_partitioned <span class="op">=</span> ds.dataset(<span class="st">&quot;quakes_partitioned/&quot;</span>, partitioning <span class="op">=</span> <span class="st">&quot;hive&quot;</span>, schema<span class="op">=</span>quake_schema)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>quakes_partitioned.schema</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>lat: double
 long: double
@@ -5052,7 +5052,7 @@ wave_height: double
 stations: string</code></pre>
 </div>
 </div>
-<p>Explicitly setting your schema, illustrated her with Apache Arrow datasets, can be really important. You always have a schema - this process just reminds us that you either let it be inferred by another program or you tell your computer exactly what you want.</p>
+<p>Explicitly setting your schema, illustrated here with Apache Arrow datasets, can be really important. You always have a schema - this process just reminds us that you either let it be inferred by another program or you tell your computer exactly what you want.</p>
 
 
 
