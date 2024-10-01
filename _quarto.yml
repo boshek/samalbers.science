@@ -3,8 +3,7 @@ project:
 
 website:
   title: "sam | science"
-  site-url: https://samalbers.science
-  repo-url: https://github.com/boshek/samalbers.science
+  site-url: "https://samalbers.science"
   navbar:
     right:
       - about.qmd
