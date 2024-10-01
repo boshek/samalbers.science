@@ -6,8 +6,7 @@ listing:
   categories: true
   sort-ui: false
   filter-ui: false
-  feed: 
-    items: 10
+  feed: true
 page-layout: full
 title-block-banner: false
 ---
