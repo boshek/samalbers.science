@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://samalbers.science/posts/welcome/index.html</loc>
-    <lastmod>2023-03-23T16:41:04.784Z</lastmod>
-  </url>
-  <url>
-    <loc>https://samalbers.science/index.html</loc>
-    <lastmod>2024-10-01T20:44:06.780Z</lastmod>
-  </url>
-  <url>
     <loc>https://samalbers.science/about.html</loc>
-    <lastmod>2024-10-01T17:42:54.116Z</lastmod>
-  </url>
-  <url>
-    <loc>https://samalbers.science/posts/post-with-code/index.html</loc>
-    <lastmod>2023-03-23T16:41:04.124Z</lastmod>
-  </url>
-  <url>
-    <loc>https://samalbers.science/posts/2019-11-17-what-the-buck/index.html</loc>
     <lastmod>2024-10-01T17:42:54.116Z</lastmod>
   </url>
   <url>
@@ -25,23 +9,27 @@
     <lastmod>2024-10-01T17:42:54.119Z</lastmod>
   </url>
   <url>
-    <loc>https://samalbers.science/posts/a-short-history-of-me-at-rstudio-conf-2020/index.html</loc>
-    <lastmod>2024-10-01T17:42:54.119Z</lastmod>
+    <loc>https://samalbers.science/posts/you-schema/index.html</loc>
+    <lastmod>2024-10-01T20:48:45.677Z</lastmod>
   </url>
   <url>
     <loc>https://samalbers.science/posts/eccc-webservice/index.html</loc>
     <lastmod>2024-10-01T17:42:54.119Z</lastmod>
   </url>
   <url>
-    <loc>https://samalbers.science/posts/intro-to-ojs/index.html</loc>
-    <lastmod>2023-09-01T22:06:37.442Z</lastmod>
+    <loc>https://samalbers.science/posts/2019-11-17-what-the-buck/index.html</loc>
+    <lastmod>2024-10-01T17:42:54.116Z</lastmod>
+  </url>
+  <url>
+    <loc>https://samalbers.science/posts/a-short-history-of-me-at-rstudio-conf-2020/index.html</loc>
+    <lastmod>2024-10-01T17:42:54.119Z</lastmod>
   </url>
   <url>
     <loc>https://samalbers.science/posts/hockey-age-with-ojs/index.html</loc>
     <lastmod>2024-10-01T17:42:54.119Z</lastmod>
   </url>
   <url>
-    <loc>https://samalbers.science/posts/you-schema/index.html</loc>
-    <lastmod>2024-10-01T20:48:45.677Z</lastmod>
+    <loc>https://samalbers.science/index.html</loc>
+    <lastmod>2024-10-01T21:57:37.358Z</lastmod>
   </url>
 </urlset>
