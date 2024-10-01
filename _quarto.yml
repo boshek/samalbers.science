@@ -12,8 +12,9 @@ website:
         href: https://github.com/boshek
       - icon: twitter
         href: https://twitter.com/big_bad_sam
-      - icon: rss
-        href: https://samalbers.science/index.xml
+      - icon: rss-fill
+        href: index.xml
+        aria-label: RSS
   twitter-card: true
   open-graph: true
 format:
