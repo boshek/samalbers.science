@@ -9,11 +9,11 @@ website:
     right:
       - about.qmd
       - icon: github
-        href: https://github.com/boshek
+        href: https://github.com/
       - icon: twitter
-        href: https://twitter.com/big_bad_sam
+        href: https://twitter.com
       - icon: rss
-        href: https://samalbers.science/index.xml
+        href: index.xml
   twitter-card: true
   open-graph: true
 format:
