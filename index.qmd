@@ -1,10 +1,11 @@
 ---
 listing:
+  contents: posts
   sort: "date desc"
-  contents: "posts/*/index.qmd"
+  type: default
+  categories: true
   sort-ui: false
   filter-ui: false
-  categories: true
   feed: true
 page-layout: full
 title-block-banner: false

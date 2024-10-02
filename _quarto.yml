@@ -3,7 +3,8 @@ project:
 
 website:
   title: "sam | science"
-  site-url: "https://samalbers.science"
+  site-url: https://samalbers.science
+  repo-url: https://github.com/boshek/samalbers.science
   navbar:
     right:
       - about.qmd
@@ -11,9 +12,8 @@ website:
         href: https://github.com/boshek
       - icon: twitter
         href: https://twitter.com/big_bad_sam
-      - icon: rss-fill
-        href: index.xml
-        aria-label: RSS
+      - icon: rss
+        href: https://samalbers.science/index.xml
   twitter-card: true
   open-graph: true
 format:
