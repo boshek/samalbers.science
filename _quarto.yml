@@ -12,8 +12,6 @@ website:
         href: https://github.com/
       - icon: twitter
         href: https://twitter.com
-      - icon: rss
-        href: index.xml
   twitter-card: true
   open-graph: true
 format:
