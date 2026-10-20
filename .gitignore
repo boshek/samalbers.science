@@ -1,3 +1,4 @@
 /.quarto/
 data
 *.csv
+**/*.quarto_ipynb
